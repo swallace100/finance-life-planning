@@ -23,7 +23,7 @@ export default function DonationsPage({ data, onSave }) {
   const currentYear = new Date().getFullYear()
 
   async function handleSubmit(row) {
-    await onSave('Donations', row, !modal.isEditing)
+    await onSave('Donations', row, row._rowIndex == null)
     modal.close()
   }
 

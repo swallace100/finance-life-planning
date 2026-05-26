@@ -19,7 +19,7 @@ export function useEntityModal() {
     setEditRow(null)
   }
 
-  const isEditing = open && editRow != null && editRow._rowIndex != null
+  const isEditing = open && editRow != null && editRow._rowIndex !== undefined && editRow._rowIndex !== null
 
   return { open, editRow, isEditing, openAdd, openEdit, close }
 }

@@ -35,7 +35,7 @@ export default function DigitalAssetsPage({ data, onSave }) {
   }, {})
 
   async function handleSubmit(row) {
-    await onSave('DigitalAssets', row, !modal.isEditing)
+    await onSave('DigitalAssets', row, row._rowIndex == null)
     modal.close()
   }
 

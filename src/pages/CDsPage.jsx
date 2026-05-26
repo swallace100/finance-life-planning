@@ -39,7 +39,7 @@ export default function CDsPage({ data, onSave }) {
     : '—'
 
   async function handleSubmit(row) {
-    await onSave('CDs', row, !modal.isEditing)
+    await onSave('CDs', row, row._rowIndex == null)
     modal.close()
   }
 

@@ -125,7 +125,7 @@ export default function AllocationPage({ data, onSave }) {
   })
 
   async function handleGoalSubmit(row) {
-    await onSave('AssetGoals', row, !goalsModal.isEditing)
+    await onSave('AssetGoals', row, row._rowIndex == null)
     goalsModal.close()
   }
 

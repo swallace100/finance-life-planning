@@ -40,17 +40,17 @@ export default function RetirementPage({ data, onSave }) {
   const totalExpectedYearly = schedule.reduce((s, r) => s + (Number(r.ExpectedYearlyAmount) || 0), 0)
 
   async function handleScheduleSubmit(row) {
-    await onSave('RetirementSchedule', row, !scheduleModal.isEditing)
+    await onSave('RetirementSchedule', row, row._rowIndex == null)
     scheduleModal.close()
   }
 
   async function handleHoldingsSubmit(row) {
-    await onSave('RetirementHoldings', row, !holdingsModal.isEditing)
+    await onSave('RetirementHoldings', row, row._rowIndex == null)
     holdingsModal.close()
   }
 
   async function handleAllocationSubmit(row) {
-    await onSave('FundAllocation', row, !allocationModal.isEditing)
+    await onSave('FundAllocation', row, row._rowIndex == null)
     allocationModal.close()
   }
 

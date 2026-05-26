@@ -55,12 +55,12 @@ export default function NonTangibleAssetsPage({ data, onSave }) {
   })
 
   async function handleAccountSubmit(row) {
-    await onSave('NonTangibleAssets', row, !accountModal.isEditing)
+    await onSave('NonTangibleAssets', row, row._rowIndex == null)
     accountModal.close()
   }
 
   async function handleHistorySubmit(row) {
-    await onSave('AssetHistory', row, !historyModal.isEditing)
+    await onSave('AssetHistory', row, row._rowIndex == null)
     historyModal.close()
   }
 

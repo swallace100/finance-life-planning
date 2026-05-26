@@ -35,7 +35,7 @@ export default function TangibleAssetsPage({ data, onSave }) {
   }, {})
 
   async function handleSubmit(row) {
-    await onSave('TangibleAssets', row, !modal.isEditing)
+    await onSave('TangibleAssets', row, row._rowIndex == null)
     modal.close()
   }
 

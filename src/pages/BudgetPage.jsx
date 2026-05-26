@@ -27,7 +27,7 @@ export default function BudgetPage({ data, onSave }) {
   }, {})
 
   async function handleSubmit(row) {
-    await onSave('Budget', row, !modal.isEditing)
+    await onSave('Budget', row, row._rowIndex == null)
     modal.close()
   }
 

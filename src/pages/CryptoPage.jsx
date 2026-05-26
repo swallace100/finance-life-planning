@@ -26,7 +26,7 @@ export default function CryptoPage({ data, onSave }) {
   const staked = assets.filter(a => a.Staked)
 
   async function handleSubmit(row) {
-    await onSave('CryptoAssets', row, !modal.isEditing)
+    await onSave('CryptoAssets', row, row._rowIndex == null)
     modal.close()
   }
 
