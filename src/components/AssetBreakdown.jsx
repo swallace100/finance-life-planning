@@ -1,27 +1,31 @@
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
-const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
+const fmt = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0,
+});
 
 const TYPE_COLORS = {
-  Bank:       '#3b82f6',
-  Investment: '#10b981',
-  Retirement: '#f59e0b',
-  Crypto:     '#8b5cf6',
-  CD:         '#06b6d4',
-  Tangible:   '#f97316',
-  Digital:    '#ec4899',
-  Other:      '#94a3b8',
-}
+  "Bank & Credit Union": "#3b82f6",
+  Investment: "#10b981",
+  Retirement: "#f59e0b",
+  Crypto: "#8b5cf6",
+  CD: "#06b6d4",
+  Tangible: "#f97316",
+  Digital: "#ec4899",
+  Other: "#94a3b8",
+};
 
 function CustomTooltip({ active, payload }) {
-  if (!active || !payload?.length) return null
-  const { name, value } = payload[0]
+  if (!active || !payload?.length) return null;
+  const { name, value } = payload[0];
   return (
     <div className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 shadow-xl">
       <p className="text-slate-400 text-xs mb-1">{name}</p>
       <p className="text-white font-semibold">{fmt.format(value)}</p>
     </div>
-  )
+  );
 }
 
 export default function AssetBreakdown({ breakdown, total }) {
@@ -42,8 +46,11 @@ export default function AssetBreakdown({ breakdown, total }) {
                 innerRadius={50}
                 strokeWidth={0}
               >
-                {breakdown.map(entry => (
-                  <Cell key={entry.name} fill={TYPE_COLORS[entry.name] ?? '#94a3b8'} />
+                {breakdown.map((entry) => (
+                  <Cell
+                    key={entry.name}
+                    fill={TYPE_COLORS[entry.name] ?? "#94a3b8"}
+                  />
                 ))}
               </Pie>
               <Tooltip content={<CustomTooltip />} />
@@ -57,12 +64,14 @@ export default function AssetBreakdown({ breakdown, total }) {
               <div className="flex items-center gap-2">
                 <span
                   className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                  style={{ backgroundColor: TYPE_COLORS[name] ?? '#94a3b8' }}
+                  style={{ backgroundColor: TYPE_COLORS[name] ?? "#94a3b8" }}
                 />
                 <span className="text-slate-300 text-sm">{name}</span>
               </div>
               <div className="text-right tabular-nums">
-                <span className="text-slate-100 text-sm font-medium">{fmt.format(value)}</span>
+                <span className="text-slate-100 text-sm font-medium">
+                  {fmt.format(value)}
+                </span>
                 <span className="text-slate-500 text-xs ml-2">
                   {((value / total) * 100).toFixed(1)}%
                 </span>
@@ -72,5 +81,5 @@ export default function AssetBreakdown({ breakdown, total }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

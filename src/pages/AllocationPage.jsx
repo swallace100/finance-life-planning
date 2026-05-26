@@ -49,9 +49,12 @@ function computeTree(data) {
     tree[cls][sub] = (tree[cls][sub] || 0) + val
   }
 
-  // Bank accounts → Cash, grouped by currency
-  assets.filter(a => a.Type === 'Bank').forEach(a => {
-    add('Cash', a.Currency || 'USD', acctVal(a.ID))
+  // Bank and Credit Union accounts → Cash, grouped by currency
+  const CASH_TYPES = new Set(['Bank', 'Credit Union'])
+  assets.filter(a => CASH_TYPES.has(a.Type)).forEach(a => {
+    const curr = a.Currency || 'USD'
+    if (!tree['Cash']) tree['Cash'] = {}
+    tree['Cash'][curr] = (tree['Cash'][curr] || 0) + acctVal(a.ID)
   })
 
   // Active CDs → Bonds/CD > Certificate Deposit

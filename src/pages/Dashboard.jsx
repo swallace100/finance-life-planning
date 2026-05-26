@@ -53,10 +53,12 @@ function computeAssetBreakdown(data) {
   const latestByAsset = getLatestValueByAsset(data.AssetHistory || [])
   const byType = {}
 
+  const CASH_TYPES = new Set(['Bank', 'Credit Union'])
   ;(data.NonTangibleAssets || []).forEach(asset => {
     const h = latestByAsset[asset.ID]
     if (h) {
-      const type = asset.Type || 'Other'
+      const raw = asset.Type || 'Other'
+      const type = CASH_TYPES.has(raw) ? 'Bank & Credit Union' : raw
       byType[type] = (byType[type] || 0) + (Number(h.Value) || 0)
     }
   })
