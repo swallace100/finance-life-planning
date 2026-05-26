@@ -1,0 +1,81 @@
+const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
+const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'
+
+export default function DonationsPage({ data }) {
+  const donations = data?.Donations || []
+
+  const byYear = donations.reduce((acc, d) => {
+    const y = d.Year ?? new Date(d.Date).getFullYear()
+    if (!acc[y]) acc[y] = []
+    acc[y].push(d)
+    return acc
+  }, {})
+
+  const years = Object.keys(byYear).map(Number).sort((a, b) => b - a)
+  const grandTotal = donations.reduce((s, d) => s + (Number(d.Amount) || 0), 0)
+
+  return (
+    <div className="space-y-6">
+      <h2 className="text-xl font-semibold text-slate-100">Donations</h2>
+
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Total Donated</p>
+          <p className="text-3xl font-bold text-white mt-2 tabular-nums">{fmtCurrency.format(grandTotal)}</p>
+          <p className="text-slate-500 text-xs mt-1">all time</p>
+        </div>
+        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">This Year</p>
+          <p className="text-3xl font-bold text-white mt-2 tabular-nums">
+            {fmtCurrency.format((byYear[years[0]] || []).reduce((s, d) => s + (Number(d.Amount) || 0), 0))}
+          </p>
+          <p className="text-slate-500 text-xs mt-1">{years[0]}</p>
+        </div>
+        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Organizations</p>
+          <p className="text-3xl font-bold text-white mt-2">
+            {new Set(donations.map(d => d.Organization)).size}
+          </p>
+          <p className="text-slate-500 text-xs mt-1">all time</p>
+        </div>
+      </div>
+
+      {donations.length === 0 ? (
+        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+          <p className="text-slate-500 text-sm">No donations recorded.</p>
+        </div>
+      ) : years.map(year => {
+        const rows = byYear[year].slice().sort((a, b) => new Date(b.Date) - new Date(a.Date))
+        const yearTotal = rows.reduce((s, d) => s + (Number(d.Amount) || 0), 0)
+        return (
+          <div key={year} className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <div className="flex items-baseline justify-between mb-4">
+              <h3 className="text-slate-300 font-medium">{year}</h3>
+              <span className="text-slate-400 text-sm tabular-nums">{fmtCurrency.format(yearTotal)}</span>
+            </div>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
+                  <th className="text-left pb-2 pr-4">Organization</th>
+                  <th className="text-right pb-2 pr-4">Amount</th>
+                  <th className="text-right pb-2 pr-4">Date</th>
+                  <th className="text-left pb-2">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map(d => (
+                  <tr key={d.ID} className="border-b border-slate-700/50 last:border-0">
+                    <td className="py-3 pr-4 text-slate-200">{d.Organization}</td>
+                    <td className="py-3 pr-4 text-slate-200 text-right font-medium tabular-nums">{fmtCurrency.format(d.Amount)}</td>
+                    <td className="py-3 pr-4 text-slate-400 text-right">{fmtDate(d.Date)}</td>
+                    <td className="py-3 text-slate-500 text-xs">{d.Notes || ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
