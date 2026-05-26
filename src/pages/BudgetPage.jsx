@@ -1,9 +1,16 @@
+import Modal from '../components/Modal'
+import EntityForm from '../components/EntityForm'
+import { SCHEMAS } from '../data/schemas'
+import { useEntityModal } from '../hooks/useEntityModal'
+
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 })
 
 const isActive = item => item.Active === 'Yes' || item.Active === true || item.Active === 1
 
-export default function BudgetPage({ data }) {
-  const items = (data?.Budget || []).filter(isActive)
+export default function BudgetPage({ data, onSave }) {
+  const modal = useEntityModal()
+  const allItems = data?.Budget || []
+  const items = allItems.filter(isActive)
 
   const income   = items.filter(i => Number(i.Amount) > 0)
   const expenses = items.filter(i => Number(i.Amount) < 0)
@@ -19,9 +26,22 @@ export default function BudgetPage({ data }) {
     return acc
   }, {})
 
+  async function handleSubmit(row) {
+    await onSave('Budget', row, !modal.isEditing)
+    modal.close()
+  }
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-slate-100">Budget</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-slate-100">Budget</h2>
+        <button
+          onClick={() => modal.openAdd({ Active: 'Yes', Frequency: 'Monthly' })}
+          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+        >
+          + Add Item
+        </button>
+      </div>
 
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
@@ -58,7 +78,11 @@ export default function BudgetPage({ data }) {
             </thead>
             <tbody>
               {income.map((i, idx) => (
-                <tr key={i.ID ?? idx} className="border-b border-slate-700/50 last:border-0">
+                <tr
+                  key={i.ID ?? idx}
+                  className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                  onClick={() => modal.openEdit(i)}
+                >
                   <td className="py-3 pr-4 text-slate-200">{i.Name}</td>
                   <td className="py-3 pr-4 text-slate-400">{i.Type}</td>
                   <td className="py-3 pr-4 text-slate-400">{i.Frequency}</td>
@@ -89,7 +113,11 @@ export default function BudgetPage({ data }) {
               </thead>
               <tbody>
                 {rows.map((i, idx) => (
-                  <tr key={i.ID ?? idx} className="border-b border-slate-700/50 last:border-0">
+                  <tr
+                    key={i.ID ?? idx}
+                    className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                    onClick={() => modal.openEdit(i)}
+                  >
                     <td className="py-3 pr-4 text-slate-200">{i.Name}</td>
                     <td className="py-3 pr-4 text-slate-400">{i.Frequency}</td>
                     <td className="py-3 text-right tabular-nums text-slate-300">{fmtCurrency.format(Math.abs(i.Amount))}</td>
@@ -106,6 +134,17 @@ export default function BudgetPage({ data }) {
           <p className="text-slate-500 text-sm">No budget items found.</p>
         </div>
       )}
+
+      <Modal open={modal.open} onClose={modal.close} title={modal.isEditing ? 'Edit Budget Item' : 'Add Budget Item'}>
+        <EntityForm
+          schema={SCHEMAS.Budget}
+          initialValues={modal.editRow}
+          data={data}
+          isEditing={modal.isEditing}
+          onSubmit={handleSubmit}
+          onCancel={modal.close}
+        />
+      </Modal>
     </div>
   )
 }

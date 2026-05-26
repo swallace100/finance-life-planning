@@ -1,3 +1,8 @@
+import Modal from '../components/Modal'
+import EntityForm from '../components/EntityForm'
+import { SCHEMAS } from '../data/schemas'
+import { useEntityModal } from '../hooks/useEntityModal'
+
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
 
@@ -19,7 +24,10 @@ function getLatestByAsset(history) {
   return latest
 }
 
-export default function NonTangibleAssetsPage({ data }) {
+export default function NonTangibleAssetsPage({ data, onSave }) {
+  const accountModal = useEntityModal()
+  const historyModal = useEntityModal()
+
   const assets  = data?.NonTangibleAssets || []
   const history = data?.AssetHistory      || []
 
@@ -46,9 +54,27 @@ export default function NonTangibleAssetsPage({ data }) {
     return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi)
   })
 
+  async function handleAccountSubmit(row) {
+    await onSave('NonTangibleAssets', row, !accountModal.isEditing)
+    accountModal.close()
+  }
+
+  async function handleHistorySubmit(row) {
+    await onSave('AssetHistory', row, !historyModal.isEditing)
+    historyModal.close()
+  }
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-slate-100">Accounts &amp; Holdings</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-slate-100">Accounts &amp; Holdings</h2>
+        <button
+          onClick={() => accountModal.openAdd({ Currency: 'USD' })}
+          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+        >
+          + Add Account
+        </button>
+      </div>
 
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
@@ -88,12 +114,17 @@ export default function NonTangibleAssetsPage({ data }) {
                   <th className="text-left pb-2 pr-4">Institution</th>
                   <th className="text-left pb-2 pr-4">Currency</th>
                   <th className="text-right pb-2 pr-4">Latest Value</th>
-                  <th className="text-right pb-2">As Of</th>
+                  <th className="text-right pb-2 pr-4">As Of</th>
+                  <th className="text-right pb-2"></th>
                 </tr>
               </thead>
               <tbody>
                 {group.map(r => (
-                  <tr key={r.ID} className="border-b border-slate-700/50 last:border-0">
+                  <tr
+                    key={r.ID}
+                    className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                    onClick={() => accountModal.openEdit(r)}
+                  >
                     <td className="py-3 pr-4 text-slate-200">
                       {r.Name}
                       {r.RetirementAccount && (
@@ -106,7 +137,15 @@ export default function NonTangibleAssetsPage({ data }) {
                     <td className="py-3 pr-4 text-right font-medium tabular-nums text-slate-200">
                       {r.latestValue != null ? fmtCurrency.format(r.latestValue) : '—'}
                     </td>
-                    <td className="py-3 text-right text-slate-500 text-xs">{fmtDate(r.latestDate)}</td>
+                    <td className="py-3 pr-4 text-right text-slate-500 text-xs">{fmtDate(r.latestDate)}</td>
+                    <td className="py-3 text-right">
+                      <button
+                        onClick={e => { e.stopPropagation(); historyModal.openAdd({ AssetID: r.ID }) }}
+                        className="text-xs text-blue-400 hover:text-blue-300 bg-blue-400/10 hover:bg-blue-400/20 px-2 py-1 rounded transition-colors"
+                      >
+                        + Value
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -120,6 +159,28 @@ export default function NonTangibleAssetsPage({ data }) {
           <p className="text-slate-500 text-sm">No accounts found.</p>
         </div>
       )}
+
+      <Modal open={accountModal.open} onClose={accountModal.close} title={accountModal.isEditing ? 'Edit Account' : 'Add Account'}>
+        <EntityForm
+          schema={SCHEMAS.NonTangibleAssets}
+          initialValues={accountModal.editRow}
+          data={data}
+          isEditing={accountModal.isEditing}
+          onSubmit={handleAccountSubmit}
+          onCancel={accountModal.close}
+        />
+      </Modal>
+
+      <Modal open={historyModal.open} onClose={historyModal.close} title={historyModal.isEditing ? 'Edit Value Entry' : 'Add Value Entry'}>
+        <EntityForm
+          schema={SCHEMAS.AssetHistory}
+          initialValues={historyModal.editRow}
+          data={data}
+          isEditing={historyModal.isEditing}
+          onSubmit={handleHistorySubmit}
+          onCancel={historyModal.close}
+        />
+      </Modal>
     </div>
   )
 }

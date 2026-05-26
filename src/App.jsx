@@ -9,7 +9,16 @@ import BudgetPage from "./pages/BudgetPage";
 import DonationsPage from "./pages/DonationsPage";
 import TangibleAssetsPage from "./pages/TangibleAssetsPage";
 import DigitalAssetsPage from "./pages/DigitalAssetsPage";
+import AllocationPage from "./pages/AllocationPage";
 import { mockData } from "./data/mock";
+
+function addRowIndices(data) {
+  const out = {}
+  Object.entries(data).forEach(([sheet, rows]) => {
+    out[sheet] = rows.map((row, i) => ({ ...row, _rowIndex: i + 2 }))
+  })
+  return out
+}
 
 export default function App() {
   const [data, setData] = useState(null);
@@ -25,7 +34,7 @@ export default function App() {
 
   async function initData() {
     if (!window.electronAPI) {
-      setData(mockData);
+      setData(addRowIndices(mockData));
       setUsingMock(true);
       setLoading(false);
       return;
@@ -38,12 +47,12 @@ export default function App() {
         setData(excelData);
         setUsingMock(false);
       } else {
-        setData(mockData);
+        setData(addRowIndices(mockData));
         setUsingMock(true);
       }
     } catch (err) {
       setError(err.message);
-      setData(mockData);
+      setData(addRowIndices(mockData));
       setUsingMock(true);
     }
     setLoading(false);
@@ -67,16 +76,42 @@ export default function App() {
     }
   }
 
+  async function handleSave(sheetName, row, isNew) {
+    if (usingMock) {
+      setData(prev => {
+        const sheet = prev[sheetName] || []
+        if (isNew) {
+          const maxIdx = sheet.reduce((m, r) => Math.max(m, r._rowIndex ?? 1), 1)
+          const maxId  = sheet.reduce((m, r) => Math.max(m, typeof r.ID === 'number' ? r.ID : 0), 0)
+          return { ...prev, [sheetName]: [...sheet, { ...row, _rowIndex: maxIdx + 1, ID: maxId + 1 }] }
+        }
+        return {
+          ...prev,
+          [sheetName]: sheet.map(r => r._rowIndex === row._rowIndex ? { ...r, ...row } : r),
+        }
+      })
+      return
+    }
+    try {
+      await window.electronAPI.saveRow({ sheetName, row, isNew })
+      const fresh = await window.electronAPI.loadExcel(excelPath)
+      setData(fresh)
+    } catch (err) {
+      setError(`Save failed: ${err.message}`)
+    }
+  }
+
   const pageContent = {
-    dashboard: <Dashboard data={data} />,
-    budget: <BudgetPage data={data} />,
-    nontangible: <NonTangibleAssetsPage data={data} />,
-    retirement: <RetirementPage data={data} />,
-    crypto: <CryptoPage data={data} />,
-    cds: <CDsPage data={data} />,
-    tangible: <TangibleAssetsPage data={data} />,
-    digital: <DigitalAssetsPage data={data} />,
-    donations: <DonationsPage data={data} />,
+    dashboard:   <Dashboard data={data} />,
+    allocation:  <AllocationPage data={data} onSave={handleSave} />,
+    budget:      <BudgetPage data={data} onSave={handleSave} />,
+    nontangible: <NonTangibleAssetsPage data={data} onSave={handleSave} />,
+    retirement:  <RetirementPage data={data} onSave={handleSave} />,
+    crypto:      <CryptoPage data={data} onSave={handleSave} />,
+    cds:         <CDsPage data={data} onSave={handleSave} />,
+    tangible:    <TangibleAssetsPage data={data} onSave={handleSave} />,
+    digital:     <DigitalAssetsPage data={data} onSave={handleSave} />,
+    donations:   <DonationsPage data={data} onSave={handleSave} />,
   };
 
   return (

@@ -1,4 +1,8 @@
 import CDMaturities from '../components/CDMaturities'
+import Modal from '../components/Modal'
+import EntityForm from '../components/EntityForm'
+import { SCHEMAS } from '../data/schemas'
+import { useEntityModal } from '../hooks/useEntityModal'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
@@ -14,7 +18,10 @@ function StatCard({ label, value, sub }) {
   )
 }
 
-export default function CDsPage({ data }) {
+const rowHover = 'border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors'
+
+export default function CDsPage({ data, onSave }) {
+  const modal = useEntityModal()
   const cds = data?.CDs || []
   const now = new Date()
   const oneYearOut = new Date(now)
@@ -31,9 +38,22 @@ export default function CDsPage({ data }) {
     ? (active.reduce((s, cd) => s + (Number(cd.APY) || 0), 0) / active.length).toFixed(2)
     : '—'
 
+  async function handleSubmit(row) {
+    await onSave('CDs', row, !modal.isEditing)
+    modal.close()
+  }
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-slate-100">Certificates of Deposit</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-slate-100">Certificates of Deposit</h2>
+        <button
+          onClick={() => modal.openAdd({ Active: true, Currency: 'USD' })}
+          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+        >
+          + Add CD
+        </button>
+      </div>
 
       <div className="grid grid-cols-3 gap-4">
         <StatCard label="Active Value"  value={fmtCurrency.format(totalActive)} />
@@ -63,7 +83,7 @@ export default function CDsPage({ data }) {
                 const days = daysUntil(cd.MaturityDate)
                 const color = days < 30 ? 'text-red-400' : days < 90 ? 'text-amber-400' : 'text-emerald-400'
                 return (
-                  <tr key={cd.ID} className="border-b border-slate-700/50 last:border-0">
+                  <tr key={cd.ID} className={rowHover} onClick={() => modal.openEdit(cd)}>
                     <td className="py-3 pr-4 text-slate-200">
                       {cd.Name}
                       {cd.AutoRenew && (
@@ -90,7 +110,7 @@ export default function CDsPage({ data }) {
               <table className="w-full text-sm">
                 <tbody>
                   {matured.sort((a, b) => new Date(b.MaturityDate) - new Date(a.MaturityDate)).map(cd => (
-                    <tr key={cd.ID} className="border-b border-slate-700/30 last:border-0">
+                    <tr key={cd.ID} className="border-b border-slate-700/30 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors" onClick={() => modal.openEdit(cd)}>
                       <td className="py-2 pr-4 text-slate-500">{cd.Name}</td>
                       <td className="py-2 pr-4 text-slate-600">{cd.Institution}</td>
                       <td className="py-2 pr-4 text-slate-500 text-right tabular-nums">{fmtCurrency.format(cd.FaceValue)}</td>
@@ -104,6 +124,17 @@ export default function CDsPage({ data }) {
           </>
         )}
       </div>
+
+      <Modal open={modal.open} onClose={modal.close} title={modal.isEditing ? 'Edit CD' : 'Add CD'}>
+        <EntityForm
+          schema={SCHEMAS.CDs}
+          initialValues={modal.editRow}
+          data={data}
+          isEditing={modal.isEditing}
+          onSubmit={handleSubmit}
+          onCancel={modal.close}
+        />
+      </Modal>
     </div>
   )
 }

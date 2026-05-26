@@ -1,7 +1,13 @@
+import Modal from '../components/Modal'
+import EntityForm from '../components/EntityForm'
+import { SCHEMAS } from '../data/schemas'
+import { useEntityModal } from '../hooks/useEntityModal'
+
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'
 
-export default function DonationsPage({ data }) {
+export default function DonationsPage({ data, onSave }) {
+  const modal = useEntityModal()
   const donations = data?.Donations || []
 
   const byYear = donations.reduce((acc, d) => {
@@ -14,9 +20,24 @@ export default function DonationsPage({ data }) {
   const years = Object.keys(byYear).map(Number).sort((a, b) => b - a)
   const grandTotal = donations.reduce((s, d) => s + (Number(d.Amount) || 0), 0)
 
+  const currentYear = new Date().getFullYear()
+
+  async function handleSubmit(row) {
+    await onSave('Donations', row, !modal.isEditing)
+    modal.close()
+  }
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-slate-100">Donations</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-slate-100">Donations</h2>
+        <button
+          onClick={() => modal.openAdd({ Year: currentYear })}
+          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+        >
+          + Add Donation
+        </button>
+      </div>
 
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
@@ -64,7 +85,11 @@ export default function DonationsPage({ data }) {
               </thead>
               <tbody>
                 {rows.map(d => (
-                  <tr key={d.ID} className="border-b border-slate-700/50 last:border-0">
+                  <tr
+                    key={d.ID ?? d._rowIndex}
+                    className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                    onClick={() => modal.openEdit(d)}
+                  >
                     <td className="py-3 pr-4 text-slate-200">{d.Organization}</td>
                     <td className="py-3 pr-4 text-slate-200 text-right font-medium tabular-nums">{fmtCurrency.format(d.Amount)}</td>
                     <td className="py-3 pr-4 text-slate-400 text-right">{fmtDate(d.Date)}</td>
@@ -76,6 +101,17 @@ export default function DonationsPage({ data }) {
           </div>
         )
       })}
+
+      <Modal open={modal.open} onClose={modal.close} title={modal.isEditing ? 'Edit Donation' : 'Add Donation'}>
+        <EntityForm
+          schema={SCHEMAS.Donations}
+          initialValues={modal.editRow}
+          data={data}
+          isEditing={modal.isEditing}
+          onSubmit={handleSubmit}
+          onCancel={modal.close}
+        />
+      </Modal>
     </div>
   )
 }

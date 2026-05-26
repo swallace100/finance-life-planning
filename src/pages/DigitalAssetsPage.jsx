@@ -1,3 +1,8 @@
+import Modal from '../components/Modal'
+import EntityForm from '../components/EntityForm'
+import { SCHEMAS } from '../data/schemas'
+import { useEntityModal } from '../hooks/useEntityModal'
+
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
 
@@ -13,7 +18,8 @@ function gainLabel(cost, current) {
   return `${diff >= 0 ? '+' : ''}${fmtCurrency.format(diff)} (${pct}%)`
 }
 
-export default function DigitalAssetsPage({ data }) {
+export default function DigitalAssetsPage({ data, onSave }) {
+  const modal = useEntityModal()
   const stillOwned = a => a.StillHave !== false && a.StillHave !== 0
   const assets = (data?.DigitalAssets || []).filter(stillOwned)
 
@@ -28,9 +34,22 @@ export default function DigitalAssetsPage({ data }) {
     return acc
   }, {})
 
+  async function handleSubmit(row) {
+    await onSave('DigitalAssets', row, !modal.isEditing)
+    modal.close()
+  }
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-slate-100">Digital Assets</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-slate-100">Digital Assets</h2>
+        <button
+          onClick={() => modal.openAdd({ StillHave: true })}
+          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+        >
+          + Add Asset
+        </button>
+      </div>
 
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
@@ -75,7 +94,11 @@ export default function DigitalAssetsPage({ data }) {
               </thead>
               <tbody>
                 {rows.map(a => (
-                  <tr key={a.ID} className="border-b border-slate-700/50 last:border-0">
+                  <tr
+                    key={a.ID ?? a._rowIndex}
+                    className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                    onClick={() => modal.openEdit(a)}
+                  >
                     <td className="py-3 pr-4 text-slate-200">
                       {a.Name}
                       {a.Author ? <span className="block text-xs text-slate-500">{a.Author}</span> : null}
@@ -96,6 +119,17 @@ export default function DigitalAssetsPage({ data }) {
           </div>
         </div>
       ))}
+
+      <Modal open={modal.open} onClose={modal.close} title={modal.isEditing ? 'Edit Digital Asset' : 'Add Digital Asset'}>
+        <EntityForm
+          schema={SCHEMAS.DigitalAssets}
+          initialValues={modal.editRow}
+          data={data}
+          isEditing={modal.isEditing}
+          onSubmit={handleSubmit}
+          onCancel={modal.close}
+        />
+      </Modal>
     </div>
   )
 }

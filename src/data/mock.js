@@ -94,6 +94,22 @@ export const mockData = {
     { ID: 6,  Name: 'Health Insurance',Type: 'Insurance',     Category: 'Expense', Amount:  -200,  Frequency: 'Monthly', Active: 'Yes' },
   ],
 
+  AssetGoals: [
+    { ID: 1,  AssetClass: 'Cash',     Subclass: null,                   GoalPct: 10 },
+    { ID: 2,  AssetClass: 'Cash',     Subclass: 'USD',                  GoalPct: 100 },
+    { ID: 3,  AssetClass: 'Bonds/CD', Subclass: null,                   GoalPct: 20 },
+    { ID: 4,  AssetClass: 'Bonds/CD', Subclass: 'Certificate Deposit',  GoalPct: 50 },
+    { ID: 5,  AssetClass: 'Bonds/CD', Subclass: 'Bonds',                GoalPct: 50 },
+    { ID: 6,  AssetClass: 'Stock',    Subclass: null,                   GoalPct: 65 },
+    { ID: 7,  AssetClass: 'Stock',    Subclass: 'US Stocks',            GoalPct: 60 },
+    { ID: 8,  AssetClass: 'Stock',    Subclass: 'International Stocks', GoalPct: 30 },
+    { ID: 9,  AssetClass: 'Stock',    Subclass: 'Taxable',              GoalPct: 10 },
+    { ID: 10, AssetClass: 'Other',    Subclass: null,                   GoalPct: 5 },
+    { ID: 11, AssetClass: 'Other',    Subclass: 'BTC',                  GoalPct: 60 },
+    { ID: 12, AssetClass: 'Other',    Subclass: 'Sports Cards',         GoalPct: 25 },
+    { ID: 13, AssetClass: 'Other',    Subclass: 'Coins',                GoalPct: 15 },
+  ],
+
   FinancialGoals: [
     { ID: null, Name: '2021 Financial Goal',  TargetAmount:  250000, TargetDate: '2021-12-31T00:00:00.000Z', LinkedAssetID: null, Status: 'Goal Met', Notes: '' },
     { ID: null, Name: '2026 Financial Goal',  TargetAmount:  500000, TargetDate: '2026-12-31T00:00:00.000Z', LinkedAssetID: null, Status: 'Goal Met', Notes: '' },

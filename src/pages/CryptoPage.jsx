@@ -1,3 +1,8 @@
+import Modal from '../components/Modal'
+import EntityForm from '../components/EntityForm'
+import { SCHEMAS } from '../data/schemas'
+import { useEntityModal } from '../hooks/useEntityModal'
+
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
 const fmtPct  = (v) => v ? `${Number(v).toFixed(2)}%` : '—'
 
@@ -15,13 +20,27 @@ function Badge({ children, color = 'slate' }) {
   )
 }
 
-export default function CryptoPage({ data }) {
+export default function CryptoPage({ data, onSave }) {
+  const modal = useEntityModal()
   const assets = data?.CryptoAssets || []
   const staked = assets.filter(a => a.Staked)
 
+  async function handleSubmit(row) {
+    await onSave('CryptoAssets', row, !modal.isEditing)
+    modal.close()
+  }
+
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-slate-100">Crypto Assets</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-slate-100">Crypto Assets</h2>
+        <button
+          onClick={() => modal.openAdd()}
+          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+        >
+          + Add Asset
+        </button>
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
@@ -54,7 +73,11 @@ export default function CryptoPage({ data }) {
               </thead>
               <tbody>
                 {assets.map(a => (
-                  <tr key={a.ID} className="border-b border-slate-700/50 last:border-0">
+                  <tr
+                    key={a.ID}
+                    className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                    onClick={() => modal.openEdit(a)}
+                  >
                     <td className="py-3 pr-4 text-slate-200 font-medium">{a.Name}</td>
                     <td className="py-3 pr-4">
                       <Badge color="purple">{a.Ticker}</Badge>
@@ -89,6 +112,17 @@ export default function CryptoPage({ data }) {
           </div>
         </div>
       )}
+
+      <Modal open={modal.open} onClose={modal.close} title={modal.isEditing ? 'Edit Crypto Asset' : 'Add Crypto Asset'}>
+        <EntityForm
+          schema={SCHEMAS.CryptoAssets}
+          initialValues={modal.editRow}
+          data={data}
+          isEditing={modal.isEditing}
+          onSubmit={handleSubmit}
+          onCancel={modal.close}
+        />
+      </Modal>
     </div>
   )
 }
