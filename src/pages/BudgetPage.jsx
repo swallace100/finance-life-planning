@@ -7,7 +7,7 @@ const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency
 
 const isActive = item => item.Active === 'Yes' || item.Active === true || item.Active === 1
 
-export default function BudgetPage({ data, onSave }) {
+export default function BudgetPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
   const allItems = data?.Budget || []
   const items = allItems.filter(isActive)
@@ -28,6 +28,11 @@ export default function BudgetPage({ data, onSave }) {
 
   async function handleSubmit(row) {
     await onSave('Budget', row, row._rowIndex == null)
+    modal.close()
+  }
+
+  async function handleDelete(row) {
+    await onDelete('Budget', row._rowIndex)
     modal.close()
   }
 
@@ -143,6 +148,7 @@ export default function BudgetPage({ data, onSave }) {
           isEditing={modal.isEditing}
           onSubmit={handleSubmit}
           onCancel={modal.close}
+          onDelete={modal.isEditing ? () => handleDelete(modal.editRow) : undefined}
         />
       </Modal>
     </div>

@@ -18,7 +18,7 @@ function gainLabel(cost, current) {
   return `${diff >= 0 ? '+' : ''}${fmtCurrency.format(diff)} (${pct}%)`
 }
 
-export default function TangibleAssetsPage({ data, onSave }) {
+export default function TangibleAssetsPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
   const stillOwned = a => a.StillHave !== false && a.StillHave !== 0
   const assets = (data?.TangibleAssets || []).filter(stillOwned)
@@ -36,6 +36,11 @@ export default function TangibleAssetsPage({ data, onSave }) {
 
   async function handleSubmit(row) {
     await onSave('TangibleAssets', row, row._rowIndex == null)
+    modal.close()
+  }
+
+  async function handleDelete(row) {
+    await onDelete('TangibleAssets', row._rowIndex)
     modal.close()
   }
 
@@ -128,6 +133,7 @@ export default function TangibleAssetsPage({ data, onSave }) {
           isEditing={modal.isEditing}
           onSubmit={handleSubmit}
           onCancel={modal.close}
+          onDelete={modal.isEditing ? () => handleDelete(modal.editRow) : undefined}
         />
       </Modal>
     </div>

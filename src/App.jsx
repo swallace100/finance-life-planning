@@ -58,6 +58,41 @@ export default function App() {
     setLoading(false);
   }
 
+  async function handleDelete(sheetName, rowIndex) {
+    if (usingMock) {
+      setData(prev => ({
+        ...prev,
+        [sheetName]: (prev[sheetName] || []).filter(r => r._rowIndex !== rowIndex),
+      }))
+      return
+    }
+    try {
+      await window.electronAPI.deleteRow({ sheetName, rowIndex })
+      const fresh = await window.electronAPI.loadExcel(excelPath)
+      setData(fresh)
+    } catch (err) {
+      setError(`Delete failed: ${err.message}`)
+    }
+  }
+
+  async function handleNewFile() {
+    if (!window.electronAPI) return
+    try {
+      const filePath = await window.electronAPI.newExcelFile()
+      if (!filePath) return
+      setExcelPath(filePath)
+      setLoading(true)
+      const excelData = await window.electronAPI.loadExcel(filePath)
+      setData(excelData)
+      setUsingMock(false)
+      setError(null)
+    } catch (err) {
+      setError(`Failed to create file: ${err.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   async function handlePickFile() {
     if (!window.electronAPI) return;
     try {
@@ -103,15 +138,15 @@ export default function App() {
 
   const pageContent = {
     dashboard:   <Dashboard data={data} />,
-    allocation:  <AllocationPage data={data} onSave={handleSave} />,
-    budget:      <BudgetPage data={data} onSave={handleSave} />,
-    nontangible: <NonTangibleAssetsPage data={data} onSave={handleSave} />,
-    retirement:  <RetirementPage data={data} onSave={handleSave} />,
-    crypto:      <CryptoPage data={data} onSave={handleSave} />,
-    cds:         <CDsPage data={data} onSave={handleSave} />,
-    tangible:    <TangibleAssetsPage data={data} onSave={handleSave} />,
-    digital:     <DigitalAssetsPage data={data} onSave={handleSave} />,
-    donations:   <DonationsPage data={data} onSave={handleSave} />,
+    allocation:  <AllocationPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    budget:      <BudgetPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    nontangible: <NonTangibleAssetsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    retirement:  <RetirementPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    crypto:      <CryptoPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    cds:         <CDsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    tangible:    <TangibleAssetsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    digital:     <DigitalAssetsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    donations:   <DonationsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
   };
 
   return (
@@ -123,6 +158,7 @@ export default function App() {
         excelPath={excelPath}
         error={error}
         onPickFile={handlePickFile}
+        onNewFile={handleNewFile}
         hasElectron={!!window.electronAPI}
       />
 

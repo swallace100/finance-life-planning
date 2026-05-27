@@ -7,14 +7,24 @@ const fmt = new Intl.NumberFormat("en-US", {
 });
 
 const TYPE_COLORS = {
-  "Bank & Credit Union": "#3b82f6",
-  Investment: "#10b981",
-  Retirement: "#f59e0b",
-  Crypto: "#8b5cf6",
-  CD: "#06b6d4",
-  Tangible: "#f97316",
-  Digital: "#ec4899",
-  Other: "#94a3b8",
+  // Cash
+  "Bank & Credit Union": "#3b82f6",  // blue
+  // Fixed income
+  CD:                    "#06b6d4",  // cyan
+  "Certificate Deposit": "#22d3ee",  // cyan lighter
+  Bond:                  "#0ea5e9",  // sky
+  Bonds:                 "#0ea5e9",
+  Treasuries:            "#38bdf8",  // sky lighter
+  // Equities / growth
+  Stock:                 "#10b981",  // emerald
+  Investment:            "#34d399",  // emerald lighter (legacy)
+  Retirement:            "#f59e0b",  // amber
+  HSA:                   "#14b8a6",  // teal
+  // Alternative
+  Crypto:                "#8b5cf6",  // violet
+  Tangible:              "#f97316",  // orange
+  Digital:               "#ec4899",  // pink
+  Other:                 "#94a3b8",  // slate
 };
 
 function CustomTooltip({ active, payload }) {

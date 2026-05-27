@@ -24,7 +24,7 @@ function getLatestByAsset(history) {
   return latest
 }
 
-export default function NonTangibleAssetsPage({ data, onSave }) {
+export default function NonTangibleAssetsPage({ data, onSave, onDelete }) {
   const accountModal = useEntityModal()
   const historyModal = useEntityModal()
 
@@ -59,8 +59,18 @@ export default function NonTangibleAssetsPage({ data, onSave }) {
     accountModal.close()
   }
 
+  async function handleAccountDelete(row) {
+    await onDelete('NonTangibleAssets', row._rowIndex)
+    accountModal.close()
+  }
+
   async function handleHistorySubmit(row) {
     await onSave('AssetHistory', row, row._rowIndex == null)
+    historyModal.close()
+  }
+
+  async function handleHistoryDelete(row) {
+    await onDelete('AssetHistory', row._rowIndex)
     historyModal.close()
   }
 
@@ -168,6 +178,7 @@ export default function NonTangibleAssetsPage({ data, onSave }) {
           isEditing={accountModal.isEditing}
           onSubmit={handleAccountSubmit}
           onCancel={accountModal.close}
+          onDelete={accountModal.isEditing ? () => handleAccountDelete(accountModal.editRow) : undefined}
         />
       </Modal>
 
@@ -179,6 +190,7 @@ export default function NonTangibleAssetsPage({ data, onSave }) {
           isEditing={historyModal.isEditing}
           onSubmit={handleHistorySubmit}
           onCancel={historyModal.close}
+          onDelete={historyModal.isEditing ? () => handleHistoryDelete(historyModal.editRow) : undefined}
         />
       </Modal>
     </div>

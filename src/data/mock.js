@@ -70,7 +70,9 @@ export const mockData = {
   ],
 
   RetirementSchedule: [
-    { ID: 1, AssetID: 3, AccessibleYear: 2050, ExpectedYearlyAmount: 60000, Notes: 'Target retirement age 65' },
+    { ID: 1, Source: null,             AssetID: 3,    AccessibleYear: 2050, WithdrawalRate: 4.0, ExpectedYearlyAmount: null,  Notes: 'Target retirement age 65' },
+    { ID: 2, Source: 'Social Security', AssetID: null, AccessibleYear: 2055, WithdrawalRate: null, ExpectedYearlyAmount: 24000, Notes: 'Estimated benefit at 70' },
+    { ID: 3, Source: 'Pension',         AssetID: null, AccessibleYear: 2052, WithdrawalRate: null, ExpectedYearlyAmount: 12000, Notes: 'Estimated' },
   ],
 
   RetirementHoldings: [
@@ -95,12 +97,13 @@ export const mockData = {
   ],
 
   AssetGoals: [
-    { ID: 1,  AssetClass: 'Cash',     Subclass: null,                   GoalPct: 10 },
-    { ID: 2,  AssetClass: 'Cash',     Subclass: 'USD',                  GoalPct: 100 },
-    { ID: 3,  AssetClass: 'Bonds/CD', Subclass: null,                   GoalPct: 20 },
-    { ID: 4,  AssetClass: 'Bonds/CD', Subclass: 'Certificate Deposit',  GoalPct: 50 },
-    { ID: 5,  AssetClass: 'Bonds/CD', Subclass: 'Bonds',                GoalPct: 50 },
-    { ID: 6,  AssetClass: 'Stock',    Subclass: null,                   GoalPct: 65 },
+    { ID: 1,  AssetClass: 'Cash',  Subclass: null,                  GoalPct: 10 },
+    { ID: 2,  AssetClass: 'Cash',  Subclass: 'USD',                 GoalPct: 100 },
+    { ID: 3,  AssetClass: 'Bonds/CDs/Treasuries', Subclass: null,                   GoalPct: 20 },
+    { ID: 4,  AssetClass: 'Bonds/CDs/Treasuries', Subclass: 'Certificate Deposit',  GoalPct: 40 },
+    { ID: 5,  AssetClass: 'Bonds/CDs/Treasuries', Subclass: 'Bonds',                GoalPct: 40 },
+    { ID: 14, AssetClass: 'Bonds/CDs/Treasuries', Subclass: 'Treasuries',           GoalPct: 20 },
+    { ID: 6,  AssetClass: 'Stock', Subclass: null,                  GoalPct: 65 },
     { ID: 7,  AssetClass: 'Stock',    Subclass: 'US Stocks',            GoalPct: 60 },
     { ID: 8,  AssetClass: 'Stock',    Subclass: 'International Stocks', GoalPct: 30 },
     { ID: 9,  AssetClass: 'Stock',    Subclass: 'Taxable',              GoalPct: 10 },

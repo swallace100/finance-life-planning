@@ -32,8 +32,9 @@ function buildInitial(schema, initialValues) {
 
 const inputCls = 'w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30'
 
-export default function EntityForm({ schema, initialValues, data, isEditing, onSubmit, onCancel }) {
+export default function EntityForm({ schema, initialValues, data, isEditing, onSubmit, onCancel, onDelete }) {
   const [values, setValues] = useState(() => buildInitial(schema, initialValues))
+  const [confirmDelete, setConfirmDelete] = useState(false)
 
   function set(key, value) {
     setValues(prev => ({ ...prev, [key]: value }))
@@ -150,20 +151,53 @@ export default function EntityForm({ schema, initialValues, data, isEditing, onS
         </div>
       ))}
 
-      <div className="flex justify-end gap-3 pt-2 border-t border-slate-700">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 text-sm text-slate-400 hover:text-slate-200 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-5 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
-        >
-          {isEditing ? 'Save Changes' : 'Add'}
-        </button>
+      <div className="flex items-center justify-between pt-2 border-t border-slate-700">
+        <div>
+          {isEditing && onDelete && (
+            confirmDelete ? (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-red-400">Are you sure?</span>
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  className="px-3 py-1.5 text-xs font-medium bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors"
+                >
+                  Delete
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(false)}
+                  className="px-3 py-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+                className="px-4 py-2 text-sm text-red-400 hover:text-red-300 transition-colors"
+              >
+                Delete
+              </button>
+            )
+          )}
+        </div>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-5 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+          >
+            {isEditing ? 'Save Changes' : 'Add'}
+          </button>
+        </div>
       </div>
     </form>
   )

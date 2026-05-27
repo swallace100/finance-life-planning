@@ -20,13 +20,18 @@ function Badge({ children, color = 'slate' }) {
   )
 }
 
-export default function CryptoPage({ data, onSave }) {
+export default function CryptoPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
   const assets = data?.CryptoAssets || []
   const staked = assets.filter(a => a.Staked)
 
   async function handleSubmit(row) {
     await onSave('CryptoAssets', row, row._rowIndex == null)
+    modal.close()
+  }
+
+  async function handleDelete(row) {
+    await onDelete('CryptoAssets', row._rowIndex)
     modal.close()
   }
 
@@ -121,6 +126,7 @@ export default function CryptoPage({ data, onSave }) {
           isEditing={modal.isEditing}
           onSubmit={handleSubmit}
           onCancel={modal.close}
+          onDelete={modal.isEditing ? () => handleDelete(modal.editRow) : undefined}
         />
       </Modal>
     </div>

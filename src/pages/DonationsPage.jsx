@@ -6,7 +6,7 @@ import { useEntityModal } from '../hooks/useEntityModal'
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'
 
-export default function DonationsPage({ data, onSave }) {
+export default function DonationsPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
   const donations = data?.Donations || []
 
@@ -24,6 +24,11 @@ export default function DonationsPage({ data, onSave }) {
 
   async function handleSubmit(row) {
     await onSave('Donations', row, row._rowIndex == null)
+    modal.close()
+  }
+
+  async function handleDelete(row) {
+    await onDelete('Donations', row._rowIndex)
     modal.close()
   }
 
@@ -110,6 +115,7 @@ export default function DonationsPage({ data, onSave }) {
           isEditing={modal.isEditing}
           onSubmit={handleSubmit}
           onCancel={modal.close}
+          onDelete={modal.isEditing ? () => handleDelete(modal.editRow) : undefined}
         />
       </Modal>
     </div>

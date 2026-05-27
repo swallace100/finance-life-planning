@@ -20,7 +20,7 @@ function StatCard({ label, value, sub }) {
 
 const rowHover = 'border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors'
 
-export default function CDsPage({ data, onSave }) {
+export default function CDsPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
   const cds = data?.CDs || []
   const now = new Date()
@@ -40,6 +40,11 @@ export default function CDsPage({ data, onSave }) {
 
   async function handleSubmit(row) {
     await onSave('CDs', row, row._rowIndex == null)
+    modal.close()
+  }
+
+  async function handleDelete(row) {
+    await onDelete('CDs', row._rowIndex)
     modal.close()
   }
 
@@ -133,6 +138,7 @@ export default function CDsPage({ data, onSave }) {
           isEditing={modal.isEditing}
           onSubmit={handleSubmit}
           onCancel={modal.close}
+          onDelete={modal.isEditing ? () => handleDelete(modal.editRow) : undefined}
         />
       </Modal>
     </div>

@@ -22,6 +22,22 @@ function saveConfig(config) {
   fs.writeFileSync(getConfigPath(), JSON.stringify(config, null, 2), 'utf8')
 }
 
+const SHEET_COLUMNS = {
+  NonTangibleAssets:  ['ID', 'Name', 'Type', 'Subtype', 'Currency', 'Institution', 'RetirementAccount', 'Notes'],
+  AssetHistory:       ['ID', 'AssetID', 'Date', 'Value'],
+  CDs:                ['ID', 'Name', 'Currency', 'Institution', 'StartDate', 'APY', 'FaceValue', 'MaturityDate', 'AutoRenew', 'Active', 'Notes'],
+  TangibleAssets:     ['ID', 'Category', 'Name', 'Series', 'Author', 'Language', 'Format', 'Condition', 'BuyDate', 'Cost', 'CurrentValue', 'StillHave', 'Notes'],
+  DigitalAssets:      ['ID', 'Category', 'Name', 'Series', 'Author', 'Language', 'Format', 'Condition', 'BuyDate', 'Cost', 'CurrentValue', 'StillHave', 'Notes'],
+  CryptoAssets:       ['ID', 'Name', 'Ticker', 'Wallet', 'Staked', 'AutoRestake', 'StakingAPY', 'UnlockDate', 'Notes'],
+  Budget:             ['ID', 'Name', 'Type', 'Category', 'Amount', 'Frequency', 'Active'],
+  Donations:          ['ID', 'Year', 'Organization', 'Amount', 'Date', 'Notes'],
+  FinancialGoals:     ['ID', 'Name', 'TargetAmount', 'TargetDate', 'LinkedAssetID', 'Status', 'Notes'],
+  RetirementSchedule: ['ID', 'Source', 'AssetID', 'AccessibleYear', 'WithdrawalRate', 'ExpectedYearlyAmount', 'Notes'],
+  RetirementHoldings: ['ID', 'AssetID', 'FundName', 'Ticker', 'Percentage', 'Notes'],
+  FundAllocation:     ['ID', 'HoldingID', 'AssetClass', 'Percentage'],
+  AssetGoals:         ['ID', 'AssetClass', 'Subclass', 'GoalPct'],
+}
+
 // Convert "YYYY-MM-DD" strings to Date objects so Excel stores them as dates
 function prepareValue(value) {
   if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -114,7 +130,7 @@ app.whenReady().then(() => {
     }
   })
 
-  ipcMain.handle('save-row', async (_, { sheetName, row, isNew }) => {
+  ipcMain.handle('delete-row', async (_, { sheetName, rowIndex }) => {
     if (!currentFilePath) throw new Error('No Excel file is currently loaded')
 
     const ExcelJS = require('exceljs')
@@ -124,6 +140,71 @@ app.whenReady().then(() => {
     const sheet = workbook.getWorksheet(sheetName)
     if (!sheet) throw new Error(`Sheet "${sheetName}" not found`)
 
+    sheet.spliceRows(rowIndex, 1)
+
+    await workbook.xlsx.writeFile(currentFilePath)
+    return { success: true }
+  })
+
+  ipcMain.handle('new-excel-file', async () => {
+    const { canceled, filePath } = await dialog.showSaveDialog({
+      title: 'Create New Finance Data File',
+      defaultPath: 'finance-data.xlsx',
+      filters: [{ name: 'Excel Files', extensions: ['xlsx'] }],
+    })
+    if (canceled || !filePath) return null
+
+    const ExcelJS = require('exceljs')
+    const workbook = new ExcelJS.Workbook()
+    workbook.creator = 'Finance Life Planning'
+    workbook.created = new Date()
+
+    for (const [sheetName, columns] of Object.entries(SHEET_COLUMNS)) {
+      const sheet = workbook.addWorksheet(sheetName)
+
+      const headerRow = sheet.addRow(columns)
+      headerRow.font  = { bold: true, color: { argb: 'FFE2E8F0' } }
+      headerRow.fill  = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E293B' } }
+      headerRow.commit()
+
+      columns.forEach((col, i) => {
+        sheet.getColumn(i + 1).width = Math.max(col.length + 4, 14)
+      })
+
+      sheet.views = [{ state: 'frozen', ySplit: 1 }]
+    }
+
+    await workbook.xlsx.writeFile(filePath)
+
+    currentFilePath = filePath
+    const config = loadConfig()
+    config.excelPath = filePath
+    saveConfig(config)
+
+    return filePath
+  })
+
+  ipcMain.handle('save-row', async (_, { sheetName, row, isNew }) => {
+    if (!currentFilePath) throw new Error('No Excel file is currently loaded')
+
+    const ExcelJS = require('exceljs')
+    const workbook = new ExcelJS.Workbook()
+    await workbook.xlsx.readFile(currentFilePath)
+
+    let sheet = workbook.getWorksheet(sheetName)
+    if (!sheet) {
+      // Sheet missing — create it with the known column definitions
+      const columns = SHEET_COLUMNS[sheetName]
+      if (!columns) throw new Error(`Unknown sheet "${sheetName}"`)
+      sheet = workbook.addWorksheet(sheetName)
+      const headerRow = sheet.addRow(columns)
+      headerRow.font = { bold: true, color: { argb: 'FFE2E8F0' } }
+      headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E293B' } }
+      headerRow.commit()
+      columns.forEach((col, i) => { sheet.getColumn(i + 1).width = Math.max(col.length + 4, 14) })
+      sheet.views = [{ state: 'frozen', ySplit: 1 }]
+    }
+
     // Build column map: header name → column index
     const columnMap = {}
     sheet.getRow(1).eachCell({ includeEmpty: true }, (cell, colIndex) => {
@@ -132,7 +213,23 @@ app.whenReady().then(() => {
 
     const colIndexToHeader = {}
     Object.entries(columnMap).forEach(([h, c]) => { colIndexToHeader[c] = h })
-    const maxCol = Object.values(columnMap).length ? Math.max(...Object.values(columnMap)) : 0
+
+    // Add any columns from SHEET_COLUMNS that are missing from this sheet's header row
+    const knownColumns = SHEET_COLUMNS[sheetName] || []
+    let nextCol = Object.values(columnMap).length ? Math.max(...Object.values(columnMap)) + 1 : 1
+    const headerRow1 = sheet.getRow(1)
+    knownColumns.forEach(col => {
+      if (!columnMap[col]) {
+        headerRow1.getCell(nextCol).value = col
+        headerRow1.getCell(nextCol).font = { bold: true }
+        columnMap[col] = nextCol
+        colIndexToHeader[nextCol] = col
+        nextCol++
+      }
+    })
+    headerRow1.commit()
+
+    let maxCol = Object.values(columnMap).length ? Math.max(...Object.values(columnMap)) : 0
 
     // Strip internal tracking fields before writing
     const { _rowIndex, ...cleanRow } = row

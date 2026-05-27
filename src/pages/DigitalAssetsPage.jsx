@@ -18,7 +18,7 @@ function gainLabel(cost, current) {
   return `${diff >= 0 ? '+' : ''}${fmtCurrency.format(diff)} (${pct}%)`
 }
 
-export default function DigitalAssetsPage({ data, onSave }) {
+export default function DigitalAssetsPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
   const stillOwned = a => a.StillHave !== false && a.StillHave !== 0
   const assets = (data?.DigitalAssets || []).filter(stillOwned)
@@ -36,6 +36,11 @@ export default function DigitalAssetsPage({ data, onSave }) {
 
   async function handleSubmit(row) {
     await onSave('DigitalAssets', row, row._rowIndex == null)
+    modal.close()
+  }
+
+  async function handleDelete(row) {
+    await onDelete('DigitalAssets', row._rowIndex)
     modal.close()
   }
 
@@ -128,6 +133,7 @@ export default function DigitalAssetsPage({ data, onSave }) {
           isEditing={modal.isEditing}
           onSubmit={handleSubmit}
           onCancel={modal.close}
+          onDelete={modal.isEditing ? () => handleDelete(modal.editRow) : undefined}
         />
       </Modal>
     </div>
