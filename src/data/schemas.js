@@ -251,6 +251,43 @@ export const SCHEMAS = {
     },
   ],
 
+  LifetimeGoals: [
+    { key: "Goal", label: "Goal", type: "text", required: true },
+    {
+      key: "Status",
+      label: "Status",
+      type: "select",
+      required: true,
+      defaultValue: "Not Started",
+      options: ["In Progress", "Planned", "Not Started", "Done"],
+    },
+    { key: "Category", label: "Category", type: "text" },
+    { key: "Progress", label: "Progress (e.g. 41/90)", type: "text" },
+    { key: "Notes", label: "Notes", type: "textarea" },
+  ],
+
+  EducationGoals: [
+    { key: "Order", label: "Order", type: "number", required: true },
+    { key: "Name", label: "Cert / Degree Name", type: "text", required: true },
+    {
+      key: "Type",
+      label: "Type",
+      type: "select",
+      required: true,
+      options: ["Technology", "Japanese", "Humanities", "Business", "Microsoft", "Other"],
+    },
+    {
+      key: "Difficulty",
+      label: "Difficulty",
+      type: "select",
+      options: ["Beginner", "Intermediate", "Advanced"],
+    },
+    { key: "Renewal", label: "Renewal", type: "text" },
+    { key: "TargetDate", label: "Target Date", type: "text" },
+    { key: "Done", label: "Done", type: "boolean", defaultValue: false },
+    { key: "Notes", label: "Notes", type: "textarea" },
+  ],
+
   AssetGoals: [
     { key: "AssetClass", label: "Asset Class", type: "select", required: true,
       options: ["Cash", "Bonds/CDs/Treasuries", "Stock", "Other"] },

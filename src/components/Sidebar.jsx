@@ -195,6 +195,26 @@ const NAV = [
       </svg>
     ),
   },
+  {
+    id: "goals",
+    label: "Goals",
+    icon: (
+      <svg
+        className="w-4 h-4 flex-shrink-0"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={1.5}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M3 3l1.664 9.526a2 2 0 001.168 1.489l9.526 4.763a2 2 0 002.342-.588l3.154-4.43a2 2 0 00-.099-2.498L13.086 4.57a2 2 0 00-1.916-.57L3 3z"
+        />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 13.5l5-5" />
+      </svg>
+    ),
+  },
 ];
 
 export default function Sidebar({
