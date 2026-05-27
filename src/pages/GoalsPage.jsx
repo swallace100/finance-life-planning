@@ -27,12 +27,24 @@ const DIFF_STYLE = {
 
 const STATUS_ORDER = ["In Progress", "Planned", "Not Started", "Done"];
 
+function parseTargetDate(d) {
+  if (!d) return Infinity;
+  if (/^\d{4}$/.test(d)) return parseInt(d) * 12;
+  const MONTHS = { Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12 };
+  const m = d.match(/^([A-Z][a-z]{2})-(\d{2})$/);
+  if (m) return (2000 + parseInt(m[2])) * 12 + (MONTHS[m[1]] ?? 0);
+  return Infinity;
+}
+
 export default function GoalsPage({ data, onSave, onDelete }) {
   const lifetimeModal = useEntityModal();
   const educationModal = useEntityModal();
 
   const lifetime = data?.LifetimeGoals || [];
-  const education = (data?.EducationGoals || []).slice().sort((a, b) => (a.Order ?? 0) - (b.Order ?? 0));
+  const education = (data?.EducationGoals || []).slice().sort((a, b) => {
+    if (!!a.Done !== !!b.Done) return a.Done ? 1 : -1;
+    return parseTargetDate(a.TargetDate) - parseTargetDate(b.TargetDate);
+  });
 
   const lifetimeCounts = STATUS_ORDER.reduce((acc, s) => {
     acc[s] = lifetime.filter(g => g.Status === s).length;
@@ -57,7 +69,14 @@ export default function GoalsPage({ data, onSave, onDelete }) {
     lifetimeModal.close();
   }
   async function handleEducationSubmit(row) {
-    await onSave("EducationGoals", row, row._rowIndex == null);
+    const isNew = row._rowIndex == null;
+    const withOrder = {
+      ...row,
+      Order: isNew
+        ? Math.max(0, ...education.map(e => e.Order ?? 0)) + 1
+        : educationModal.editRow?.Order,
+    };
+    await onSave("EducationGoals", withOrder, isNew);
     educationModal.close();
   }
   async function handleEducationDelete(row) {
@@ -156,7 +175,6 @@ export default function GoalsPage({ data, onSave, onDelete }) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                <th className="text-right pb-2 pr-4 w-10">#</th>
                 <th className="text-left pb-2 pr-4">Name</th>
                 <th className="text-left pb-2 pr-4">Type</th>
                 <th className="text-left pb-2 pr-4">Difficulty</th>
@@ -183,7 +201,6 @@ export default function GoalsPage({ data, onSave, onDelete }) {
                     className={rowClass}
                     onClick={() => educationModal.openEdit(e)}
                   >
-                    <td className="py-3 pr-4 text-slate-500 text-right tabular-nums">{e.Order}</td>
                     <td className="py-3 pr-4">
                       <span className={isDone ? "text-slate-500 line-through" : isNext ? "text-slate-100 font-medium" : "text-slate-300"}>
                         {e.Name}

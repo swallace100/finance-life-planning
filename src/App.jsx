@@ -11,6 +11,7 @@ import TangibleAssetsPage from "./pages/TangibleAssetsPage";
 import DigitalAssetsPage from "./pages/DigitalAssetsPage";
 import AllocationPage from "./pages/AllocationPage";
 import GoalsPage from "./pages/GoalsPage";
+import MediaPage from "./pages/MediaPage";
 import { mockData } from "./data/mock";
 
 function addRowIndices(data) {
@@ -149,6 +150,7 @@ export default function App() {
     digital:     <DigitalAssetsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     donations:   <DonationsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     goals:       <GoalsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    media:       <MediaPage data={data} onSave={handleSave} onDelete={handleDelete} />,
   };
 
   return (

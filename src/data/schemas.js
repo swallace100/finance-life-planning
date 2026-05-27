@@ -267,7 +267,6 @@ export const SCHEMAS = {
   ],
 
   EducationGoals: [
-    { key: "Order", label: "Order", type: "number", required: true },
     { key: "Name", label: "Cert / Degree Name", type: "text", required: true },
     {
       key: "Type",
@@ -285,6 +284,46 @@ export const SCHEMAS = {
     { key: "Renewal", label: "Renewal", type: "text" },
     { key: "TargetDate", label: "Target Date", type: "text" },
     { key: "Done", label: "Done", type: "boolean", defaultValue: false },
+    { key: "Notes", label: "Notes", type: "textarea" },
+  ],
+
+  ReadingLog: [
+    { key: "Name", label: "Title", type: "text", required: true },
+    { key: "Author", label: "Author", type: "text" },
+    { key: "ReadDate", label: "Read Date", type: "date" },
+    { key: "Genre", label: "Genre", type: "text" },
+    {
+      key: "Format",
+      label: "Format",
+      type: "select",
+      options: ["Physical", "Ebook", "Audiobook"],
+    },
+    { key: "Rating", label: "Rating (1–5)", type: "number", step: 0.5 },
+    { key: "Notes", label: "Notes", type: "textarea" },
+  ],
+
+  GamingLog: [
+    { key: "Name", label: "Game", type: "text", required: true },
+    { key: "Platform", label: "Platform", type: "text", required: true },
+    {
+      key: "Status",
+      label: "Status",
+      type: "select",
+      defaultValue: "Completed",
+      options: ["Completed", "Playing", "Abandoned", "Backlog"],
+    },
+    { key: "CompletionDate", label: "Completion Date", type: "date" },
+    { key: "Genre", label: "Genre", type: "text" },
+    { key: "Rating", label: "Rating (1–5)", type: "number", step: 0.5 },
+    { key: "Notes", label: "Notes", type: "textarea" },
+  ],
+
+  FilmLog: [
+    { key: "Name", label: "Title", type: "text", required: true },
+    { key: "ReleaseYear", label: "Release Year", type: "number" },
+    { key: "WatchDate", label: "Watch Date", type: "date" },
+    { key: "Rating", label: "Rating (1–5)", type: "number", step: 0.5 },
+    { key: "LetterboxdURI", label: "Letterboxd URI", type: "text" },
     { key: "Notes", label: "Notes", type: "textarea" },
   ],
 

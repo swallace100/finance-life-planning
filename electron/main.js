@@ -38,6 +38,9 @@ const SHEET_COLUMNS = {
   AssetGoals:         ['ID', 'AssetClass', 'Subclass', 'GoalPct'],
   LifetimeGoals:      ['ID', 'Goal', 'Category', 'Status', 'Progress', 'Notes'],
   EducationGoals:     ['ID', 'Order', 'Name', 'Type', 'Difficulty', 'Renewal', 'TargetDate', 'Done', 'Notes'],
+  ReadingLog:         ['ID', 'Name', 'Author', 'ReadDate', 'Genre', 'Format', 'Rating', 'Notes'],
+  GamingLog:          ['ID', 'Name', 'Platform', 'Status', 'CompletionDate', 'Genre', 'Rating', 'Notes'],
+  FilmLog:            ['ID', 'Name', 'ReleaseYear', 'WatchDate', 'Rating', 'LetterboxdURI', 'Notes'],
 }
 
 // Convert "YYYY-MM-DD" strings to Date objects so Excel stores them as dates
