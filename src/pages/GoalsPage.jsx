@@ -2,6 +2,8 @@ import Modal from "../components/Modal";
 import EntityForm from "../components/EntityForm";
 import { SCHEMAS } from "../data/schemas";
 import { useEntityModal } from "../hooks/useEntityModal";
+import { useSortableTable } from "../hooks/useSortableTable";
+import { SortableHeader } from "../components/SortableHeader";
 
 const STATUS_STYLE = {
   Done:          { dot: "bg-emerald-500", badge: "text-emerald-400 bg-emerald-400/10", border: "border-emerald-500/40" },
@@ -39,12 +41,14 @@ function parseTargetDate(d) {
 export default function GoalsPage({ data, onSave, onDelete }) {
   const lifetimeModal = useEntityModal();
   const educationModal = useEntityModal();
+  const { sortKey: edSortKey, sortDir: edSortDir, handleSort: edHandleSort, applySort: edApplySort } = useSortableTable();
 
   const lifetime = data?.LifetimeGoals || [];
-  const education = (data?.EducationGoals || []).slice().sort((a, b) => {
+  const educationBase = (data?.EducationGoals || []).slice().sort((a, b) => {
     if (!!a.Done !== !!b.Done) return a.Done ? 1 : -1;
     return parseTargetDate(a.TargetDate) - parseTargetDate(b.TargetDate);
   });
+  const education = edApplySort(educationBase);
 
   const lifetimeCounts = STATUS_ORDER.reduce((acc, s) => {
     acc[s] = lifetime.filter(g => g.Status === s).length;
@@ -174,13 +178,13 @@ export default function GoalsPage({ data, onSave, onDelete }) {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                <th className="text-left pb-2 pr-4">Name</th>
-                <th className="text-left pb-2 pr-4">Type</th>
-                <th className="text-left pb-2 pr-4">Difficulty</th>
-                <th className="text-left pb-2 pr-4">Renewal</th>
-                <th className="text-right pb-2 pr-4">Target</th>
-                <th className="text-center pb-2">Done</th>
+              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                <SortableHeader col="Name"       label="Name"       sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
+                <SortableHeader col="Type"       label="Type"       sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
+                <SortableHeader col="Difficulty" label="Difficulty" sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
+                <SortableHeader col="Renewal"    label="Renewal"    sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
+                <SortableHeader col="TargetDate" label="Target"     sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} align="right" className="pb-2 pr-4" />
+                <th className="text-center text-slate-400 pb-2">Done</th>
               </tr>
             </thead>
             <tbody>

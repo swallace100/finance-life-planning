@@ -2,6 +2,8 @@ import Modal from '../components/Modal'
 import EntityForm from '../components/EntityForm'
 import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
+import { useSortableTable } from '../hooks/useSortableTable'
+import { SortableHeader } from '../components/SortableHeader'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 })
 
@@ -9,6 +11,8 @@ const isActive = item => item.Active === 'Yes' || item.Active === true || item.A
 
 export default function BudgetPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
+  const incomeSort  = useSortableTable('Amount', 'desc')
+  const expenseSort = useSortableTable('Amount', 'asc')
   const allItems = data?.Budget || []
   const items = allItems.filter(isActive)
 
@@ -74,15 +78,15 @@ export default function BudgetPage({ data, onSave, onDelete }) {
           </div>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                <th className="text-left pb-2 pr-4">Name</th>
-                <th className="text-left pb-2 pr-4">Type</th>
-                <th className="text-left pb-2 pr-4">Frequency</th>
-                <th className="text-right pb-2">Amount</th>
+              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                <SortableHeader col="Name"      label="Name"      sortKey={incomeSort.sortKey} sortDir={incomeSort.sortDir} onSort={incomeSort.handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="Type"      label="Type"      sortKey={incomeSort.sortKey} sortDir={incomeSort.sortDir} onSort={incomeSort.handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="Frequency" label="Frequency" sortKey={incomeSort.sortKey} sortDir={incomeSort.sortDir} onSort={incomeSort.handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="Amount"    label="Amount"    sortKey={incomeSort.sortKey} sortDir={incomeSort.sortDir} onSort={incomeSort.handleSort} align="right" className="pb-2" />
               </tr>
             </thead>
             <tbody>
-              {income.map((i, idx) => (
+              {incomeSort.applySort(income).map((i, idx) => (
                 <tr
                   key={i.ID ?? idx}
                   className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
@@ -110,14 +114,14 @@ export default function BudgetPage({ data, onSave, onDelete }) {
             </div>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                  <th className="text-left pb-2 pr-4">Name</th>
-                  <th className="text-left pb-2 pr-4">Frequency</th>
-                  <th className="text-right pb-2">Amount</th>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Name"      label="Name"      sortKey={expenseSort.sortKey} sortDir={expenseSort.sortDir} onSort={expenseSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Frequency" label="Frequency" sortKey={expenseSort.sortKey} sortDir={expenseSort.sortDir} onSort={expenseSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Amount"    label="Amount"    sortKey={expenseSort.sortKey} sortDir={expenseSort.sortDir} onSort={expenseSort.handleSort} align="right" className="pb-2" />
                 </tr>
               </thead>
               <tbody>
-                {rows.map((i, idx) => (
+                {expenseSort.applySort(rows).map((i, idx) => (
                   <tr
                     key={i.ID ?? idx}
                     className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"

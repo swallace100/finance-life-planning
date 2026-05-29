@@ -2,12 +2,15 @@ import Modal from '../components/Modal'
 import EntityForm from '../components/EntityForm'
 import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
+import { useSortableTable } from '../hooks/useSortableTable'
+import { SortableHeader } from '../components/SortableHeader'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'
 
 export default function DonationsPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
+  const { sortKey, sortDir, handleSort, applySort } = useSortableTable('Date', 'desc')
   const donations = data?.Donations || []
 
   const byYear = donations.reduce((acc, d) => {
@@ -71,7 +74,7 @@ export default function DonationsPage({ data, onSave, onDelete }) {
           <p className="text-slate-500 text-sm">No donations recorded.</p>
         </div>
       ) : years.map(year => {
-        const rows = byYear[year].slice().sort((a, b) => new Date(b.Date) - new Date(a.Date))
+        const rows = byYear[year]
         const yearTotal = rows.reduce((s, d) => s + (Number(d.Amount) || 0), 0)
         return (
           <div key={year} className="bg-slate-800 rounded-xl p-6 border border-slate-700">
@@ -81,15 +84,15 @@ export default function DonationsPage({ data, onSave, onDelete }) {
             </div>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                  <th className="text-left pb-2 pr-4">Organization</th>
-                  <th className="text-right pb-2 pr-4">Amount</th>
-                  <th className="text-right pb-2 pr-4">Date</th>
-                  <th className="text-left pb-2">Notes</th>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Organization" label="Organization" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Amount"       label="Amount"       sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                  <SortableHeader col="Date"         label="Date"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                  <th className="text-left text-slate-400 pb-2">Notes</th>
                 </tr>
               </thead>
               <tbody>
-                {rows.map(d => (
+                {applySort(rows).map(d => (
                   <tr
                     key={d.ID ?? d._rowIndex}
                     className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"

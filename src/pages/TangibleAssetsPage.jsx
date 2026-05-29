@@ -2,6 +2,8 @@ import Modal from '../components/Modal'
 import EntityForm from '../components/EntityForm'
 import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
+import { useSortableTable } from '../hooks/useSortableTable'
+import { SortableHeader } from '../components/SortableHeader'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
@@ -20,6 +22,7 @@ function gainLabel(cost, current) {
 
 export default function TangibleAssetsPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
+  const { sortKey, sortDir, handleSort, applySort } = useSortableTable('CurrentValue', 'desc')
   const stillOwned = a => a.StillHave !== false && a.StillHave !== 0
   const assets = (data?.TangibleAssets || []).filter(stillOwned)
 
@@ -86,19 +89,19 @@ export default function TangibleAssetsPage({ data, onSave, onDelete }) {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                  <th className="text-left pb-2 pr-4">Name</th>
-                  <th className="text-left pb-2 pr-4">Series</th>
-                  <th className="text-left pb-2 pr-4">Condition</th>
-                  <th className="text-left pb-2 pr-4">Format</th>
-                  <th className="text-right pb-2 pr-4">Purchased</th>
-                  <th className="text-right pb-2 pr-4">Cost</th>
-                  <th className="text-right pb-2 pr-4">Value</th>
-                  <th className="text-right pb-2">Gain / Loss</th>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Name"         label="Name"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Series"       label="Series"    sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Condition"    label="Condition" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Format"       label="Format"    sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="BuyDate"      label="Purchased" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                  <SortableHeader col="Cost"         label="Cost"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                  <SortableHeader col="CurrentValue" label="Value"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                  <th className="text-right text-slate-400 pb-2">Gain / Loss</th>
                 </tr>
               </thead>
               <tbody>
-                {rows.map(a => (
+                {applySort(rows).map(a => (
                   <tr
                     key={a.ID ?? a._rowIndex}
                     className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"

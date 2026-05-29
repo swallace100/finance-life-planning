@@ -2,6 +2,8 @@ import Modal from "../components/Modal";
 import EntityForm from "../components/EntityForm";
 import { SCHEMAS } from "../data/schemas";
 import { useEntityModal } from "../hooks/useEntityModal";
+import { useSortableTable } from "../hooks/useSortableTable";
+import { SortableHeader } from "../components/SortableHeader";
 
 const fmtCurrency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -35,6 +37,9 @@ export default function RetirementPage({ data, onSave, onDelete }) {
   const scheduleModal = useEntityModal();
   const holdingsModal = useEntityModal();
   const allocationModal = useEntityModal();
+  const scheduleSort   = useSortableTable('AccessibleYear', 'asc');
+  const holdingsSort   = useSortableTable('Percentage', 'desc');
+  const allocationSort = useSortableTable('AssetClass', 'asc');
 
   const schedule = data?.RetirementSchedule || [];
   const holdings = data?.RetirementHoldings || [];
@@ -170,23 +175,18 @@ export default function RetirementPage({ data, onSave, onDelete }) {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                <th className="text-left pb-2 pr-4">Source / Account</th>
-                <th className="text-right pb-2 pr-4">Accessible</th>
-                <th className="text-right pb-2 pr-4">Years Away</th>
-                <th className="text-right pb-2 pr-4">Rate</th>
-                <th className="text-right pb-2 pr-4">Projected / Year</th>
-                <th className="text-right pb-2 pr-4">/ Month</th>
-                <th className="text-left pb-2">Notes</th>
+              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                <SortableHeader col="Source"         label="Source / Account" sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="AccessibleYear" label="Accessible"       sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} align="right" className="pb-2 pr-4" />
+                <th className="text-right text-slate-400 pb-2 pr-4">Years Away</th>
+                <SortableHeader col="WithdrawalRate"       label="Rate"             sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} align="right" className="pb-2 pr-4" />
+                <SortableHeader col="ExpectedYearlyAmount" label="Projected / Year"  sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} align="right" className="pb-2 pr-4" />
+                <th className="text-right text-slate-400 pb-2 pr-4">/ Month</th>
+                <th className="text-left text-slate-400 pb-2">Notes</th>
               </tr>
             </thead>
             <tbody>
-              {schedule
-                .slice()
-                .sort(
-                  (a, b) => (a.AccessibleYear ?? 0) - (b.AccessibleYear ?? 0),
-                )
-                .map((r) => {
+              {scheduleSort.applySort(schedule).map((r) => {
                   const label = r.AssetID
                     ? (assetMap[r.AssetID]?.Name ?? `Asset ${r.AssetID}`)
                     : r.Source || (
@@ -269,16 +269,16 @@ export default function RetirementPage({ data, onSave, onDelete }) {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                <th className="text-left pb-2 pr-4">Account</th>
-                <th className="text-left pb-2 pr-4">Fund</th>
-                <th className="text-left pb-2 pr-4">Ticker</th>
-                <th className="text-right pb-2 pr-4">%</th>
-                <th className="text-left pb-2">Notes</th>
+              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                <SortableHeader col="AssetID"    label="Account" sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="FundName"   label="Fund"    sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="Ticker"     label="Ticker"  sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="Percentage" label="%"       sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} align="right" className="pb-2 pr-4" />
+                <th className="text-left text-slate-400 pb-2">Notes</th>
               </tr>
             </thead>
             <tbody>
-              {holdings.map((h, i) => (
+              {holdingsSort.applySort(holdings).map((h, i) => (
                 <tr
                   key={h.ID ?? i}
                   className={rowHover}
@@ -321,14 +321,14 @@ export default function RetirementPage({ data, onSave, onDelete }) {
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                <th className="text-left pb-2 pr-4">Holding ID</th>
-                <th className="text-left pb-2 pr-4">Asset Class</th>
-                <th className="text-right pb-2">%</th>
+              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                <SortableHeader col="HoldingID"  label="Holding"      sortKey={allocationSort.sortKey} sortDir={allocationSort.sortDir} onSort={allocationSort.handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="AssetClass" label="Asset Class"  sortKey={allocationSort.sortKey} sortDir={allocationSort.sortDir} onSort={allocationSort.handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="Percentage" label="%"            sortKey={allocationSort.sortKey} sortDir={allocationSort.sortDir} onSort={allocationSort.handleSort} align="right" className="pb-2" />
               </tr>
             </thead>
             <tbody>
-              {allocation.map((a, i) => (
+              {allocationSort.applySort(allocation).map((a, i) => (
                 <tr
                   key={a.ID ?? i}
                   className={rowHover}

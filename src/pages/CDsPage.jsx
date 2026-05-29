@@ -3,6 +3,8 @@ import Modal from '../components/Modal'
 import EntityForm from '../components/EntityForm'
 import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
+import { useSortableTable } from '../hooks/useSortableTable'
+import { SortableHeader } from '../components/SortableHeader'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
@@ -22,6 +24,7 @@ const rowHover = 'border-b border-slate-700/50 last:border-0 cursor-pointer hove
 
 export default function CDsPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
+  const { sortKey, sortDir, handleSort, applySort } = useSortableTable('MaturityDate', 'asc')
   const cds = data?.CDs || []
   const now = new Date()
   const oneYearOut = new Date(now)
@@ -73,18 +76,18 @@ export default function CDsPage({ data, onSave, onDelete }) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                <th className="text-left pb-2 pr-4">Name</th>
-                <th className="text-left pb-2 pr-4">Institution</th>
-                <th className="text-right pb-2 pr-4">Value</th>
-                <th className="text-right pb-2 pr-4">APY</th>
-                <th className="text-right pb-2 pr-4">Start</th>
-                <th className="text-right pb-2 pr-4">Matures</th>
-                <th className="text-right pb-2">Days</th>
+              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                <SortableHeader col="Name"         label="Name"        sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="Institution"  label="Institution" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                <SortableHeader col="FaceValue"    label="Value"       sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                <SortableHeader col="APY"          label="APY"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                <SortableHeader col="StartDate"    label="Start"       sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                <SortableHeader col="MaturityDate" label="Matures"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                <th className="text-right text-slate-400 pb-2">Days</th>
               </tr>
             </thead>
             <tbody>
-              {active.sort((a, b) => new Date(a.MaturityDate) - new Date(b.MaturityDate)).map(cd => {
+              {applySort(active).map(cd => {
                 const days = daysUntil(cd.MaturityDate)
                 const color = days < 30 ? 'text-red-400' : days < 90 ? 'text-amber-400' : 'text-emerald-400'
                 return (

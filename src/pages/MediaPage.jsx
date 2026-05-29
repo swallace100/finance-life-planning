@@ -3,6 +3,8 @@ import Modal from "../components/Modal";
 import EntityForm from "../components/EntityForm";
 import { SCHEMAS } from "../data/schemas";
 import { useEntityModal } from "../hooks/useEntityModal";
+import { useSortableTable } from "../hooks/useSortableTable";
+import { SortableHeader } from "../components/SortableHeader";
 
 const fmtDate = (d) =>
   d ? new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—";
@@ -59,6 +61,9 @@ export default function MediaPage({ data, onSave, onDelete }) {
   const bookModal = useEntityModal();
   const filmModal = useEntityModal();
   const gameModal = useEntityModal();
+  const bookSort = useSortableTable("ReadDate", "desc");
+  const filmSort = useSortableTable("WatchDate", "desc");
+  const gameSort = useSortableTable("CompletionDate", "desc");
 
   const books = data?.ReadingLog || [];
   const films = data?.FilmLog || [];
@@ -79,14 +84,9 @@ export default function MediaPage({ data, onSave, onDelete }) {
     ? games.filter(g => q(g.Name ?? "").includes(q(search.games)) || q(g.Platform ?? "").includes(q(search.games)) || q(g.Genre ?? "").includes(q(search.games)))
     : games;
 
-  const booksSorted = filteredBooks.slice().sort((a, b) => new Date(b.ReadDate || 0) - new Date(a.ReadDate || 0));
-  const filmsSorted = filteredFilms.slice().sort((a, b) => new Date(b.WatchDate || 0) - new Date(a.WatchDate || 0));
-  const gamesSorted = filteredGames.slice().sort((a, b) => {
-    const sa = a.Status === "Playing" ? 0 : 1;
-    const sb = b.Status === "Playing" ? 0 : 1;
-    if (sa !== sb) return sa - sb;
-    return new Date(b.CompletionDate || 0) - new Date(a.CompletionDate || 0);
-  });
+  const booksSorted = bookSort.applySort(filteredBooks);
+  const filmsSorted = filmSort.applySort(filteredFilms);
+  const gamesSorted = gameSort.applySort(filteredGames);
 
   async function handleBookSubmit(row) {
     await onSave("ReadingLog", row, row._rowIndex == null);
@@ -167,13 +167,13 @@ export default function MediaPage({ data, onSave, onDelete }) {
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                  <th className="text-left pb-2 pr-4">Title</th>
-                  <th className="text-left pb-2 pr-4">Author</th>
-                  <th className="text-left pb-2 pr-4">Genre</th>
-                  <th className="text-left pb-2 pr-4">Format</th>
-                  <th className="text-right pb-2 pr-4">Date Read</th>
-                  <th className="text-right pb-2">Rating</th>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Name"     label="Title"     sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Author"   label="Author"    sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Genre"    label="Genre"     sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Format"   label="Format"    sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="ReadDate" label="Date Read" sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} align="right" className="pb-2 pr-4" />
+                  <SortableHeader col="Rating"   label="Rating"    sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} align="right" className="pb-2" />
                 </tr>
               </thead>
               <tbody>
@@ -221,11 +221,11 @@ export default function MediaPage({ data, onSave, onDelete }) {
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                  <th className="text-left pb-2 pr-4">Title</th>
-                  <th className="text-right pb-2 pr-4">Year</th>
-                  <th className="text-right pb-2 pr-4">Date Watched</th>
-                  <th className="text-right pb-2">Rating</th>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Name"        label="Title"        sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="ReleaseYear"  label="Year"         sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} align="right" className="pb-2 pr-4" />
+                  <SortableHeader col="WatchDate"    label="Date Watched" sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} align="right" className="pb-2 pr-4" />
+                  <SortableHeader col="Rating"       label="Rating"       sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} align="right" className="pb-2" />
                 </tr>
               </thead>
               <tbody>
@@ -267,13 +267,13 @@ export default function MediaPage({ data, onSave, onDelete }) {
           ) : (
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                  <th className="text-left pb-2 pr-4">Game</th>
-                  <th className="text-left pb-2 pr-4">Platform</th>
-                  <th className="text-left pb-2 pr-4">Genre</th>
-                  <th className="text-left pb-2 pr-4">Status</th>
-                  <th className="text-right pb-2 pr-4">Completed</th>
-                  <th className="text-right pb-2">Rating</th>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Name"           label="Game"      sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Platform"        label="Platform"  sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Genre"           label="Genre"     sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Status"          label="Status"    sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="CompletionDate"  label="Completed" sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} align="right" className="pb-2 pr-4" />
+                  <SortableHeader col="Rating"          label="Rating"    sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} align="right" className="pb-2" />
                 </tr>
               </thead>
               <tbody>

@@ -2,6 +2,8 @@ import Modal from '../components/Modal'
 import EntityForm from '../components/EntityForm'
 import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
+import { useSortableTable } from '../hooks/useSortableTable'
+import { SortableHeader } from '../components/SortableHeader'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
@@ -27,6 +29,7 @@ function getLatestByAsset(history) {
 export default function NonTangibleAssetsPage({ data, onSave, onDelete }) {
   const accountModal = useEntityModal()
   const historyModal = useEntityModal()
+  const { sortKey, sortDir, handleSort, applySort } = useSortableTable('latestValue', 'desc')
 
   const assets  = data?.NonTangibleAssets || []
   const history = data?.AssetHistory      || []
@@ -102,7 +105,7 @@ export default function NonTangibleAssetsPage({ data, onSave, onDelete }) {
       </div>
 
       {sortedTypes.map(type => {
-        const group = byType[type].slice().sort((a, b) => (b.latestValue ?? 0) - (a.latestValue ?? 0))
+        const group = applySort(byType[type])
         const groupTotal = group.reduce((s, r) => s + (r.latestValue ?? 0), 0)
         const colorClass = TYPE_COLORS[type] ?? TYPE_COLORS.Other
 
@@ -118,13 +121,13 @@ export default function NonTangibleAssetsPage({ data, onSave, onDelete }) {
 
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                  <th className="text-left pb-2 pr-4">Name</th>
-                  <th className="text-left pb-2 pr-4">Subtype</th>
-                  <th className="text-left pb-2 pr-4">Institution</th>
-                  <th className="text-left pb-2 pr-4">Currency</th>
-                  <th className="text-right pb-2 pr-4">Latest Value</th>
-                  <th className="text-right pb-2 pr-4">As Of</th>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Name"         label="Name"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Subtype"      label="Subtype"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Institution"  label="Institution"  sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Currency"     label="Currency"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="latestValue"  label="Latest Value" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                  <SortableHeader col="latestDate"   label="As Of"        sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
                   <th className="text-right pb-2"></th>
                 </tr>
               </thead>

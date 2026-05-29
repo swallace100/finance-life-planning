@@ -2,6 +2,8 @@ import Modal from '../components/Modal'
 import EntityForm from '../components/EntityForm'
 import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
+import { useSortableTable } from '../hooks/useSortableTable'
+import { SortableHeader } from '../components/SortableHeader'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
 const fmtPct  = (v) => v ? `${Number(v).toFixed(2)}%` : '—'
@@ -22,6 +24,7 @@ function Badge({ children, color = 'slate' }) {
 
 export default function CryptoPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
+  const { sortKey, sortDir, handleSort, applySort } = useSortableTable('Name', 'asc')
   const assets = data?.CryptoAssets || []
   const staked = assets.filter(a => a.Staked)
 
@@ -67,17 +70,17 @@ export default function CryptoPage({ data, onSave, onDelete }) {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                  <th className="text-left pb-2 pr-4">Name</th>
-                  <th className="text-left pb-2 pr-4">Ticker</th>
-                  <th className="text-left pb-2 pr-4">Wallet</th>
-                  <th className="text-left pb-2 pr-4">Staking</th>
-                  <th className="text-right pb-2 pr-4">APY</th>
-                  <th className="text-right pb-2">Unlock Date</th>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Name"       label="Name"        sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Ticker"     label="Ticker"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Wallet"     label="Wallet"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <th className="text-left text-slate-400 pb-2 pr-4">Staking</th>
+                  <SortableHeader col="StakingAPY" label="APY"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                  <SortableHeader col="UnlockDate" label="Unlock Date" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2" />
                 </tr>
               </thead>
               <tbody>
-                {assets.map(a => (
+                {applySort(assets).map(a => (
                   <tr
                     key={a.ID}
                     className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
