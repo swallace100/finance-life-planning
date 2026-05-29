@@ -23,31 +23,37 @@ npm install
 npm run dev
 ```
 
+````bash
+# To build an executable app
+npm install --save-dev electron-builder
+npm run build:app
+``
+
 On first launch, click **Connect Excel File** in the header to point the app at your `Data/Data.xlsx` file. The path is saved automatically for future launches.
 
 ### Build for Production
 
 ```bash
 npm run build
-```
+````
 
 ## Excel Data File
 
 The app reads from a single `.xlsx` file with one sheet per entity:
 
-| Sheet | Key Columns |
-|---|---|
-| `NonTangibleAssets` | ID, Name, Type, Subtype, Currency, Institution, RetirementAccount |
-| `AssetHistory` | ID, AssetID, Month, Year, Value |
-| `CDs` | ID, Name, FaceValue, APY, StartDate, MaturityDate, AutoRenew, Active |
-| `TangibleAssets` | ID, Category, Name, Cost, CurrentValue |
-| `Budget` | ID, Name, Type, Category, Amount, Frequency, Active |
-| `Donations` | ID, Year, Organization, Amount, Date |
-| `FinancialGoals` | ID, Name, TargetAmount, TargetDate, LinkedAssetID |
-| `RetirementSchedule` | ID, AssetID, AccessibleYear, ExpectedMonthlyAmount |
-| `RetirementHoldings` | ID, AssetID, FundName, Ticker, Percentage |
-| `FundAllocation` | ID, HoldingID, AssetClass, Percentage |
-| `CryptoAssets` | ID, Name, Ticker, Platform, Staked, StakingAPY |
+| Sheet                | Key Columns                                                          |
+| -------------------- | -------------------------------------------------------------------- |
+| `NonTangibleAssets`  | ID, Name, Type, Subtype, Currency, Institution, RetirementAccount    |
+| `AssetHistory`       | ID, AssetID, Month, Year, Value                                      |
+| `CDs`                | ID, Name, FaceValue, APY, StartDate, MaturityDate, AutoRenew, Active |
+| `TangibleAssets`     | ID, Category, Name, Cost, CurrentValue                               |
+| `Budget`             | ID, Name, Type, Category, Amount, Frequency, Active                  |
+| `Donations`          | ID, Year, Organization, Amount, Date                                 |
+| `FinancialGoals`     | ID, Name, TargetAmount, TargetDate, LinkedAssetID                    |
+| `RetirementSchedule` | ID, AssetID, AccessibleYear, ExpectedMonthlyAmount                   |
+| `RetirementHoldings` | ID, AssetID, FundName, Ticker, Percentage                            |
+| `FundAllocation`     | ID, HoldingID, AssetClass, Percentage                                |
+| `CryptoAssets`       | ID, Name, Ticker, Platform, Staked, StakingAPY                       |
 
 ## Project Structure
 
