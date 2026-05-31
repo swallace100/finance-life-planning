@@ -113,6 +113,20 @@ export const mockData = {
     { ID: 13, AssetClass: 'Other',    Subclass: 'Coins',                GoalPct: 15 },
   ],
 
+  ResearchLinks: [
+    { ID: 1, Title: 'FamilyTreeDNA Results',        Category: 'Genealogy', Link: 'C:\\Users\\swall\\Documents\\Genealogy\\FamilyTreeDNA.docx',      Notes: 'Y-DNA and mtDNA haplogroups' },
+    { ID: 2, Title: 'Family Research Notes',         Category: 'Genealogy', Link: 'C:\\Users\\swall\\Documents\\Genealogy\\Research Notes.docx',       Notes: '' },
+    { ID: 3, Title: 'Azure Migration Plan',          Category: 'Tech',      Link: 'C:\\Users\\swall\\Documents\\Tech\\Azure Migration.docx',           Notes: '' },
+  ],
+
+  Tasks: [
+    { ID: 1, Name: 'Set up Azure account',              Priority: 'High',   DueDate: '2026-06-15', Notes: 'After semester ends' },
+    { ID: 2, Name: 'Pass JLPT N1',                      Priority: 'High',   DueDate: '2026-07-01', Notes: 'Exam in July' },
+    { ID: 3, Name: 'Import real Excel data',            Priority: 'Medium', DueDate: '2026-06-07', Notes: '' },
+    { ID: 4, Name: 'Review retirement contributions',   Priority: 'Medium', DueDate: '2026-06-30', Notes: 'Annual review' },
+    { ID: 5, Name: 'Renew AZ-900 certification',        Priority: 'Low',    DueDate: '2027-10-01', Notes: '' },
+  ],
+
   ReadingLog: [
     { ID: 1,  Name: 'Sapiens',                          Author: 'Yuval Noah Harari',   ReadDate: '2022-06-10', Genre: 'Nonfiction',  Format: 'Physical',  Rating: 5,   Notes: '' },
     { ID: 2,  Name: '1984',                             Author: 'George Orwell',       ReadDate: '2021-02-20', Genre: 'Classic',     Format: 'Ebook',     Rating: 5,   Notes: '' },

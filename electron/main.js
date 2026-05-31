@@ -36,6 +36,8 @@ const SHEET_COLUMNS = {
   RetirementHoldings: ['ID', 'AssetID', 'FundName', 'Ticker', 'Percentage', 'Notes'],
   FundAllocation:     ['ID', 'HoldingID', 'AssetClass', 'Percentage'],
   AssetGoals:         ['ID', 'AssetClass', 'Subclass', 'GoalPct'],
+  Tasks:              ['ID', 'Name', 'Priority', 'DueDate', 'Notes'],
+  ResearchLinks:      ['ID', 'Title', 'Category', 'Link', 'Notes'],
   LifetimeGoals:      ['ID', 'Goal', 'Category', 'Status', 'Progress', 'Notes'],
   EducationGoals:     ['ID', 'Order', 'Name', 'Type', 'Difficulty', 'Renewal', 'TargetDate', 'Done', 'Notes'],
   ReadingLog:         ['ID', 'Name', 'Author', 'ReadDate', 'Genre', 'Format', 'Rating', 'Notes'],
@@ -88,6 +90,7 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1400,
     height: 900,
+    icon: path.join(__dirname, '../build/icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

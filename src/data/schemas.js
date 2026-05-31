@@ -251,6 +251,26 @@ export const SCHEMAS = {
     },
   ],
 
+  ResearchLinks: [
+    { key: "Title", label: "Title", type: "text", required: true },
+    { key: "Category", label: "Category", type: "text", required: true },
+    { key: "Link", label: "File Path or URL", type: "text", required: true },
+    { key: "Notes", label: "Notes", type: "textarea" },
+  ],
+
+  Tasks: [
+    { key: "Name", label: "Task", type: "text", required: true },
+    {
+      key: "Priority",
+      label: "Priority",
+      type: "select",
+      defaultValue: "Medium",
+      options: ["High", "Medium", "Low"],
+    },
+    { key: "DueDate", label: "Due Date", type: "date" },
+    { key: "Notes", label: "Notes", type: "textarea" },
+  ],
+
   LifetimeGoals: [
     { key: "Goal", label: "Goal", type: "text", required: true },
     {
