@@ -83,3 +83,7 @@ The dashboard displays:
 - **Net worth over time** — line chart aggregated by month from `AssetHistory`
 - **Asset breakdown** — donut chart by type (Bank, Investment, Retirement, Crypto, CD, Tangible)
 - **Upcoming CD maturities** — CDs maturing within the next 12 months, sorted by date
+
+## Credits
+
+Icone from https://icons8.com/icons/set/cash-home
