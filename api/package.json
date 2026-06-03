@@ -1,0 +1,10 @@
+{
+  "name": "finance-life-planning-api",
+  "version": "1.0.0",
+  "description": "Azure Functions backend for Finance Life Planning",
+  "main": "index.js",
+  "dependencies": {
+    "@azure/storage-blob": "^12.26.0",
+    "exceljs": "^4.4.0"
+  }
+}
