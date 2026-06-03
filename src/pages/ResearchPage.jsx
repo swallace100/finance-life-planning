@@ -2,13 +2,14 @@ import Modal from "../components/Modal";
 import EntityForm from "../components/EntityForm";
 import { SCHEMAS } from "../data/schemas";
 import { useEntityModal } from "../hooks/useEntityModal";
+import { isElectron, openPath, openExternal } from "../api";
 
 function openLink(link) {
-  if (!link || !window.electronAPI) return;
+  if (!link) return;
   if (link.startsWith("http://") || link.startsWith("https://")) {
-    window.electronAPI.openExternal(link);
+    openExternal(link);
   } else {
-    window.electronAPI.openPath(link);
+    openPath(link);
   }
 }
 
@@ -55,7 +56,7 @@ export default function ResearchPage({ data, onSave, onDelete }) {
     modal.close();
   }
 
-  const hasElectron = !!window.electronAPI;
+  const hasElectron = isElectron;
 
   return (
     <div className="space-y-6">

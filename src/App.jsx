@@ -15,6 +15,7 @@ import TasksPage from "./pages/TasksPage";
 import ResearchPage from "./pages/ResearchPage";
 import MediaPage from "./pages/MediaPage";
 import { mockData } from "./data/mock";
+import { isElectron, loadExcel, saveRow, deleteRow } from "./api";
 
 function addRowIndices(data) {
   const out = {}
@@ -37,23 +38,32 @@ export default function App() {
   }, []);
 
   async function initData() {
-    if (!window.electronAPI) {
-      setData(addRowIndices(mockData));
-      setUsingMock(true);
-      setLoading(false);
-      return;
-    }
-    try {
-      const config = await window.electronAPI.getConfig();
-      if (config.excelPath) {
-        setExcelPath(config.excelPath);
-        const excelData = await window.electronAPI.loadExcel(config.excelPath);
-        setData(excelData);
-        setUsingMock(false);
-      } else {
+    if (isElectron) {
+      try {
+        const config = await window.electronAPI.getConfig();
+        if (config.excelPath) {
+          setExcelPath(config.excelPath);
+          const excelData = await loadExcel(config.excelPath);
+          setData(excelData);
+          setUsingMock(false);
+        } else {
+          setData(addRowIndices(mockData));
+          setUsingMock(true);
+        }
+      } catch (err) {
+        setError(err.message);
         setData(addRowIndices(mockData));
         setUsingMock(true);
       }
+      setLoading(false);
+      return;
+    }
+
+    // Web — load from Azure Functions
+    try {
+      const excelData = await loadExcel();
+      setData(excelData);
+      setUsingMock(false);
     } catch (err) {
       setError(err.message);
       setData(addRowIndices(mockData));
@@ -71,8 +81,8 @@ export default function App() {
       return
     }
     try {
-      await window.electronAPI.deleteRow({ sheetName, rowIndex })
-      const fresh = await window.electronAPI.loadExcel(excelPath)
+      await deleteRow({ sheetName, rowIndex })
+      const fresh = await loadExcel(excelPath)
       setData(fresh)
     } catch (err) {
       setError(`Delete failed: ${err.message}`)
@@ -80,7 +90,7 @@ export default function App() {
   }
 
   async function handleNewFile() {
-    if (!window.electronAPI) return
+    if (!isElectron) return
     try {
       const filePath = await window.electronAPI.newExcelFile()
       if (!filePath) return
@@ -98,7 +108,7 @@ export default function App() {
   }
 
   async function handlePickFile() {
-    if (!window.electronAPI) return;
+    if (!isElectron) return;
     try {
       const filePath = await window.electronAPI.pickExcelFile();
       if (!filePath) return;
@@ -132,8 +142,8 @@ export default function App() {
       return
     }
     try {
-      await window.electronAPI.saveRow({ sheetName, row, isNew })
-      const fresh = await window.electronAPI.loadExcel(excelPath)
+      await saveRow({ sheetName, row, isNew })
+      const fresh = await loadExcel(excelPath)
       setData(fresh)
     } catch (err) {
       setError(`Save failed: ${err.message}`)
@@ -167,7 +177,7 @@ export default function App() {
         error={error}
         onPickFile={handlePickFile}
         onNewFile={handleNewFile}
-        hasElectron={!!window.electronAPI}
+        hasElectron={isElectron}
       />
 
       <main className="flex-1 overflow-auto p-6">
