@@ -36,13 +36,16 @@ export default function EntityForm({ schema, initialValues, data, isEditing, onS
   const [values, setValues] = useState(() => buildInitial(schema, initialValues))
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   function set(key, value) {
     setValues(prev => ({ ...prev, [key]: value }))
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
+    if (isSubmitting) return
+    setIsSubmitting(true)
     const out = {}
     schema.forEach(field => {
       const v = values[field.key]
@@ -66,7 +69,7 @@ export default function EntityForm({ schema, initialValues, data, isEditing, onS
     if (initialValues?._rowIndex != null) {
       out._rowIndex = initialValues._rowIndex
     }
-    onSubmit(out)
+    await onSubmit(out)
   }
 
   function renderField(field) {
@@ -195,9 +198,10 @@ export default function EntityForm({ schema, initialValues, data, isEditing, onS
           </button>
           <button
             type="submit"
-            className="px-5 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+            disabled={isSubmitting}
+            className="px-5 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isEditing ? 'Save Changes' : 'Add'}
+            {isSubmitting ? 'Saving…' : isEditing ? 'Save Changes' : 'Add'}
           </button>
         </div>
       </div>
