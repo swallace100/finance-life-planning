@@ -35,6 +35,7 @@ const inputCls = 'w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py
 export default function EntityForm({ schema, initialValues, data, isEditing, onSubmit, onCancel, onDelete }) {
   const [values, setValues] = useState(() => buildInitial(schema, initialValues))
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   function set(key, value) {
     setValues(prev => ({ ...prev, [key]: value }))
@@ -159,10 +160,11 @@ export default function EntityForm({ schema, initialValues, data, isEditing, onS
                 <span className="text-xs text-red-400">Are you sure?</span>
                 <button
                   type="button"
-                  onClick={onDelete}
-                  className="px-3 py-1.5 text-xs font-medium bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors"
+                  disabled={isDeleting}
+                  onClick={async () => { setIsDeleting(true); await onDelete() }}
+                  className="px-3 py-1.5 text-xs font-medium bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Delete
+                  {isDeleting ? 'Deleting…' : 'Delete'}
                 </button>
                 <button
                   type="button"
