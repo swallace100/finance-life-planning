@@ -168,7 +168,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-900 text-slate-100 overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen bg-slate-900 text-slate-100 overflow-hidden">
       <Sidebar
         currentPage={page}
         onNavigate={setPage}
@@ -180,7 +180,7 @@ export default function App() {
         hasElectron={isElectron}
       />
 
-      <main className="flex-1 overflow-auto p-6">
+      <main className="flex-1 overflow-auto p-4 md:p-6">
         {loading ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-slate-400">Loading…</p>

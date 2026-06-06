@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const NAV = [
   {
     id: "dashboard",
@@ -275,6 +277,36 @@ const NAV = [
   },
 ];
 
+function FileControls({ usingMock, excelPath, error, onPickFile, onNewFile, hasElectron }) {
+  return (
+    <div className="px-4 py-4 border-t border-slate-800 space-y-2">
+      {error && <p className="text-xs text-red-400">{error}</p>}
+      {usingMock && <p className="text-xs text-amber-400">Using mock data</p>}
+      {excelPath && !usingMock && (
+        <p className="text-xs text-slate-500 truncate" title={excelPath}>
+          {excelPath.split(/[\\/]/).pop()}
+        </p>
+      )}
+      {hasElectron && (
+        <button
+          onClick={onNewFile}
+          className="w-full text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-md transition-colors text-left"
+        >
+          New Excel File
+        </button>
+      )}
+      {hasElectron && (
+        <button
+          onClick={onPickFile}
+          className="w-full text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-md transition-colors text-left"
+        >
+          {usingMock ? "Connect Excel File" : "Change File"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function Sidebar({
   currentPage,
   onNavigate,
@@ -285,57 +317,108 @@ export default function Sidebar({
   onNewFile,
   hasElectron,
 }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const currentItem = NAV.find((item) => item.id === currentPage);
+
+  function handleNavigate(id) {
+    setMobileOpen(false);
+    onNavigate(id);
+  }
+
   return (
-    <div className="w-56 flex-shrink-0 bg-slate-950 border-r border-slate-800 flex flex-col">
-      <div className="px-5 py-5 border-b border-slate-800">
-        <p className="text-xs font-bold text-slate-100 uppercase tracking-widest">
-          Finance
-        </p>
-        <p className="text-xs text-slate-500 mt-0.5">Life Planning</p>
+    <>
+      {/* Mobile top bar */}
+      <div className="md:hidden flex-shrink-0 bg-slate-950 border-b border-slate-800">
+        <div className="flex items-center justify-between px-4 py-3">
+          <div>
+            <p className="text-xs font-bold text-slate-100 uppercase tracking-widest">
+              Finance
+            </p>
+            <p className="text-xs text-slate-500 mt-0.5">Life Planning</p>
+          </div>
+          <button
+            onClick={() => setMobileOpen((open) => !open)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm bg-slate-800 text-slate-100"
+            aria-expanded={mobileOpen}
+            aria-label="Toggle navigation menu"
+          >
+            {currentItem?.icon}
+            <span>{currentItem?.label ?? "Menu"}</span>
+            <svg
+              className={`w-4 h-4 transition-transform ${mobileOpen ? "rotate-180" : ""}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg>
+          </button>
+        </div>
+
+        {mobileOpen && (
+          <nav className="px-2 pb-3 max-h-[70vh] overflow-y-auto border-t border-slate-800 pt-2">
+            {NAV.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavigate(item.id)}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm mb-0.5 transition-colors text-left ${
+                  currentPage === item.id
+                    ? "bg-blue-600 text-white"
+                    : "text-slate-400 hover:text-slate-100 hover:bg-slate-800"
+                }`}
+              >
+                {item.icon}
+                {item.label}
+              </button>
+            ))}
+            <FileControls
+              usingMock={usingMock}
+              excelPath={excelPath}
+              error={error}
+              onPickFile={onPickFile}
+              onNewFile={onNewFile}
+              hasElectron={hasElectron}
+            />
+          </nav>
+        )}
       </div>
 
-      <nav className="flex-1 py-3 px-2 overflow-y-auto">
-        {NAV.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => onNavigate(item.id)}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm mb-0.5 transition-colors text-left ${
-              currentPage === item.id
-                ? "bg-blue-600 text-white"
-                : "text-slate-400 hover:text-slate-100 hover:bg-slate-800"
-            }`}
-          >
-            {item.icon}
-            {item.label}
-          </button>
-        ))}
-      </nav>
-
-      <div className="px-4 py-4 border-t border-slate-800 space-y-2">
-        {error && <p className="text-xs text-red-400">{error}</p>}
-        {usingMock && <p className="text-xs text-amber-400">Using mock data</p>}
-        {excelPath && !usingMock && (
-          <p className="text-xs text-slate-500 truncate" title={excelPath}>
-            {excelPath.split(/[\\/]/).pop()}
+      {/* Desktop sidebar */}
+      <div className="hidden md:flex w-56 flex-shrink-0 bg-slate-950 border-r border-slate-800 flex-col">
+        <div className="px-5 py-5 border-b border-slate-800">
+          <p className="text-xs font-bold text-slate-100 uppercase tracking-widest">
+            Finance
           </p>
-        )}
-        {hasElectron && (
-          <button
-            onClick={onNewFile}
-            className="w-full text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-md transition-colors text-left"
-          >
-            New Excel File
-          </button>
-        )}
-        {hasElectron && (
-          <button
-            onClick={onPickFile}
-            className="w-full text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-md transition-colors text-left"
-          >
-            {usingMock ? "Connect Excel File" : "Change File"}
-          </button>
-        )}
+          <p className="text-xs text-slate-500 mt-0.5">Life Planning</p>
+        </div>
+
+        <nav className="flex-1 py-3 px-2 overflow-y-auto">
+          {NAV.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => onNavigate(item.id)}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm mb-0.5 transition-colors text-left ${
+                currentPage === item.id
+                  ? "bg-blue-600 text-white"
+                  : "text-slate-400 hover:text-slate-100 hover:bg-slate-800"
+              }`}
+            >
+              {item.icon}
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
+        <FileControls
+          usingMock={usingMock}
+          excelPath={excelPath}
+          error={error}
+          onPickFile={onPickFile}
+          onNewFile={onNewFile}
+          hasElectron={hasElectron}
+        />
       </div>
-    </div>
+    </>
   );
 }
