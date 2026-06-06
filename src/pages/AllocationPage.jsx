@@ -211,95 +211,97 @@ export default function AllocationPage({ data, onSave, onDelete }) {
 
       {/* Main allocation table */}
       <div className="card overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide bg-slate-900/40">
-              <th className="text-left px-6 py-3 w-1/3">Asset Class</th>
-              <th className="text-right px-4 py-3">Class %</th>
-              <th className="text-right px-4 py-3">Subclass %</th>
-              <th className="text-right px-4 py-3">Goal</th>
-              <th className="text-right px-4 py-3">Sub Goal</th>
-              <th className="text-right px-6 py-3">Gap</th>
-            </tr>
-          </thead>
-          <tbody>
-            {classes.map((cls) => {
-              const subs = tree[cls];
-              const classTotal = Object.values(subs).reduce((s, v) => s + v, 0);
-              const classPct = total > 0 ? (classTotal / total) * 100 : 0;
-              const classGoal = classGoals[cls];
-              const sortedSubs = Object.entries(subs).sort(
-                ([, a], [, b]) => b - a,
-              );
-
-              return (
-                <Fragment key={cls}>
-                  <tr className="border-b border-slate-600 bg-slate-700/20">
-                    <td className="px-6 py-3 font-semibold text-slate-100">
-                      {cls}
-                    </td>
-                    <td className="px-4 py-3 text-right font-semibold tabular-nums">
-                      <span className={gapCls(classPct, classGoal)}>
-                        {fmtPct(classPct)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right text-slate-700">—</td>
-                    <td className="px-4 py-3 text-right text-slate-400 tabular-nums">
-                      {classGoal != null ? `${classGoal}%` : "—"}
-                    </td>
-                    <td className="px-4 py-3 text-right text-slate-700">—</td>
-                    <td className="px-6 py-3 text-right text-xs">
-                      <Gap actual={classPct} goal={classGoal} />
-                    </td>
-                  </tr>
-
-                  {sortedSubs.map(([sub, val]) => {
-                    const subPct =
-                      classTotal > 0 ? (val / classTotal) * 100 : 0;
-                    const subGoal = subGoals[`${cls}::${sub}`];
-                    return (
-                      <tr
-                        key={sub}
-                        className="border-b border-slate-700/30 last:border-0 hover:bg-slate-700/20 transition-colors"
-                      >
-                        <td className="pl-10 pr-6 py-2.5 text-slate-400">
-                          {sub}
-                        </td>
-                        <td className="px-4 py-2.5 text-right text-slate-700">
-                          —
-                        </td>
-                        <td className="px-4 py-2.5 text-right tabular-nums text-slate-300">
-                          {fmtPct(subPct)}
-                        </td>
-                        <td className="px-4 py-2.5 text-right text-slate-700">
-                          —
-                        </td>
-                        <td className="px-4 py-2.5 text-right text-slate-400 tabular-nums">
-                          {subGoal != null ? `${subGoal}%` : "—"}
-                        </td>
-                        <td className="px-6 py-2.5 text-right text-xs">
-                          <Gap actual={subPct} goal={subGoal} />
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </Fragment>
-              );
-            })}
-
-            {classes.length === 0 && (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="px-6 py-10 text-center text-slate-500"
-                >
-                  No allocation data found. Connect your Excel file to see your
-                  portfolio breakdown.
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide bg-slate-900/40">
+                <th className="text-left px-6 py-3 w-1/3">Asset Class</th>
+                <th className="text-right px-4 py-3">Class %</th>
+                <th className="text-right px-4 py-3">Subclass %</th>
+                <th className="text-right px-4 py-3">Goal</th>
+                <th className="text-right px-4 py-3">Sub Goal</th>
+                <th className="text-right px-6 py-3">Gap</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {classes.map((cls) => {
+                const subs = tree[cls];
+                const classTotal = Object.values(subs).reduce((s, v) => s + v, 0);
+                const classPct = total > 0 ? (classTotal / total) * 100 : 0;
+                const classGoal = classGoals[cls];
+                const sortedSubs = Object.entries(subs).sort(
+                  ([, a], [, b]) => b - a,
+                );
+  
+                return (
+                  <Fragment key={cls}>
+                    <tr className="border-b border-slate-600 bg-slate-700/20">
+                      <td className="px-6 py-3 font-semibold text-slate-100">
+                        {cls}
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold tabular-nums">
+                        <span className={gapCls(classPct, classGoal)}>
+                          {fmtPct(classPct)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right text-slate-700">—</td>
+                      <td className="px-4 py-3 text-right text-slate-400 tabular-nums">
+                        {classGoal != null ? `${classGoal}%` : "—"}
+                      </td>
+                      <td className="px-4 py-3 text-right text-slate-700">—</td>
+                      <td className="px-6 py-3 text-right text-xs">
+                        <Gap actual={classPct} goal={classGoal} />
+                      </td>
+                    </tr>
+  
+                    {sortedSubs.map(([sub, val]) => {
+                      const subPct =
+                        classTotal > 0 ? (val / classTotal) * 100 : 0;
+                      const subGoal = subGoals[`${cls}::${sub}`];
+                      return (
+                        <tr
+                          key={sub}
+                          className="border-b border-slate-700/30 last:border-0 hover:bg-slate-700/20 transition-colors"
+                        >
+                          <td className="pl-10 pr-6 py-2.5 text-slate-400">
+                            {sub}
+                          </td>
+                          <td className="px-4 py-2.5 text-right text-slate-700">
+                            —
+                          </td>
+                          <td className="px-4 py-2.5 text-right tabular-nums text-slate-300">
+                            {fmtPct(subPct)}
+                          </td>
+                          <td className="px-4 py-2.5 text-right text-slate-700">
+                            —
+                          </td>
+                          <td className="px-4 py-2.5 text-right text-slate-400 tabular-nums">
+                            {subGoal != null ? `${subGoal}%` : "—"}
+                          </td>
+                          <td className="px-6 py-2.5 text-right text-xs">
+                            <Gap actual={subPct} goal={subGoal} />
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </Fragment>
+                );
+              })}
+  
+              {classes.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="px-6 py-10 text-center text-slate-500"
+                  >
+                    No allocation data found. Connect your Excel file to see your
+                    portfolio breakdown.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Goals Configuration — collapsible */}
@@ -353,38 +355,40 @@ export default function AllocationPage({ data, onSave, onDelete }) {
                 within-class target (e.g. "US Stocks = 60% of Stock").
               </p>
             ) : (
-              <table className="w-full text-sm mt-4">
-                <thead>
-                  <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
-                    <th className="text-left pb-2 pr-4">Asset Class</th>
-                    <th className="text-left pb-2 pr-4">Subclass</th>
-                    <th className="text-right pb-2">Goal %</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {goals.map((g) => (
-                    <tr
-                      key={g.ID ?? g._rowIndex}
-                      className="border-b border-slate-700/30 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
-                      onClick={() => goalsModal.openEdit(g)}
-                    >
-                      <td className="py-2.5 pr-4 text-slate-200">
-                        {g.AssetClass}
-                      </td>
-                      <td className="py-2.5 pr-4 text-slate-400">
-                        {g.Subclass || (
-                          <span className="text-slate-600 italic text-xs">
-                            class level
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-2.5 text-right text-slate-300 tabular-nums">
-                        {g.GoalPct}%
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm mt-4">
+                  <thead>
+                    <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
+                      <th className="text-left pb-2 pr-4">Asset Class</th>
+                      <th className="text-left pb-2 pr-4">Subclass</th>
+                      <th className="text-right pb-2">Goal %</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {goals.map((g) => (
+                      <tr
+                        key={g.ID ?? g._rowIndex}
+                        className="border-b border-slate-700/30 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                        onClick={() => goalsModal.openEdit(g)}
+                      >
+                        <td className="py-2.5 pr-4 text-slate-200">
+                          {g.AssetClass}
+                        </td>
+                        <td className="py-2.5 pr-4 text-slate-400">
+                          {g.Subclass || (
+                            <span className="text-slate-600 italic text-xs">
+                              class level
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2.5 text-right text-slate-300 tabular-nums">
+                          {g.GoalPct}%
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         )}

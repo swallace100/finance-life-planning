@@ -176,60 +176,62 @@ export default function GoalsPage({ data, onSave, onDelete }) {
         {education.length === 0 ? (
           <p className="text-slate-500 text-sm">No education goals recorded yet.</p>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                <SortableHeader col="Name"       label="Name"       sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
-                <SortableHeader col="Type"       label="Type"       sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
-                <SortableHeader col="Difficulty" label="Difficulty" sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
-                <SortableHeader col="Renewal"    label="Renewal"    sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
-                <SortableHeader col="TargetDate" label="Target"     sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} align="right" className="pb-2 pr-4" />
-                <th className="text-center text-slate-400 pb-2">Done</th>
-              </tr>
-            </thead>
-            <tbody>
-              {education.map((e, i) => {
-                const isNext = i === nextIdx;
-                const isDone = !!e.Done;
-                const typeStyle = TYPE_STYLE[e.Type] ?? TYPE_STYLE.Other;
-                const diffStyle = DIFF_STYLE[e.Difficulty] ?? "text-slate-400";
-
-                let rowClass = "border-b border-slate-700/50 last:border-0 cursor-pointer transition-colors ";
-                if (isDone) rowClass += "hover:bg-emerald-900/10";
-                else if (isNext) rowClass += "bg-amber-400/5 hover:bg-amber-400/10";
-                else rowClass += "hover:bg-slate-700/40";
-
-                return (
-                  <tr
-                    key={e.ID ?? e._rowIndex}
-                    className={rowClass}
-                    onClick={() => educationModal.openEdit(e)}
-                  >
-                    <td className="py-3 pr-4">
-                      <span className={isDone ? "text-slate-500 line-through" : isNext ? "text-slate-100 font-medium" : "text-slate-300"}>
-                        {e.Name}
-                      </span>
-                    </td>
-                    <td className="py-3 pr-4">
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${typeStyle}`}>{e.Type}</span>
-                    </td>
-                    <td className={`py-3 pr-4 text-xs ${diffStyle}`}>{e.Difficulty}</td>
-                    <td className="py-3 pr-4 text-slate-400 text-xs">{e.Renewal || "—"}</td>
-                    <td className="py-3 pr-4 text-slate-400 text-right tabular-nums text-xs">{e.TargetDate || "—"}</td>
-                    <td className="py-3 text-center">
-                      {isDone ? (
-                        <span className="text-emerald-400">✓</span>
-                      ) : isNext ? (
-                        <span className="text-amber-400 text-xs font-medium">Next</span>
-                      ) : (
-                        <span className="text-slate-600">—</span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Name"       label="Name"       sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Type"       label="Type"       sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Difficulty" label="Difficulty" sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Renewal"    label="Renewal"    sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="TargetDate" label="Target"     sortKey={edSortKey} sortDir={edSortDir} onSort={edHandleSort} align="right" className="pb-2 pr-4" />
+                  <th className="text-center text-slate-400 pb-2">Done</th>
+                </tr>
+              </thead>
+              <tbody>
+                {education.map((e, i) => {
+                  const isNext = i === nextIdx;
+                  const isDone = !!e.Done;
+                  const typeStyle = TYPE_STYLE[e.Type] ?? TYPE_STYLE.Other;
+                  const diffStyle = DIFF_STYLE[e.Difficulty] ?? "text-slate-400";
+  
+                  let rowClass = "border-b border-slate-700/50 last:border-0 cursor-pointer transition-colors ";
+                  if (isDone) rowClass += "hover:bg-emerald-900/10";
+                  else if (isNext) rowClass += "bg-amber-400/5 hover:bg-amber-400/10";
+                  else rowClass += "hover:bg-slate-700/40";
+  
+                  return (
+                    <tr
+                      key={e.ID ?? e._rowIndex}
+                      className={rowClass}
+                      onClick={() => educationModal.openEdit(e)}
+                    >
+                      <td className="py-3 pr-4">
+                        <span className={isDone ? "text-slate-500 line-through" : isNext ? "text-slate-100 font-medium" : "text-slate-300"}>
+                          {e.Name}
+                        </span>
+                      </td>
+                      <td className="py-3 pr-4">
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${typeStyle}`}>{e.Type}</span>
+                      </td>
+                      <td className={`py-3 pr-4 text-xs ${diffStyle}`}>{e.Difficulty}</td>
+                      <td className="py-3 pr-4 text-slate-400 text-xs">{e.Renewal || "—"}</td>
+                      <td className="py-3 pr-4 text-slate-400 text-right tabular-nums text-xs">{e.TargetDate || "—"}</td>
+                      <td className="py-3 text-center">
+                        {isDone ? (
+                          <span className="text-emerald-400">✓</span>
+                        ) : isNext ? (
+                          <span className="text-amber-400 text-xs font-medium">Next</span>
+                        ) : (
+                          <span className="text-slate-600">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 

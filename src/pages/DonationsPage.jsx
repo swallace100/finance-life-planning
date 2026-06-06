@@ -82,30 +82,32 @@ export default function DonationsPage({ data, onSave, onDelete }) {
               <h3 className="text-slate-300 font-medium">{year}</h3>
               <span className="text-slate-400 text-sm tabular-nums">{fmtCurrency.format(yearTotal)}</span>
             </div>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                  <SortableHeader col="Organization" label="Organization" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Amount"       label="Amount"       sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
-                  <SortableHeader col="Date"         label="Date"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
-                  <th className="text-left text-slate-400 pb-2">Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {applySort(rows).map(d => (
-                  <tr
-                    key={d.ID ?? d._rowIndex}
-                    className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
-                    onClick={() => modal.openEdit(d)}
-                  >
-                    <td className="py-3 pr-4 text-slate-200">{d.Organization}</td>
-                    <td className="py-3 pr-4 text-slate-200 text-right font-medium tabular-nums">{fmtCurrency.format(d.Amount)}</td>
-                    <td className="py-3 pr-4 text-slate-400 text-right">{fmtDate(d.Date)}</td>
-                    <td className="py-3 text-slate-500 text-xs">{d.Notes || ''}</td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                    <SortableHeader col="Organization" label="Organization" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="Amount"       label="Amount"       sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                    <SortableHeader col="Date"         label="Date"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                    <th className="text-left text-slate-400 pb-2">Notes</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {applySort(rows).map(d => (
+                    <tr
+                      key={d.ID ?? d._rowIndex}
+                      className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                      onClick={() => modal.openEdit(d)}
+                    >
+                      <td className="py-3 pr-4 text-slate-200">{d.Organization}</td>
+                      <td className="py-3 pr-4 text-slate-200 text-right font-medium tabular-nums">{fmtCurrency.format(d.Amount)}</td>
+                      <td className="py-3 pr-4 text-slate-400 text-right">{fmtDate(d.Date)}</td>
+                      <td className="py-3 text-slate-500 text-xs">{d.Notes || ''}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )
       })}

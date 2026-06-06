@@ -173,84 +173,86 @@ export default function RetirementPage({ data, onSave, onDelete }) {
             No retirement schedule entries found.
           </p>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                <SortableHeader col="Source"         label="Source / Account" sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} className="pb-2 pr-4" />
-                <SortableHeader col="AccessibleYear" label="Accessible"       sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} align="right" className="pb-2 pr-4" />
-                <th className="text-right text-slate-400 pb-2 pr-4">Years Away</th>
-                <SortableHeader col="WithdrawalRate"       label="Rate"             sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} align="right" className="pb-2 pr-4" />
-                <SortableHeader col="ExpectedYearlyAmount" label="Projected / Year"  sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} align="right" className="pb-2 pr-4" />
-                <th className="text-right text-slate-400 pb-2 pr-4">/ Month</th>
-                <th className="text-left text-slate-400 pb-2">Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {scheduleSort.applySort(schedule).map((r) => {
-                  const label = r.AssetID
-                    ? (assetMap[r.AssetID]?.Name ?? `Asset ${r.AssetID}`)
-                    : r.Source || (
-                        <span className="text-slate-500 italic">unnamed</span>
-                      );
-                  const yearsAway = r.AccessibleYear
-                    ? r.AccessibleYear - currentYear
-                    : null;
-                  const accessible = yearsAway !== null && yearsAway <= 0;
-                  const useRate = r.WithdrawalRate != null && r.AssetID;
-                  const yearly = projectedYearly(r);
-                  return (
-                    <tr
-                      key={r.ID ?? r._rowIndex}
-                      className={rowHover}
-                      onClick={() => scheduleModal.openEdit(r)}
-                    >
-                      <td className="py-3 pr-4 text-slate-200">
-                        {label}
-                        {!r.AssetID && (
-                          <span className="ml-2 text-xs text-slate-500 bg-slate-700 px-1.5 py-0.5 rounded">
-                            estimated
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-3 pr-4 text-slate-300 text-right tabular-nums">
-                        {r.AccessibleYear ?? "—"}
-                      </td>
-                      <td className="py-3 pr-4 text-right tabular-nums">
-                        {yearsAway === null ? (
-                          "—"
-                        ) : accessible ? (
-                          <span className="text-emerald-400 font-medium">
-                            Now
-                          </span>
-                        ) : (
-                          <span className="text-slate-400">
-                            {yearsAway} yrs
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-3 pr-4 text-right tabular-nums">
-                        {useRate ? (
-                          <span className="text-blue-400">
-                            {Number(r.WithdrawalRate).toFixed(1)}%
-                          </span>
-                        ) : (
-                          <span className="text-slate-600">—</span>
-                        )}
-                      </td>
-                      <td className="py-3 pr-4 text-slate-200 text-right font-medium tabular-nums">
-                        {yearly > 0 ? fmtCurrency.format(yearly) : "—"}
-                      </td>
-                      <td className="py-3 pr-4 text-slate-400 text-right tabular-nums">
-                        {yearly > 0 ? fmtCurrency.format(yearly / 12) : "—"}
-                      </td>
-                      <td className="py-3 text-slate-500 text-xs">
-                        {r.Notes || ""}
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Source"         label="Source / Account" sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="AccessibleYear" label="Accessible"       sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} align="right" className="pb-2 pr-4" />
+                  <th className="text-right text-slate-400 pb-2 pr-4">Years Away</th>
+                  <SortableHeader col="WithdrawalRate"       label="Rate"             sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} align="right" className="pb-2 pr-4" />
+                  <SortableHeader col="ExpectedYearlyAmount" label="Projected / Year"  sortKey={scheduleSort.sortKey} sortDir={scheduleSort.sortDir} onSort={scheduleSort.handleSort} align="right" className="pb-2 pr-4" />
+                  <th className="text-right text-slate-400 pb-2 pr-4">/ Month</th>
+                  <th className="text-left text-slate-400 pb-2">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {scheduleSort.applySort(schedule).map((r) => {
+                    const label = r.AssetID
+                      ? (assetMap[r.AssetID]?.Name ?? `Asset ${r.AssetID}`)
+                      : r.Source || (
+                          <span className="text-slate-500 italic">unnamed</span>
+                        );
+                    const yearsAway = r.AccessibleYear
+                      ? r.AccessibleYear - currentYear
+                      : null;
+                    const accessible = yearsAway !== null && yearsAway <= 0;
+                    const useRate = r.WithdrawalRate != null && r.AssetID;
+                    const yearly = projectedYearly(r);
+                    return (
+                      <tr
+                        key={r.ID ?? r._rowIndex}
+                        className={rowHover}
+                        onClick={() => scheduleModal.openEdit(r)}
+                      >
+                        <td className="py-3 pr-4 text-slate-200">
+                          {label}
+                          {!r.AssetID && (
+                            <span className="ml-2 text-xs text-slate-500 bg-slate-700 px-1.5 py-0.5 rounded">
+                              estimated
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 pr-4 text-slate-300 text-right tabular-nums">
+                          {r.AccessibleYear ?? "—"}
+                        </td>
+                        <td className="py-3 pr-4 text-right tabular-nums">
+                          {yearsAway === null ? (
+                            "—"
+                          ) : accessible ? (
+                            <span className="text-emerald-400 font-medium">
+                              Now
+                            </span>
+                          ) : (
+                            <span className="text-slate-400">
+                              {yearsAway} yrs
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 pr-4 text-right tabular-nums">
+                          {useRate ? (
+                            <span className="text-blue-400">
+                              {Number(r.WithdrawalRate).toFixed(1)}%
+                            </span>
+                          ) : (
+                            <span className="text-slate-600">—</span>
+                          )}
+                        </td>
+                        <td className="py-3 pr-4 text-slate-200 text-right font-medium tabular-nums">
+                          {yearly > 0 ? fmtCurrency.format(yearly) : "—"}
+                        </td>
+                        <td className="py-3 pr-4 text-slate-400 text-right tabular-nums">
+                          {yearly > 0 ? fmtCurrency.format(yearly / 12) : "—"}
+                        </td>
+                        <td className="py-3 text-slate-500 text-xs">
+                          {r.Notes || ""}
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
@@ -267,42 +269,44 @@ export default function RetirementPage({ data, onSave, onDelete }) {
             No retirement holdings recorded yet.
           </p>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                <SortableHeader col="AssetID"    label="Account" sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} className="pb-2 pr-4" />
-                <SortableHeader col="FundName"   label="Fund"    sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} className="pb-2 pr-4" />
-                <SortableHeader col="Ticker"     label="Ticker"  sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} className="pb-2 pr-4" />
-                <SortableHeader col="Percentage" label="%"       sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} align="right" className="pb-2 pr-4" />
-                <th className="text-left text-slate-400 pb-2">Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {holdingsSort.applySort(holdings).map((h, i) => (
-                <tr
-                  key={h.ID ?? i}
-                  className={rowHover}
-                  onClick={() => holdingsModal.openEdit(h)}
-                >
-                  <td className="py-3 pr-4 text-slate-400">
-                    {h.AssetID ? (assetMap[h.AssetID]?.Name ?? h.AssetID) : "—"}
-                  </td>
-                  <td className="py-3 pr-4 text-slate-200">{h.FundName}</td>
-                  <td className="py-3 pr-4">
-                    <span className="text-xs text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded">
-                      {h.Ticker}
-                    </span>
-                  </td>
-                  <td className="py-3 pr-4 text-slate-300 text-right tabular-nums">
-                    {h.Percentage}%
-                  </td>
-                  <td className="py-3 text-slate-500 text-xs">
-                    {h.Notes || ""}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="AssetID"    label="Account" sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="FundName"   label="Fund"    sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Ticker"     label="Ticker"  sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Percentage" label="%"       sortKey={holdingsSort.sortKey} sortDir={holdingsSort.sortDir} onSort={holdingsSort.handleSort} align="right" className="pb-2 pr-4" />
+                  <th className="text-left text-slate-400 pb-2">Notes</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {holdingsSort.applySort(holdings).map((h, i) => (
+                  <tr
+                    key={h.ID ?? i}
+                    className={rowHover}
+                    onClick={() => holdingsModal.openEdit(h)}
+                  >
+                    <td className="py-3 pr-4 text-slate-400">
+                      {h.AssetID ? (assetMap[h.AssetID]?.Name ?? h.AssetID) : "—"}
+                    </td>
+                    <td className="py-3 pr-4 text-slate-200">{h.FundName}</td>
+                    <td className="py-3 pr-4">
+                      <span className="text-xs text-purple-400 bg-purple-400/10 px-1.5 py-0.5 rounded">
+                        {h.Ticker}
+                      </span>
+                    </td>
+                    <td className="py-3 pr-4 text-slate-300 text-right tabular-nums">
+                      {h.Percentage}%
+                    </td>
+                    <td className="py-3 text-slate-500 text-xs">
+                      {h.Notes || ""}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
@@ -319,30 +323,32 @@ export default function RetirementPage({ data, onSave, onDelete }) {
             No fund allocation recorded yet.
           </p>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                <SortableHeader col="HoldingID"  label="Holding"      sortKey={allocationSort.sortKey} sortDir={allocationSort.sortDir} onSort={allocationSort.handleSort} className="pb-2 pr-4" />
-                <SortableHeader col="AssetClass" label="Asset Class"  sortKey={allocationSort.sortKey} sortDir={allocationSort.sortDir} onSort={allocationSort.handleSort} className="pb-2 pr-4" />
-                <SortableHeader col="Percentage" label="%"            sortKey={allocationSort.sortKey} sortDir={allocationSort.sortDir} onSort={allocationSort.handleSort} align="right" className="pb-2" />
-              </tr>
-            </thead>
-            <tbody>
-              {allocationSort.applySort(allocation).map((a, i) => (
-                <tr
-                  key={a.ID ?? i}
-                  className={rowHover}
-                  onClick={() => allocationModal.openEdit(a)}
-                >
-                  <td className="py-3 pr-4 text-slate-400">{a.HoldingID}</td>
-                  <td className="py-3 pr-4 text-slate-200">{a.AssetClass}</td>
-                  <td className="py-3 text-slate-300 text-right tabular-nums">
-                    {a.Percentage}%
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="HoldingID"  label="Holding"      sortKey={allocationSort.sortKey} sortDir={allocationSort.sortDir} onSort={allocationSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="AssetClass" label="Asset Class"  sortKey={allocationSort.sortKey} sortDir={allocationSort.sortDir} onSort={allocationSort.handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Percentage" label="%"            sortKey={allocationSort.sortKey} sortDir={allocationSort.sortDir} onSort={allocationSort.handleSort} align="right" className="pb-2" />
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {allocationSort.applySort(allocation).map((a, i) => (
+                  <tr
+                    key={a.ID ?? i}
+                    className={rowHover}
+                    onClick={() => allocationModal.openEdit(a)}
+                  >
+                    <td className="py-3 pr-4 text-slate-400">{a.HoldingID}</td>
+                    <td className="py-3 pr-4 text-slate-200">{a.AssetClass}</td>
+                    <td className="py-3 text-slate-300 text-right tabular-nums">
+                      {a.Percentage}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 

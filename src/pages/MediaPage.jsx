@@ -165,34 +165,36 @@ export default function MediaPage({ data, onSave, onDelete }) {
           {booksSorted.length === 0 ? (
             <p className="text-slate-500 text-sm">{search.books ? "No matches." : "No books logged yet."}</p>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                  <SortableHeader col="Name"     label="Title"     sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Author"   label="Author"    sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Genre"    label="Genre"     sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Format"   label="Format"    sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="ReadDate" label="Date Read" sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} align="right" className="pb-2 pr-4" />
-                  <SortableHeader col="Rating"   label="Rating"    sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} align="right" className="pb-2" />
-                </tr>
-              </thead>
-              <tbody>
-                {booksSorted.map(b => (
-                  <tr key={b.ID ?? b._rowIndex} className={rowHover} onClick={() => bookModal.openEdit(b)}>
-                    <td className="py-2.5 pr-4 text-slate-200 font-medium">{b.Name}</td>
-                    <td className="py-2.5 pr-4 text-slate-400">{b.Author || "—"}</td>
-                    <td className="py-2.5 pr-4 text-slate-500 text-xs">{b.Genre || "—"}</td>
-                    <td className="py-2.5 pr-4">
-                      {b.Format ? (
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${FORMAT_STYLE[b.Format] ?? "text-slate-400 bg-slate-700"}`}>{b.Format}</span>
-                      ) : <span className="text-slate-600">—</span>}
-                    </td>
-                    <td className="py-2.5 pr-4 text-slate-400 text-right text-xs">{fmtDate(b.ReadDate)}</td>
-                    <td className="py-2.5 text-right"><Stars rating={b.Rating} /></td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                    <SortableHeader col="Name"     label="Title"     sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="Author"   label="Author"    sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="Genre"    label="Genre"     sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="Format"   label="Format"    sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="ReadDate" label="Date Read" sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} align="right" className="pb-2 pr-4" />
+                    <SortableHeader col="Rating"   label="Rating"    sortKey={bookSort.sortKey} sortDir={bookSort.sortDir} onSort={bookSort.handleSort} align="right" className="pb-2" />
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {booksSorted.map(b => (
+                    <tr key={b.ID ?? b._rowIndex} className={rowHover} onClick={() => bookModal.openEdit(b)}>
+                      <td className="py-2.5 pr-4 text-slate-200 font-medium">{b.Name}</td>
+                      <td className="py-2.5 pr-4 text-slate-400">{b.Author || "—"}</td>
+                      <td className="py-2.5 pr-4 text-slate-500 text-xs">{b.Genre || "—"}</td>
+                      <td className="py-2.5 pr-4">
+                        {b.Format ? (
+                          <span className={`text-xs px-2 py-0.5 rounded-full ${FORMAT_STYLE[b.Format] ?? "text-slate-400 bg-slate-700"}`}>{b.Format}</span>
+                        ) : <span className="text-slate-600">—</span>}
+                      </td>
+                      <td className="py-2.5 pr-4 text-slate-400 text-right text-xs">{fmtDate(b.ReadDate)}</td>
+                      <td className="py-2.5 text-right"><Stars rating={b.Rating} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}
@@ -219,26 +221,28 @@ export default function MediaPage({ data, onSave, onDelete }) {
           {filmsSorted.length === 0 ? (
             <p className="text-slate-500 text-sm">{search.films ? "No matches." : "No films logged yet."}</p>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                  <SortableHeader col="Name"        label="Title"        sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="ReleaseYear"  label="Year"         sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} align="right" className="pb-2 pr-4" />
-                  <SortableHeader col="WatchDate"    label="Date Watched" sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} align="right" className="pb-2 pr-4" />
-                  <SortableHeader col="Rating"       label="Rating"       sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} align="right" className="pb-2" />
-                </tr>
-              </thead>
-              <tbody>
-                {filmsSorted.map(f => (
-                  <tr key={f.ID ?? f._rowIndex} className={rowHover} onClick={() => filmModal.openEdit(f)}>
-                    <td className="py-2.5 pr-4 text-slate-200 font-medium">{f.Name}</td>
-                    <td className="py-2.5 pr-4 text-slate-500 text-right tabular-nums text-xs">{f.ReleaseYear || "—"}</td>
-                    <td className="py-2.5 pr-4 text-slate-400 text-right text-xs">{fmtDate(f.WatchDate)}</td>
-                    <td className="py-2.5 text-right"><Stars rating={f.Rating} /></td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                    <SortableHeader col="Name"        label="Title"        sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="ReleaseYear"  label="Year"         sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} align="right" className="pb-2 pr-4" />
+                    <SortableHeader col="WatchDate"    label="Date Watched" sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} align="right" className="pb-2 pr-4" />
+                    <SortableHeader col="Rating"       label="Rating"       sortKey={filmSort.sortKey} sortDir={filmSort.sortDir} onSort={filmSort.handleSort} align="right" className="pb-2" />
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filmsSorted.map(f => (
+                    <tr key={f.ID ?? f._rowIndex} className={rowHover} onClick={() => filmModal.openEdit(f)}>
+                      <td className="py-2.5 pr-4 text-slate-200 font-medium">{f.Name}</td>
+                      <td className="py-2.5 pr-4 text-slate-500 text-right tabular-nums text-xs">{f.ReleaseYear || "—"}</td>
+                      <td className="py-2.5 pr-4 text-slate-400 text-right text-xs">{fmtDate(f.WatchDate)}</td>
+                      <td className="py-2.5 text-right"><Stars rating={f.Rating} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}
@@ -265,34 +269,36 @@ export default function MediaPage({ data, onSave, onDelete }) {
           {gamesSorted.length === 0 ? (
             <p className="text-slate-500 text-sm">{search.games ? "No matches." : "No games logged yet."}</p>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                  <SortableHeader col="Name"           label="Game"      sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Platform"        label="Platform"  sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Genre"           label="Genre"     sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Status"          label="Status"    sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="CompletionDate"  label="Completed" sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} align="right" className="pb-2 pr-4" />
-                  <SortableHeader col="Rating"          label="Rating"    sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} align="right" className="pb-2" />
-                </tr>
-              </thead>
-              <tbody>
-                {gamesSorted.map(g => (
-                  <tr key={g.ID ?? g._rowIndex} className={rowHover} onClick={() => gameModal.openEdit(g)}>
-                    <td className="py-2.5 pr-4 text-slate-200 font-medium">{g.Name}</td>
-                    <td className="py-2.5 pr-4 text-slate-400 text-xs">{g.Platform}</td>
-                    <td className="py-2.5 pr-4 text-slate-500 text-xs">{g.Genre || "—"}</td>
-                    <td className="py-2.5 pr-4">
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${STATUS_STYLE[g.Status] ?? "text-slate-400 bg-slate-700"}`}>
-                        {g.Status}
-                      </span>
-                    </td>
-                    <td className="py-2.5 pr-4 text-slate-400 text-right text-xs">{fmtDate(g.CompletionDate)}</td>
-                    <td className="py-2.5 text-right"><Stars rating={g.Rating} /></td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                    <SortableHeader col="Name"           label="Game"      sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="Platform"        label="Platform"  sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="Genre"           label="Genre"     sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="Status"          label="Status"    sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="CompletionDate"  label="Completed" sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} align="right" className="pb-2 pr-4" />
+                    <SortableHeader col="Rating"          label="Rating"    sortKey={gameSort.sortKey} sortDir={gameSort.sortDir} onSort={gameSort.handleSort} align="right" className="pb-2" />
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {gamesSorted.map(g => (
+                    <tr key={g.ID ?? g._rowIndex} className={rowHover} onClick={() => gameModal.openEdit(g)}>
+                      <td className="py-2.5 pr-4 text-slate-200 font-medium">{g.Name}</td>
+                      <td className="py-2.5 pr-4 text-slate-400 text-xs">{g.Platform}</td>
+                      <td className="py-2.5 pr-4 text-slate-500 text-xs">{g.Genre || "—"}</td>
+                      <td className="py-2.5 pr-4">
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${STATUS_STYLE[g.Status] ?? "text-slate-400 bg-slate-700"}`}>
+                          {g.Status}
+                        </span>
+                      </td>
+                      <td className="py-2.5 pr-4 text-slate-400 text-right text-xs">{fmtDate(g.CompletionDate)}</td>
+                      <td className="py-2.5 text-right"><Stars rating={g.Rating} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}

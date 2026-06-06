@@ -119,50 +119,52 @@ export default function NonTangibleAssetsPage({ data, onSave, onDelete }) {
               <span className="text-slate-300 font-medium tabular-nums text-sm">{fmtCurrency.format(groupTotal)}</span>
             </div>
 
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                  <SortableHeader col="Name"         label="Name"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Subtype"      label="Subtype"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Institution"  label="Institution"  sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Currency"     label="Currency"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="latestValue"  label="Latest Value" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
-                  <SortableHeader col="latestDate"   label="As Of"        sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
-                  <th className="text-right pb-2"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {group.map(r => (
-                  <tr
-                    key={r.ID}
-                    className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
-                    onClick={() => accountModal.openEdit(r)}
-                  >
-                    <td className="py-3 pr-4 text-slate-200">
-                      {r.Name}
-                      {r.RetirementAccount && (
-                        <span className="ml-2 text-xs text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded">Retirement</span>
-                      )}
-                    </td>
-                    <td className="py-3 pr-4 text-slate-400">{r.Subtype || '—'}</td>
-                    <td className="py-3 pr-4 text-slate-400">{r.Institution || '—'}</td>
-                    <td className="py-3 pr-4 text-slate-500">{r.Currency || '—'}</td>
-                    <td className="py-3 pr-4 text-right font-medium tabular-nums text-slate-200">
-                      {r.latestValue != null ? fmtCurrency.format(r.latestValue) : '—'}
-                    </td>
-                    <td className="py-3 pr-4 text-right text-slate-500 text-xs">{fmtDate(r.latestDate)}</td>
-                    <td className="py-3 text-right">
-                      <button
-                        onClick={e => { e.stopPropagation(); historyModal.openAdd({ AssetID: r.ID }) }}
-                        className="text-xs text-blue-400 hover:text-blue-300 bg-blue-400/10 hover:bg-blue-400/20 px-2 py-1 rounded transition-colors"
-                      >
-                        + Value
-                      </button>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                    <SortableHeader col="Name"         label="Name"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="Subtype"      label="Subtype"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="Institution"  label="Institution"  sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="Currency"     label="Currency"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                    <SortableHeader col="latestValue"  label="Latest Value" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                    <SortableHeader col="latestDate"   label="As Of"        sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                    <th className="text-right pb-2"></th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {group.map(r => (
+                    <tr
+                      key={r.ID}
+                      className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                      onClick={() => accountModal.openEdit(r)}
+                    >
+                      <td className="py-3 pr-4 text-slate-200">
+                        {r.Name}
+                        {r.RetirementAccount && (
+                          <span className="ml-2 text-xs text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded">Retirement</span>
+                        )}
+                      </td>
+                      <td className="py-3 pr-4 text-slate-400">{r.Subtype || '—'}</td>
+                      <td className="py-3 pr-4 text-slate-400">{r.Institution || '—'}</td>
+                      <td className="py-3 pr-4 text-slate-500">{r.Currency || '—'}</td>
+                      <td className="py-3 pr-4 text-right font-medium tabular-nums text-slate-200">
+                        {r.latestValue != null ? fmtCurrency.format(r.latestValue) : '—'}
+                      </td>
+                      <td className="py-3 pr-4 text-right text-slate-500 text-xs">{fmtDate(r.latestDate)}</td>
+                      <td className="py-3 text-right">
+                        <button
+                          onClick={e => { e.stopPropagation(); historyModal.openAdd({ AssetID: r.ID }) }}
+                          className="text-xs text-blue-400 hover:text-blue-300 bg-blue-400/10 hover:bg-blue-400/20 px-2 py-1 rounded transition-colors"
+                        >
+                          + Value
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )
       })}

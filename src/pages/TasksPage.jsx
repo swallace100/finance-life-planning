@@ -86,54 +86,56 @@ export default function TasksPage({ data, onSave, onDelete }) {
         {tasks.length === 0 ? (
           <p className="text-slate-500 text-sm">No tasks yet.</p>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                <SortableHeader col="Name"     label="Task"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                <SortableHeader col="Priority" label="Priority" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                <SortableHeader col="DueDate"  label="Due Date" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
-                <th className="text-right text-slate-400 pb-2 pr-4">Status</th>
-                <th className="text-left text-slate-400 pb-2">Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.map(t => {
-                const days = daysUntil(t.DueDate);
-                const isOverdue = days !== null && days < 0;
-                const isSoon    = days !== null && days >= 0 && days <= 7;
-                const pri = PRIORITY_STYLE[t.Priority] ?? PRIORITY_STYLE.Medium;
-
-                let rowClass = rowHover;
-                if (isOverdue) rowClass += " bg-red-900/10";
-                else if (isSoon) rowClass += " bg-amber-900/10";
-
-                let statusEl;
-                if (isOverdue) {
-                  statusEl = <span className="text-red-400 font-medium text-xs">{Math.abs(days)}d overdue</span>;
-                } else if (days === 0) {
-                  statusEl = <span className="text-amber-400 font-medium text-xs">Today</span>;
-                } else if (isSoon) {
-                  statusEl = <span className="text-amber-400 text-xs">{days}d</span>;
-                } else if (days !== null) {
-                  statusEl = <span className="text-slate-500 text-xs">{days}d</span>;
-                } else {
-                  statusEl = <span className="text-slate-600">—</span>;
-                }
-
-                return (
-                  <tr key={t.ID ?? t._rowIndex} className={rowClass} onClick={() => modal.openEdit(t)}>
-                    <td className="py-3 pr-4 text-slate-200">{t.Name}</td>
-                    <td className="py-3 pr-4">
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${pri.badge}`}>{t.Priority}</span>
-                    </td>
-                    <td className="py-3 pr-4 text-slate-400 text-right text-xs tabular-nums">{fmtDate(t.DueDate)}</td>
-                    <td className="py-3 pr-4 text-right">{statusEl}</td>
-                    <td className="py-3 text-slate-500 text-xs">{t.Notes || ""}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <SortableHeader col="Name"     label="Task"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Priority" label="Priority" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="DueDate"  label="Due Date" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                  <th className="text-right text-slate-400 pb-2 pr-4">Status</th>
+                  <th className="text-left text-slate-400 pb-2">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map(t => {
+                  const days = daysUntil(t.DueDate);
+                  const isOverdue = days !== null && days < 0;
+                  const isSoon    = days !== null && days >= 0 && days <= 7;
+                  const pri = PRIORITY_STYLE[t.Priority] ?? PRIORITY_STYLE.Medium;
+  
+                  let rowClass = rowHover;
+                  if (isOverdue) rowClass += " bg-red-900/10";
+                  else if (isSoon) rowClass += " bg-amber-900/10";
+  
+                  let statusEl;
+                  if (isOverdue) {
+                    statusEl = <span className="text-red-400 font-medium text-xs">{Math.abs(days)}d overdue</span>;
+                  } else if (days === 0) {
+                    statusEl = <span className="text-amber-400 font-medium text-xs">Today</span>;
+                  } else if (isSoon) {
+                    statusEl = <span className="text-amber-400 text-xs">{days}d</span>;
+                  } else if (days !== null) {
+                    statusEl = <span className="text-slate-500 text-xs">{days}d</span>;
+                  } else {
+                    statusEl = <span className="text-slate-600">—</span>;
+                  }
+  
+                  return (
+                    <tr key={t.ID ?? t._rowIndex} className={rowClass} onClick={() => modal.openEdit(t)}>
+                      <td className="py-3 pr-4 text-slate-200">{t.Name}</td>
+                      <td className="py-3 pr-4">
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${pri.badge}`}>{t.Priority}</span>
+                      </td>
+                      <td className="py-3 pr-4 text-slate-400 text-right text-xs tabular-nums">{fmtDate(t.DueDate)}</td>
+                      <td className="py-3 pr-4 text-right">{statusEl}</td>
+                      <td className="py-3 text-slate-500 text-xs">{t.Notes || ""}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
