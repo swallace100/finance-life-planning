@@ -14,7 +14,7 @@ function CustomTooltip({ active, payload, label }) {
 
 export default function NetWorthChart({ data }) {
   return (
-    <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+    <div className="card p-6">
       <h2 className="text-slate-300 font-medium mb-5">Net Worth Over Time</h2>
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>

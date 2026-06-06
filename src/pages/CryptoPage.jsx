@@ -50,19 +50,19 @@ export default function CryptoPage({ data, onSave, onDelete }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Total Assets</p>
           <p className="text-3xl font-bold text-white mt-2">{assets.length}</p>
         </div>
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Staking</p>
           <p className="text-3xl font-bold text-white mt-2">{staked.length}</p>
           <p className="text-slate-500 text-xs mt-1">of {assets.length} assets</p>
         </div>
       </div>
 
-      <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+      <div className="card p-6">
         <h3 className="text-slate-300 font-medium mb-4">Holdings</h3>
         {assets.length === 0 ? (
           <p className="text-slate-500 text-sm">No crypto assets found.</p>
@@ -108,7 +108,7 @@ export default function CryptoPage({ data, onSave, onDelete }) {
       </div>
 
       {assets.some(a => a.Notes) && (
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div className="card p-6">
           <h3 className="text-slate-300 font-medium mb-3">Notes</h3>
           <div className="space-y-2">
             {assets.filter(a => a.Notes).map(a => (

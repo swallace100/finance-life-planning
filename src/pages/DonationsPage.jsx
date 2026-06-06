@@ -47,20 +47,20 @@ export default function DonationsPage({ data, onSave, onDelete }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Total Donated</p>
           <p className="text-3xl font-bold text-white mt-2 tabular-nums">{fmtCurrency.format(grandTotal)}</p>
           <p className="text-slate-500 text-xs mt-1">all time</p>
         </div>
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">This Year</p>
           <p className="text-3xl font-bold text-white mt-2 tabular-nums">
             {fmtCurrency.format((byYear[years[0]] || []).reduce((s, d) => s + (Number(d.Amount) || 0), 0))}
           </p>
           <p className="text-slate-500 text-xs mt-1">{years[0]}</p>
         </div>
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Organizations</p>
           <p className="text-3xl font-bold text-white mt-2">
             {new Set(donations.map(d => d.Organization)).size}
@@ -70,14 +70,14 @@ export default function DonationsPage({ data, onSave, onDelete }) {
       </div>
 
       {donations.length === 0 ? (
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div className="card p-6">
           <p className="text-slate-500 text-sm">No donations recorded.</p>
         </div>
       ) : years.map(year => {
         const rows = byYear[year]
         const yearTotal = rows.reduce((s, d) => s + (Number(d.Amount) || 0), 0)
         return (
-          <div key={year} className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+          <div key={year} className="card p-6">
             <div className="flex items-baseline justify-between mb-4">
               <h3 className="text-slate-300 font-medium">{year}</h3>
               <span className="text-slate-400 text-sm tabular-nums">{fmtCurrency.format(yearTotal)}</span>

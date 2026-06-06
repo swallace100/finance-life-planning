@@ -4,7 +4,7 @@ const daysUntil = (d) => Math.ceil((new Date(d) - new Date()) / 86400000)
 
 export default function CDMaturities({ cds }) {
   return (
-    <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+    <div className="card p-6">
       <h2 className="text-slate-300 font-medium mb-4">
         Upcoming CD Maturities
         <span className="text-slate-500 text-sm font-normal ml-2">(next 12 months)</span>

@@ -210,7 +210,7 @@ export default function AllocationPage({ data, onSave, onDelete }) {
       )}
 
       {/* Main allocation table */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+      <div className="card overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide bg-slate-900/40">
@@ -303,7 +303,7 @@ export default function AllocationPage({ data, onSave, onDelete }) {
       </div>
 
       {/* Goals Configuration — collapsible */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700">
+      <div className="card">
         <button
           className="w-full flex items-center justify-between px-6 py-4"
           onClick={() => setShowGoals((v) => !v)}

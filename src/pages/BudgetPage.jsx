@@ -52,16 +52,16 @@ export default function BudgetPage({ data, onSave, onDelete }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Monthly Income</p>
           <p className="text-3xl font-bold text-emerald-400 mt-2 tabular-nums">{fmtCurrency.format(monthlyIncome)}</p>
         </div>
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Monthly Expenses</p>
           <p className="text-3xl font-bold text-red-400 mt-2 tabular-nums">{fmtCurrency.format(Math.abs(monthlyExpenses))}</p>
         </div>
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Net Monthly</p>
           <p className={`text-3xl font-bold mt-2 tabular-nums ${netMonthly >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
             {netMonthly >= 0 ? '+' : ''}{fmtCurrency.format(netMonthly)}
@@ -71,7 +71,7 @@ export default function BudgetPage({ data, onSave, onDelete }) {
 
       {/* Income */}
       {income.length > 0 && (
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div className="card p-6">
           <div className="flex items-baseline justify-between mb-4">
             <h3 className="text-slate-300 font-medium">Income</h3>
             <span className="text-emerald-400 text-sm tabular-nums font-medium">{fmtCurrency.format(monthlyIncome)}/mo</span>
@@ -107,7 +107,7 @@ export default function BudgetPage({ data, onSave, onDelete }) {
       {Object.entries(expensesByType).sort(([a], [b]) => a.localeCompare(b)).map(([type, rows]) => {
         const typeTotal = rows.reduce((s, i) => s + (Number(i.Amount) || 0), 0)
         return (
-          <div key={type} className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+          <div key={type} className="card p-6">
             <div className="flex items-baseline justify-between mb-4">
               <h3 className="text-slate-300 font-medium">{type}</h3>
               <span className="text-red-400 text-sm tabular-nums font-medium">{fmtCurrency.format(Math.abs(typeTotal))}/mo</span>
@@ -139,7 +139,7 @@ export default function BudgetPage({ data, onSave, onDelete }) {
       })}
 
       {items.length === 0 && (
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div className="card p-6">
           <p className="text-slate-500 text-sm">No budget items found.</p>
         </div>
       )}

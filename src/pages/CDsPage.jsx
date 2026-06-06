@@ -12,7 +12,7 @@ const daysUntil = (d) => Math.ceil((new Date(d) - new Date()) / 86400000)
 
 function StatCard({ label, value, sub }) {
   return (
-    <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+    <div className="card p-5">
       <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">{label}</p>
       <p className="text-3xl font-bold text-white mt-2 tabular-nums">{value}</p>
       {sub && <p className="text-slate-500 text-xs mt-1">{sub}</p>}
@@ -63,7 +63,7 @@ export default function CDsPage({ data, onSave, onDelete }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard label="Active Value"  value={fmtCurrency.format(totalActive)} />
         <StatCard label="Active CDs"    value={active.length} sub={`${matured.length} matured`} />
         <StatCard label="Avg APY"       value={`${avgAPY}%`} sub="across active CDs" />
@@ -71,7 +71,7 @@ export default function CDsPage({ data, onSave, onDelete }) {
 
       <CDMaturities cds={upcoming} />
 
-      <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+      <div className="card p-6">
         <h3 className="text-slate-300 font-medium mb-4">All Active CDs</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

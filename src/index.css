@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .card {
+    @apply bg-slate-800 rounded-xl border border-slate-700 min-w-0;
+  }
+}

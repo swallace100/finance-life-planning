@@ -111,7 +111,7 @@ export default function RetirementPage({ data, onSave, onDelete }) {
       <h2 className="text-xl font-semibold text-slate-100">Retirement</h2>
 
       {/* Schedule */}
-      <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+      <div className="card p-6">
         <SectionHeader
           title="Retirement Income"
           onAdd={() => scheduleModal.openAdd({ WithdrawalRate: 4 })}
@@ -119,7 +119,7 @@ export default function RetirementPage({ data, onSave, onDelete }) {
         />
 
         {schedule.length > 0 && (
-          <div className="grid grid-cols-2 gap-4 mb-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
             {/* Current — accessible now */}
             <div className="bg-slate-700/30 rounded-lg px-5 py-4 border border-slate-700">
               <p className="text-emerald-400 text-xs font-semibold uppercase tracking-wide mb-2">
@@ -255,7 +255,7 @@ export default function RetirementPage({ data, onSave, onDelete }) {
       </div>
 
       {/* Holdings */}
-      <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+      <div className="card p-6">
         <SectionHeader
           title="Holdings"
           onAdd={() => holdingsModal.openAdd()}
@@ -307,7 +307,7 @@ export default function RetirementPage({ data, onSave, onDelete }) {
       </div>
 
       {/* Fund Allocation */}
-      <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+      <div className="card p-6">
         <SectionHeader
           title="Fund Allocation"
           onAdd={() => allocationModal.openAdd()}

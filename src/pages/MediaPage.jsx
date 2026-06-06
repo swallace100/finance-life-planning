@@ -145,7 +145,7 @@ export default function MediaPage({ data, onSave, onDelete }) {
 
       {/* Books */}
       {activeTab === "books" && (
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div className="card p-6">
           <div className="flex items-center gap-4 mb-5">
             <div className="flex-1">
               <SearchBar value={search.books} onChange={v => setTabSearch("books", v)} placeholder="Search title, author, genre…" />
@@ -199,7 +199,7 @@ export default function MediaPage({ data, onSave, onDelete }) {
 
       {/* Films */}
       {activeTab === "films" && (
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div className="card p-6">
           <div className="flex items-center gap-4 mb-5">
             <div className="flex-1">
               <SearchBar value={search.films} onChange={v => setTabSearch("films", v)} placeholder="Search title or year…" />
@@ -245,7 +245,7 @@ export default function MediaPage({ data, onSave, onDelete }) {
 
       {/* Games */}
       {activeTab === "games" && (
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div className="card p-6">
           <div className="flex items-center gap-4 mb-5">
             <div className="flex-1">
               <SearchBar value={search.games} onChange={v => setTabSearch("games", v)} placeholder="Search title, platform, genre…" />

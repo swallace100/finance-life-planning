@@ -40,9 +40,9 @@ function CustomTooltip({ active, payload }) {
 
 export default function AssetBreakdown({ breakdown, total }) {
   return (
-    <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 h-full">
+    <div className="card p-6 h-full">
       <h2 className="text-slate-300 font-medium mb-4">Asset Breakdown</h2>
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col sm:flex-row items-center gap-6">
         <div className="flex-shrink-0 w-44 h-44">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -68,7 +68,7 @@ export default function AssetBreakdown({ breakdown, total }) {
           </ResponsiveContainer>
         </div>
 
-        <div className="flex-1 flex flex-col gap-2.5">
+        <div className="flex-1 w-full min-w-0 flex flex-col gap-2.5">
           {breakdown.map(({ name, value }) => (
             <div key={name} className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">

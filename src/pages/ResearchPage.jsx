@@ -77,11 +77,11 @@ export default function ResearchPage({ data, onSave, onDelete }) {
       )}
 
       {links.length === 0 ? (
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div className="card p-6">
           <p className="text-slate-500 text-sm">No research links yet. Add a link to a Word doc, PDF, or URL.</p>
         </div>
       ) : categories.map(cat => (
-        <div key={cat} className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div key={cat} className="card p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-slate-300 font-medium">{cat}</h3>
             <span className="text-slate-500 text-sm">{byCategory[cat].length} item{byCategory[cat].length !== 1 ? "s" : ""}</span>

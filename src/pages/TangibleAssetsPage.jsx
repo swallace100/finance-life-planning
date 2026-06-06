@@ -59,16 +59,16 @@ export default function TangibleAssetsPage({ data, onSave, onDelete }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Current Value</p>
           <p className="text-3xl font-bold text-white mt-2 tabular-nums">{fmtCurrency.format(totalValue)}</p>
         </div>
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Total Cost</p>
           <p className="text-3xl font-bold text-white mt-2 tabular-nums">{fmtCurrency.format(totalCost)}</p>
         </div>
-        <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Unrealized Gain</p>
           <p className={`text-3xl font-bold mt-2 tabular-nums ${totalGain >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
             {totalGain >= 0 ? '+' : ''}{fmtCurrency.format(totalGain)}
@@ -77,11 +77,11 @@ export default function TangibleAssetsPage({ data, onSave, onDelete }) {
       </div>
 
       {assets.length === 0 ? (
-        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div className="card p-6">
           <p className="text-slate-500 text-sm">No tangible assets found.</p>
         </div>
       ) : Object.entries(byCategory).sort(([a], [b]) => a.localeCompare(b)).map(([category, rows]) => (
-        <div key={category} className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <div key={category} className="card p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-slate-300 font-medium">{category}</h3>
             <span className="text-slate-500 text-sm">{rows.length} item{rows.length !== 1 ? 's' : ''}</span>

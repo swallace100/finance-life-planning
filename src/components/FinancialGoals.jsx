@@ -11,7 +11,7 @@ export default function FinancialGoals({ goals, netWorth }) {
   if (!goals?.length) return null
 
   return (
-    <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+    <div className="card p-6">
       <h2 className="text-slate-300 font-medium mb-5">Financial Goals</h2>
       <div className="space-y-5">
         {goals.map((goal, i) => {

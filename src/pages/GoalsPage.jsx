@@ -93,7 +93,7 @@ export default function GoalsPage({ data, onSave, onDelete }) {
       <h2 className="text-xl font-semibold text-slate-100">Goals</h2>
 
       {/* Lifetime Goals */}
-      <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+      <div className="card p-6">
         <div className="flex items-baseline justify-between mb-5">
           <div className="flex items-baseline gap-3">
             <h3 className="text-slate-300 font-medium">Lifetime Goals</h3>
@@ -128,7 +128,7 @@ export default function GoalsPage({ data, onSave, onDelete }) {
         {lifetime.length === 0 ? (
           <p className="text-slate-500 text-sm">No lifetime goals recorded yet.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {lifetimeSorted.map(g => {
               const st = STATUS_STYLE[g.Status] ?? STATUS_STYLE["Not Started"];
               return (
@@ -155,7 +155,7 @@ export default function GoalsPage({ data, onSave, onDelete }) {
       </div>
 
       {/* Education Goals */}
-      <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+      <div className="card p-6">
         <div className="flex items-baseline justify-between mb-5">
           <div className="flex items-baseline gap-3">
             <h3 className="text-slate-300 font-medium">Education & Certifications</h3>

@@ -62,18 +62,18 @@ export default function TasksPage({ data, onSave, onDelete }) {
       </div>
 
       {tasks.length > 0 && (
-        <div className="grid grid-cols-3 gap-4">
-          <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="card p-5">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Total</p>
             <p className="text-3xl font-bold text-white mt-2">{tasks.length}</p>
           </div>
-          <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+          <div className="card p-5">
             <p className="text-red-400 text-xs font-semibold uppercase tracking-wide">Overdue</p>
             <p className={`text-3xl font-bold mt-2 ${overdue.length > 0 ? "text-red-400" : "text-white"}`}>
               {overdue.length}
             </p>
           </div>
-          <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+          <div className="card p-5">
             <p className="text-amber-400 text-xs font-semibold uppercase tracking-wide">Due This Week</p>
             <p className={`text-3xl font-bold mt-2 ${dueWeek.length > 0 ? "text-amber-400" : "text-white"}`}>
               {dueWeek.length}
@@ -82,7 +82,7 @@ export default function TasksPage({ data, onSave, onDelete }) {
         </div>
       )}
 
-      <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+      <div className="card p-6">
         {tasks.length === 0 ? (
           <p className="text-slate-500 text-sm">No tasks yet.</p>
         ) : (
