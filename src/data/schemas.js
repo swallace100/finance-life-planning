@@ -422,4 +422,12 @@ export const SCHEMAS = {
       step: 0.1,
     },
   ],
+
+  ProjectionSettings: [
+    { key: 'Label',      label: 'Asset / Income Source',                                       type: 'text',     required: true },
+    { key: 'StartValue', label: 'Starting Value ($) — leave blank to use current balance',     type: 'number' },
+    { key: 'GrowthRate', label: 'Annual Growth Rate (%)',                                      type: 'number',   step: 0.1, required: true, defaultValue: 8 },
+    { key: 'AnnualAdd',  label: 'Annual Contribution ($) — e.g. 401k match, budget surplus',  type: 'number',   defaultValue: 0 },
+    { key: 'Notes',      label: 'Notes / Assumptions',                                        type: 'textarea' },
+  ],
 };

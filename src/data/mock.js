@@ -246,4 +246,6 @@ export const mockData = {
     { ID: 4, Name: 'David Kim',      Relationship: 'Friend',       Phone: '555-0104', Email: 'david@example.com',  Social: '@davidkim',       Birthday: '1988-06-30', Favorite: false, Notes: '' },
     { ID: 5, Name: 'Eva Chen',       Relationship: 'Family',       Phone: '555-0105', Email: 'eva@example.com',    Social: '',                Birthday: '1992-12-19', Favorite: true,  Notes: 'Cousin' },
   ],
+
+  ProjectionSettings: [],
 }

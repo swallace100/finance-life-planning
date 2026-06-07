@@ -17,6 +17,7 @@ import MediaPage from "./pages/MediaPage";
 import ContactsPage from "./pages/ContactsPage";
 import AchievementsPage from "./pages/AchievementsPage";
 import PersonalInfoPage from "./pages/PersonalInfoPage";
+import ProjectionPage from "./pages/ProjectionPage";
 import { mockData } from "./data/mock";
 import { isElectron, loadExcel, saveRow, deleteRow } from "./api";
 
@@ -171,6 +172,7 @@ export default function App() {
     media:       <MediaPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     contacts:    <ContactsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     profile:     <PersonalInfoPage data={data} onSave={handleSave} />,
+    projection:  <ProjectionPage data={data} onSave={handleSave} onDelete={handleDelete} />,
   };
 
   return (
