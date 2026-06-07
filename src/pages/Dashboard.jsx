@@ -2,6 +2,7 @@ import NetWorthCard from '../components/NetWorthCard'
 import NetWorthChart from '../components/NetWorthChart'
 import AssetBreakdown from '../components/AssetBreakdown'
 import FinancialGoals from '../components/FinancialGoals'
+import LifeStats from '../components/LifeStats'
 
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -97,6 +98,8 @@ export default function Dashboard({ data, onSave, onDelete }) {
       <NetWorthChart data={monthlyData} />
 
       <FinancialGoals goals={goals} netWorth={netWorth} onSave={onSave} onDelete={onDelete} />
+
+      <LifeStats data={data} />
     </div>
   )
 }
