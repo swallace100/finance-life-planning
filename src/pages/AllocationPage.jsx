@@ -13,6 +13,25 @@ const fmtPct = (v) => (v != null ? `${v.toFixed(1)}%` : "—");
 
 const CLASS_ORDER = ["Cash", "Bonds/CDs/Treasuries", "Stock", "Other"];
 
+// Static routing for FundAllocation.AssetClass values that should NOT land in Stock.
+// subToClass (from AssetGoals) takes priority; this is the fallback.
+const FUND_CLASS_MAP = {
+  Cash:                  "Cash",
+  Bonds:                 "Bonds/CDs/Treasuries",
+  Bond:                  "Bonds/CDs/Treasuries",
+  Treasuries:            "Bonds/CDs/Treasuries",
+  Treasury:              "Bonds/CDs/Treasuries",
+  "Certificate Deposit": "Bonds/CDs/Treasuries",
+  CD:                    "Bonds/CDs/Treasuries",
+  CDs:                   "Bonds/CDs/Treasuries",
+  Stock:                 "Stock",
+  Stocks:                "Stock",
+  Crypto:                "Other",
+  "Real Estate":         "Other",
+  Alternative:           "Other",
+  Other:                 "Other",
+};
+
 function getLatestByAsset(history) {
   const latest = {};
   history.forEach((h) => {
@@ -82,7 +101,7 @@ function computeTree(data) {
   fundAllocs.forEach((alloc) => {
     const val =
       (holdingValues[alloc.HoldingID] || 0) * (Number(alloc.Percentage) / 100);
-    const cls = subToClass[alloc.AssetClass] || "Stock";
+    const cls = subToClass[alloc.AssetClass] || FUND_CLASS_MAP[alloc.AssetClass] || "Stock";
     add(cls, alloc.AssetClass, val);
   });
 

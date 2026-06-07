@@ -46,7 +46,8 @@ export default function RetirementPage({ data, onSave, onDelete }) {
   const allocation = data?.FundAllocation || [];
   const assets = data?.NonTangibleAssets || [];
 
-  const assetMap = Object.fromEntries(assets.map((a) => [a.ID, a]));
+  const assetMap   = Object.fromEntries(assets.map((a) => [a.ID, a]));
+  const holdingMap = Object.fromEntries(holdings.map((h) => [h.ID ?? h._rowIndex, h]));
   const currentYear = new Date().getFullYear();
 
   // Latest account values for withdrawal rate calculation
@@ -339,7 +340,13 @@ export default function RetirementPage({ data, onSave, onDelete }) {
                     className={rowHover}
                     onClick={() => allocationModal.openEdit(a)}
                   >
-                    <td className="py-3 pr-4 text-slate-400">{a.HoldingID}</td>
+                    <td className="py-3 pr-4 text-slate-200">
+                      {holdingMap[a.HoldingID]
+                        ? holdingMap[a.HoldingID].Ticker
+                          ? `${holdingMap[a.HoldingID].Ticker} — ${holdingMap[a.HoldingID].FundName}`
+                          : holdingMap[a.HoldingID].FundName
+                        : a.HoldingID}
+                    </td>
                     <td className="py-3 pr-4 text-slate-200">{a.AssetClass}</td>
                     <td className="py-3 text-slate-300 text-right tabular-nums">
                       {a.Percentage}%
