@@ -16,6 +16,7 @@ import ResearchPage from "./pages/ResearchPage";
 import MediaPage from "./pages/MediaPage";
 import ContactsPage from "./pages/ContactsPage";
 import AchievementsPage from "./pages/AchievementsPage";
+import PersonalInfoPage from "./pages/PersonalInfoPage";
 import { mockData } from "./data/mock";
 import { isElectron, loadExcel, saveRow, deleteRow } from "./api";
 
@@ -153,7 +154,7 @@ export default function App() {
   }
 
   const pageContent = {
-    dashboard:   <Dashboard data={data} />,
+    dashboard:   <Dashboard data={data} onSave={handleSave} onDelete={handleDelete} />,
     allocation:  <AllocationPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     budget:      <BudgetPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     nontangible: <NonTangibleAssetsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
@@ -169,6 +170,7 @@ export default function App() {
     research:    <ResearchPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     media:       <MediaPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     contacts:    <ContactsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    profile:     <PersonalInfoPage data={data} onSave={handleSave} />,
   };
 
   return (

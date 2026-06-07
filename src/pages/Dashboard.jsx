@@ -75,7 +75,7 @@ function computeAssetBreakdown(data) {
 }
 
 
-export default function Dashboard({ data }) {
+export default function Dashboard({ data, onSave, onDelete }) {
   if (!data) return null
 
   const netWorth    = computeNetWorth(data)
@@ -96,7 +96,7 @@ export default function Dashboard({ data }) {
 
       <NetWorthChart data={monthlyData} />
 
-      <FinancialGoals goals={goals} netWorth={netWorth} />
+      <FinancialGoals goals={goals} netWorth={netWorth} onSave={onSave} onDelete={onDelete} />
     </div>
   )
 }

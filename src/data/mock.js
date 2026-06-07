@@ -217,6 +217,10 @@ export const mockData = {
     { ID: null, Name: '2043 Financial Goals', TargetAmount: 1200000, TargetDate: '2043-12-31T00:00:00.000Z', LinkedAssetID: null, Status: 'On Track', Notes: '' },
   ],
 
+  PersonalInfo: [
+    { ID: 1, Name: 'Steven Wallace', Nickname: 'Steve', DateOfBirth: '1989-01-01', Phone: '555-0100', Email: 'stevenwallacedev@gmail.com', Website: '', LinkedIn: '', GitHub: 'swallace100', Address: '', City: '', State: '', Country: 'USA', Notes: '' },
+  ],
+
   Awards: [
     { ID: 1, Title: 'Dean\'s List',                   Category: 'School',    Issuer: 'University',          AwardDate: '2010-05-15', Notes: 'Spring semester' },
     { ID: 2, Title: 'Employee of the Quarter',         Category: 'Work',      Issuer: 'Acme Corp',           AwardDate: '2018-04-01', Notes: '' },

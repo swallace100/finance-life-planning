@@ -347,6 +347,22 @@ export const SCHEMAS = {
     { key: "Notes", label: "Notes", type: "textarea" },
   ],
 
+  PersonalInfo: [
+    { key: "Name",        label: "Full Name",    type: "text" },
+    { key: "Nickname",    label: "Nickname",     type: "text" },
+    { key: "DateOfBirth", label: "Date of Birth",type: "date" },
+    { key: "Phone",       label: "Phone",        type: "text" },
+    { key: "Email",       label: "Email",        type: "text" },
+    { key: "Website",     label: "Website",      type: "text" },
+    { key: "LinkedIn",    label: "LinkedIn",     type: "text" },
+    { key: "GitHub",      label: "GitHub",       type: "text" },
+    { key: "Address",     label: "Address",      type: "text" },
+    { key: "City",        label: "City",         type: "text" },
+    { key: "State",       label: "State",        type: "text" },
+    { key: "Country",     label: "Country",      type: "text" },
+    { key: "Notes",       label: "Bio / Notes",  type: "textarea" },
+  ],
+
   Awards: [
     { key: "Title", label: "Award / Honor", type: "text", required: true },
     {
