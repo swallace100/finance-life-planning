@@ -44,7 +44,6 @@ function getLatestByAsset(history) {
 function computeTree(data) {
   const assets = data?.NonTangibleAssets || [];
   const history = data?.AssetHistory || [];
-  const cds = data?.CDs || [];
   const holdings = data?.RetirementHoldings || [];
   const fundAllocs = data?.FundAllocation || [];
   const tangibles = data?.TangibleAssets || [];
@@ -80,15 +79,6 @@ function computeTree(data) {
       const curr = a.Currency || "USD";
       if (!tree["Cash"]) tree["Cash"] = {};
       tree["Cash"][curr] = (tree["Cash"][curr] || 0) + acctVal(a.ID);
-    });
-
-  // Active CDs → Bonds/CDs/Treasuries > Certificate Deposit
-  cds
-    .filter(
-      (cd) => cd.Active !== false && cd.Active !== 0 && cd.Active !== "No",
-    )
-    .forEach((cd) => {
-      add("Bonds/CDs/Treasuries", "Certificate Deposit", Number(cd.FaceValue) || 0);
     });
 
   // Investment/Retirement/HSA/Stock/Bond accounts with FundAllocation data

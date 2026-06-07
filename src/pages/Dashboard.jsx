@@ -18,10 +18,6 @@ function getLatestValueByAsset(assetHistory) {
   return latest
 }
 
-function isActive(cd) {
-  return !!cd.Active
-}
-
 function stillOwned(asset) {
   return asset.StillHave !== false && asset.StillHave !== 0
 }
@@ -29,10 +25,9 @@ function stillOwned(asset) {
 function computeNetWorth(data) {
   const latestByAsset = getLatestValueByAsset(data.AssetHistory || [])
   const nonTangible = Object.values(latestByAsset).reduce((s, h) => s + (Number(h.Value) || 0), 0)
-  const cds       = (data.CDs           || []).filter(isActive).reduce((s, c)     => s + (Number(c.FaceValue)     || 0), 0)
   const tangible  = (data.TangibleAssets || []).filter(stillOwned).reduce((s, t)  => s + (Number(t.CurrentValue)  || 0), 0)
   const digital   = (data.DigitalAssets  || []).filter(stillOwned).reduce((s, t)  => s + (Number(t.CurrentValue)  || 0), 0)
-  return nonTangible + cds + tangible + digital
+  return nonTangible + tangible + digital
 }
 
 function computeMonthlyNetWorth(data) {
