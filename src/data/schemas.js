@@ -347,6 +347,22 @@ export const SCHEMAS = {
     { key: "Notes", label: "Notes", type: "textarea" },
   ],
 
+  Contacts: [
+    { key: "Name", label: "Name", type: "text", required: true },
+    {
+      key: "Relationship",
+      label: "Relationship",
+      type: "select",
+      options: ["Family", "Friend", "Colleague", "Acquaintance", "Other"],
+    },
+    { key: "Phone", label: "Phone", type: "text" },
+    { key: "Email", label: "Email", type: "text" },
+    { key: "Social", label: "Social Media", type: "text" },
+    { key: "Birthday", label: "Birthday", type: "date" },
+    { key: "Favorite", label: "Favorite", type: "boolean", defaultValue: false },
+    { key: "Notes", label: "Notes", type: "textarea" },
+  ],
+
   AssetGoals: [
     { key: "AssetClass", label: "Asset Class", type: "select", required: true,
       options: ["Cash", "Bonds/CDs/Treasuries", "Stock", "Other"] },

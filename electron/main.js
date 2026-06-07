@@ -43,6 +43,7 @@ const SHEET_COLUMNS = {
   ReadingLog:         ['ID', 'Name', 'Author', 'ReadDate', 'Genre', 'Format', 'Rating', 'Notes'],
   GamingLog:          ['ID', 'Name', 'Platform', 'Status', 'CompletionDate', 'Genre', 'Rating', 'Notes'],
   FilmLog:            ['ID', 'Name', 'ReleaseYear', 'WatchDate', 'Rating', 'LetterboxdURI', 'Notes'],
+  Contacts:           ['ID', 'Name', 'Relationship', 'Phone', 'Email', 'Social', 'Birthday', 'Favorite', 'Notes'],
 }
 
 // Convert "YYYY-MM-DD" strings to Date objects so Excel stores them as dates

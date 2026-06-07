@@ -216,4 +216,12 @@ export const mockData = {
     { ID: null, Name: '2031 Financial Goals', TargetAmount:  750000, TargetDate: '2031-12-31T00:00:00.000Z', LinkedAssetID: null, Status: 'On Track', Notes: '' },
     { ID: null, Name: '2043 Financial Goals', TargetAmount: 1200000, TargetDate: '2043-12-31T00:00:00.000Z', LinkedAssetID: null, Status: 'On Track', Notes: '' },
   ],
+
+  Contacts: [
+    { ID: 1, Name: 'Alice Johnson',  Relationship: 'Family',      Phone: '555-0101', Email: 'alice@example.com',  Social: '@alicejohnson',   Birthday: '1985-03-14', Favorite: true,  Notes: 'Sister' },
+    { ID: 2, Name: 'Bob Martinez',   Relationship: 'Friend',       Phone: '555-0102', Email: 'bob@example.com',    Social: '@bobm',           Birthday: '1987-07-22', Favorite: true,  Notes: 'College friend' },
+    { ID: 3, Name: 'Carol White',    Relationship: 'Colleague',    Phone: '555-0103', Email: 'carol@example.com',  Social: '',                Birthday: '1990-11-05', Favorite: false, Notes: '' },
+    { ID: 4, Name: 'David Kim',      Relationship: 'Friend',       Phone: '555-0104', Email: 'david@example.com',  Social: '@davidkim',       Birthday: '1988-06-30', Favorite: false, Notes: '' },
+    { ID: 5, Name: 'Eva Chen',       Relationship: 'Family',       Phone: '555-0105', Email: 'eva@example.com',    Social: '',                Birthday: '1992-12-19', Favorite: true,  Notes: 'Cousin' },
+  ],
 }
