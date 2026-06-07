@@ -91,8 +91,9 @@ export default function NonTangibleAssetsPage({ data, onSave, onDelete }) {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Total Value</p>
+          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Account Balances</p>
           <p className="text-3xl font-bold text-white mt-2 tabular-nums">{fmtCurrency.format(total)}</p>
+          <p className="text-slate-600 text-xs mt-1">Excludes CDs, tangibles &amp; digital assets</p>
         </div>
         <div className="card p-5">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Accounts</p>

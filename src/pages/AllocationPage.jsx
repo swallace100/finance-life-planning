@@ -140,6 +140,14 @@ function computeTree(data) {
       add("Other", a.Category || "Other", Number(a.CurrentValue) || 0);
     });
 
+  // Digital assets → Other > Category
+  const digitals = data?.DigitalAssets || [];
+  digitals
+    .filter((a) => a.StillHave !== false && a.StillHave !== 0)
+    .forEach((a) => {
+      add("Other", a.Category || "Digital", Number(a.CurrentValue) || 0);
+    });
+
   let total = 0;
   Object.values(tree).forEach((subs) =>
     Object.values(subs).forEach((v) => {
