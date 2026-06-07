@@ -22,6 +22,8 @@ const SHEET_COLUMNS = {
   ReadingLog:         ['ID', 'Name', 'Author', 'ReadDate', 'Genre', 'Format', 'Rating', 'Notes'],
   GamingLog:          ['ID', 'Name', 'Platform', 'Status', 'CompletionDate', 'Genre', 'Rating', 'Notes'],
   FilmLog:            ['ID', 'Name', 'ReleaseYear', 'WatchDate', 'Rating', 'LetterboxdURI', 'Notes'],
+  Awards:             ['ID', 'Title', 'Category', 'Issuer', 'AwardDate', 'Notes'],
+  Milestones:         ['ID', 'Title', 'Category', 'Date', 'Notes'],
   Contacts:           ['ID', 'Name', 'Relationship', 'Phone', 'Email', 'Social', 'Birthday', 'Favorite', 'Notes'],
 }
 

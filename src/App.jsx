@@ -15,6 +15,7 @@ import TasksPage from "./pages/TasksPage";
 import ResearchPage from "./pages/ResearchPage";
 import MediaPage from "./pages/MediaPage";
 import ContactsPage from "./pages/ContactsPage";
+import AchievementsPage from "./pages/AchievementsPage";
 import { mockData } from "./data/mock";
 import { isElectron, loadExcel, saveRow, deleteRow } from "./api";
 
@@ -162,7 +163,8 @@ export default function App() {
     tangible:    <TangibleAssetsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     digital:     <DigitalAssetsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     donations:   <DonationsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
-    goals:       <GoalsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    goals:        <GoalsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    achievements: <AchievementsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     tasks:       <TasksPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     research:    <ResearchPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     media:       <MediaPage data={data} onSave={handleSave} onDelete={handleDelete} />,

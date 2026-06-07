@@ -217,6 +217,24 @@ export const mockData = {
     { ID: null, Name: '2043 Financial Goals', TargetAmount: 1200000, TargetDate: '2043-12-31T00:00:00.000Z', LinkedAssetID: null, Status: 'On Track', Notes: '' },
   ],
 
+  Awards: [
+    { ID: 1, Title: 'Dean\'s List',                   Category: 'School',    Issuer: 'University',          AwardDate: '2010-05-15', Notes: 'Spring semester' },
+    { ID: 2, Title: 'Employee of the Quarter',         Category: 'Work',      Issuer: 'Acme Corp',           AwardDate: '2018-04-01', Notes: '' },
+    { ID: 3, Title: '5K Age Group Podium',             Category: 'Sports',    Issuer: 'City Running Club',   AwardDate: '2022-09-10', Notes: '3rd place 30-34 age group' },
+    { ID: 4, Title: 'AZ-900 Certification',            Category: 'Work',      Issuer: 'Microsoft',           AwardDate: '2023-10-01', Notes: 'Azure Fundamentals' },
+    { ID: 5, Title: 'Volunteer of the Year',           Category: 'Volunteer', Issuer: 'Local Food Bank',     AwardDate: '2021-12-15', Notes: '' },
+  ],
+
+  Milestones: [
+    { ID: 1, Title: 'First Flight',           Category: 'Travel',   Date: '1995-07-04', Notes: 'Family trip to Florida' },
+    { ID: 2, Title: 'High School Graduation', Category: 'Education', Date: '2007-06-10', Notes: '' },
+    { ID: 3, Title: 'College Graduation',     Category: 'Education', Date: '2011-05-20', Notes: 'B.S. Computer Science' },
+    { ID: 4, Title: 'First Full-Time Job',    Category: 'Career',    Date: '2011-08-01', Notes: '' },
+    { ID: 5, Title: 'First International Trip', Category: 'Travel',  Date: '2015-03-15', Notes: 'Japan' },
+    { ID: 6, Title: 'Bought First Home',      Category: 'Personal',  Date: '2019-11-01', Notes: '' },
+    { ID: 7, Title: 'Started Graduate School', Category: 'Education', Date: '2024-09-01', Notes: 'Part-time while working' },
+  ],
+
   Contacts: [
     { ID: 1, Name: 'Alice Johnson',  Relationship: 'Family',      Phone: '555-0101', Email: 'alice@example.com',  Social: '@alicejohnson',   Birthday: '1985-03-14', Favorite: true,  Notes: 'Sister' },
     { ID: 2, Name: 'Bob Martinez',   Relationship: 'Friend',       Phone: '555-0102', Email: 'bob@example.com',    Social: '@bobm',           Birthday: '1987-07-22', Favorite: true,  Notes: 'College friend' },

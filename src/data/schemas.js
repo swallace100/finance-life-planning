@@ -347,6 +347,33 @@ export const SCHEMAS = {
     { key: "Notes", label: "Notes", type: "textarea" },
   ],
 
+  Awards: [
+    { key: "Title", label: "Award / Honor", type: "text", required: true },
+    {
+      key: "Category",
+      label: "Category",
+      type: "select",
+      required: true,
+      options: ["Work", "School", "Sports", "Volunteer", "Personal", "Other"],
+    },
+    { key: "Issuer", label: "Issuer / Organization", type: "text" },
+    { key: "AwardDate", label: "Date", type: "date" },
+    { key: "Notes", label: "Notes", type: "textarea" },
+  ],
+
+  Milestones: [
+    { key: "Title", label: "Milestone", type: "text", required: true },
+    {
+      key: "Category",
+      label: "Category",
+      type: "select",
+      required: true,
+      options: ["Family", "Travel", "Career", "Education", "Health", "Personal", "Other"],
+    },
+    { key: "Date", label: "Date", type: "date", required: true },
+    { key: "Notes", label: "Notes", type: "textarea" },
+  ],
+
   Contacts: [
     { key: "Name", label: "Name", type: "text", required: true },
     {
