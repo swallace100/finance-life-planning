@@ -218,7 +218,15 @@ export const mockData = {
   ],
 
   PersonalInfo: [
-    { ID: 1, Name: 'Steven Wallace', Nickname: 'Steve', DateOfBirth: '1989-01-01', Phone: '555-0100', Email: 'stevenwallacedev@gmail.com', Website: '', LinkedIn: '', GitHub: 'swallace100', Address: '', City: '', State: '', Country: 'USA', Notes: '' },
+    { ID: 1, Name: 'Steven Wallace', Nickname: 'Steve', DateOfBirth: '1989-01-01', Notes: '' },
+  ],
+
+  PersonalContacts: [
+    { ID: 1, Type: 'Email',   Label: 'Work',     Value: 'stevenwallacedev@gmail.com', Primary: true,  Notes: '' },
+    { ID: 2, Type: 'Email',   Label: 'Personal', Value: 'steve@example.com',          Primary: false, Notes: '' },
+    { ID: 3, Type: 'Phone',   Label: 'Mobile',   Value: '555-0100',                   Primary: true,  Notes: '' },
+    { ID: 4, Type: 'Social',  Label: 'GitHub',   Value: 'https://github.com/swallace100', Primary: false, Notes: '' },
+    { ID: 5, Type: 'Address', Label: 'Home',     Value: '123 Main St, Springfield, IL 62701', Primary: true, Notes: '' },
   ],
 
   Awards: [

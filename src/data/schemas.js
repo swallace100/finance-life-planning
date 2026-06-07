@@ -348,19 +348,24 @@ export const SCHEMAS = {
   ],
 
   PersonalInfo: [
-    { key: "Name",        label: "Full Name",    type: "text" },
+    { key: "Name",        label: "Full Name",    type: "text", required: true },
     { key: "Nickname",    label: "Nickname",     type: "text" },
     { key: "DateOfBirth", label: "Date of Birth",type: "date" },
-    { key: "Phone",       label: "Phone",        type: "text" },
-    { key: "Email",       label: "Email",        type: "text" },
-    { key: "Website",     label: "Website",      type: "text" },
-    { key: "LinkedIn",    label: "LinkedIn",     type: "text" },
-    { key: "GitHub",      label: "GitHub",       type: "text" },
-    { key: "Address",     label: "Address",      type: "text" },
-    { key: "City",        label: "City",         type: "text" },
-    { key: "State",       label: "State",        type: "text" },
-    { key: "Country",     label: "Country",      type: "text" },
-    { key: "Notes",       label: "Bio / Notes",  type: "textarea" },
+    { key: "Notes",       label: "Bio",          type: "textarea" },
+  ],
+
+  PersonalContacts: [
+    {
+      key: "Type",
+      label: "Type",
+      type: "select",
+      required: true,
+      options: ["Email", "Phone", "Address", "Website", "Social", "Other"],
+    },
+    { key: "Label",   label: "Label (e.g. Work, Personal, Home, Mobile)", type: "text",    required: true },
+    { key: "Value",   label: "Value",                                      type: "text",    required: true },
+    { key: "Primary", label: "Primary",                                    type: "boolean", defaultValue: false },
+    { key: "Notes",   label: "Notes",                                      type: "textarea" },
   ],
 
   Awards: [
