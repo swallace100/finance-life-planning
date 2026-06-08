@@ -59,11 +59,9 @@ function computeAssetBreakdown(data) {
     }
   })
 
-  const cdTotal      = (data.CDs           || []).filter(isActive).reduce((s, c)    => s + (Number(c.FaceValue)    || 0), 0)
   const tangibleTotal = (data.TangibleAssets || []).filter(stillOwned).reduce((s, t) => s + (Number(t.CurrentValue) || 0), 0)
   const digitalTotal  = (data.DigitalAssets  || []).filter(stillOwned).reduce((s, t) => s + (Number(t.CurrentValue) || 0), 0)
 
-  if (cdTotal      > 0) byType['CD']      = cdTotal
   if (tangibleTotal > 0) byType['Tangible'] = tangibleTotal
   if (digitalTotal  > 0) byType['Digital']  = digitalTotal
 
