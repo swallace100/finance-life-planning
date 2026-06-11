@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Modal from '../components/Modal'
 import EntityForm from '../components/EntityForm'
 import { SCHEMAS } from '../data/schemas'
@@ -23,6 +24,12 @@ function gainLabel(cost, current) {
 export default function DigitalAssetsPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
   const { sortKey, sortDir, handleSort, applySort } = useSortableTable('CurrentValue', 'desc')
+  const [collapsed, setCollapsed] = useState(new Set())
+  const toggleCollapse = (key) => setCollapsed(prev => {
+    const next = new Set(prev)
+    next.has(key) ? next.delete(key) : next.add(key)
+    return next
+  })
   const stillOwned = a => a.StillHave !== false && a.StillHave !== 0
   const assets = (data?.DigitalAssets || []).filter(stillOwned)
 
@@ -80,53 +87,67 @@ export default function DigitalAssetsPage({ data, onSave, onDelete }) {
         <div className="card p-6">
           <p className="text-slate-500 text-sm">No digital assets found.</p>
         </div>
-      ) : Object.entries(byCategory).sort(([a], [b]) => a.localeCompare(b)).map(([category, rows]) => (
-        <div key={category} className="card p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-slate-300 font-medium">{category}</h3>
-            <span className="text-slate-500 text-sm">{rows.length} item{rows.length !== 1 ? 's' : ''}</span>
+      ) : Object.entries(byCategory).sort(([a], [b]) => a.localeCompare(b)).map(([category, rows]) => {
+        const isCollapsed = collapsed.has(category)
+        return (
+          <div key={category} className="card overflow-hidden">
+            <button
+              className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-700/20 transition-colors"
+              onClick={() => toggleCollapse(category)}
+            >
+              <div className="flex items-center gap-2">
+                <h3 className="text-slate-300 font-medium">{category}</h3>
+                <span className="text-slate-500 text-sm">{rows.length} item{rows.length !== 1 ? 's' : ''}</span>
+              </div>
+              <svg className={`w-4 h-4 text-slate-500 transition-transform ${isCollapsed ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {!isCollapsed && (
+              <div className="border-t border-slate-700/50 px-6 pb-5 pt-1 overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                      <SortableHeader col="Name"         label="Name"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                      <SortableHeader col="Series"       label="Series"    sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                      <SortableHeader col="Format"       label="Format"    sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                      <SortableHeader col="Language"     label="Language"  sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                      <SortableHeader col="BuyDate"      label="Purchased" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                      <SortableHeader col="Cost"         label="Cost"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                      <SortableHeader col="CurrentValue" label="Value"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
+                      <th className="text-right text-slate-400 pb-2">Gain / Loss</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {applySort(rows).map(a => (
+                      <tr
+                        key={a.ID ?? a._rowIndex}
+                        className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                        onClick={() => modal.openEdit(a)}
+                      >
+                        <td className="py-3 pr-4 text-slate-200">
+                          {a.Name}
+                          {a.Author ? <span className="block text-xs text-slate-500">{a.Author}</span> : null}
+                        </td>
+                        <td className="py-3 pr-4 text-slate-400">{a.Series || '—'}</td>
+                        <td className="py-3 pr-4 text-slate-400">{a.Format || '—'}</td>
+                        <td className="py-3 pr-4 text-slate-400">{a.Language || '—'}</td>
+                        <td className="py-3 pr-4 text-slate-400 text-right">{fmtDate(a.BuyDate)}</td>
+                        <td className="py-3 pr-4 text-slate-400 text-right tabular-nums">{fmtCurrency.format(a.Cost)}</td>
+                        <td className="py-3 pr-4 text-slate-200 text-right font-medium tabular-nums">{fmtCurrency.format(a.CurrentValue)}</td>
+                        <td className={`py-3 text-right text-xs font-medium tabular-nums ${gainColor(a.Cost, a.CurrentValue)}`}>
+                          {gainLabel(a.Cost, a.CurrentValue)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
-                  <SortableHeader col="Name"         label="Name"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Series"       label="Series"    sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Format"       label="Format"    sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="Language"     label="Language"  sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
-                  <SortableHeader col="BuyDate"      label="Purchased" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
-                  <SortableHeader col="Cost"         label="Cost"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
-                  <SortableHeader col="CurrentValue" label="Value"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
-                  <th className="text-right text-slate-400 pb-2">Gain / Loss</th>
-                </tr>
-              </thead>
-              <tbody>
-                {applySort(rows).map(a => (
-                  <tr
-                    key={a.ID ?? a._rowIndex}
-                    className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
-                    onClick={() => modal.openEdit(a)}
-                  >
-                    <td className="py-3 pr-4 text-slate-200">
-                      {a.Name}
-                      {a.Author ? <span className="block text-xs text-slate-500">{a.Author}</span> : null}
-                    </td>
-                    <td className="py-3 pr-4 text-slate-400">{a.Series || '—'}</td>
-                    <td className="py-3 pr-4 text-slate-400">{a.Format || '—'}</td>
-                    <td className="py-3 pr-4 text-slate-400">{a.Language || '—'}</td>
-                    <td className="py-3 pr-4 text-slate-400 text-right">{fmtDate(a.BuyDate)}</td>
-                    <td className="py-3 pr-4 text-slate-400 text-right tabular-nums">{fmtCurrency.format(a.Cost)}</td>
-                    <td className="py-3 pr-4 text-slate-200 text-right font-medium tabular-nums">{fmtCurrency.format(a.CurrentValue)}</td>
-                    <td className={`py-3 text-right text-xs font-medium tabular-nums ${gainColor(a.Cost, a.CurrentValue)}`}>
-                      {gainLabel(a.Cost, a.CurrentValue)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      ))}
+        )
+      })}
 
       <Modal open={modal.open} onClose={modal.close} title={modal.isEditing ? 'Edit Digital Asset' : 'Add Digital Asset'}>
         <EntityForm
