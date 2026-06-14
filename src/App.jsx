@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import NonTangibleAssetsPage from "./pages/NonTangibleAssetsPage";
@@ -38,6 +38,8 @@ export default function App() {
   const [usingMock, setUsingMock] = useState(false);
   const [excelPath, setExcelPath] = useState(null);
   const [page, setPage] = useState("dashboard");
+  const [demoMode, setDemoMode] = useState(false);
+  const realDataRef = useRef(null);
 
   useEffect(() => {
     initData();
@@ -78,8 +80,19 @@ export default function App() {
     setLoading(false);
   }
 
+  function toggleDemoMode() {
+    if (!demoMode) {
+      realDataRef.current = data;
+      setData(addRowIndices(mockData));
+      setDemoMode(true);
+    } else {
+      setData(realDataRef.current);
+      setDemoMode(false);
+    }
+  }
+
   async function handleDelete(sheetName, rowIndex) {
-    if (usingMock) {
+    if (usingMock || demoMode) {
       setData(prev => ({
         ...prev,
         [sheetName]: (prev[sheetName] || []).filter(r => r._rowIndex !== rowIndex),
@@ -156,7 +169,7 @@ export default function App() {
   }
 
   async function handleSave(sheetName, row, isNew) {
-    if (usingMock) {
+    if (usingMock || demoMode) {
       setData(prev => {
         const sheet = prev[sheetName] || []
         if (isNew) {
@@ -216,17 +229,28 @@ export default function App() {
         hasElectron={isElectron}
         onDownload={handleDownload}
         onUpload={handleUpload}
+        demoMode={demoMode}
+        onToggleDemoMode={toggleDemoMode}
       />
 
-      <main className="flex-1 overflow-auto p-4 md:p-6">
-        {loading ? (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-slate-400">Loading…</p>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {demoMode && (
+          <div className="flex-shrink-0 bg-amber-500/10 border-b border-amber-500/20 px-4 py-2 flex items-center justify-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+            <span className="text-amber-400 text-xs font-semibold">Demo Mode</span>
+            <span className="text-amber-600 text-xs">· showing sample data — your real data is untouched</span>
           </div>
-        ) : (
-          pageContent[page]
         )}
-      </main>
+        <main className="flex-1 overflow-auto p-4 md:p-6">
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-slate-400">Loading…</p>
+            </div>
+          ) : (
+            pageContent[page]
+          )}
+        </main>
+      </div>
     </div>
   );
 }

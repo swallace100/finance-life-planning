@@ -237,7 +237,7 @@ function SectionLabel({ label }) {
   );
 }
 
-function FileControls({ usingMock, excelPath, error, onPickFile, onNewFile, hasElectron, onDownload, onUpload }) {
+function FileControls({ usingMock, excelPath, error, onPickFile, onNewFile, hasElectron, onDownload, onUpload, demoMode, onToggleDemoMode }) {
   const fileInputRef = useRef(null);
 
   function handleFileChange(e) {
@@ -253,23 +253,27 @@ function FileControls({ usingMock, excelPath, error, onPickFile, onNewFile, hasE
   return (
     <div className="px-4 py-4 border-t border-slate-800 space-y-2">
       {error && <p className="text-xs text-red-400">{error}</p>}
-      {usingMock && <p className="text-xs text-amber-400">Using mock data</p>}
-      {excelPath && !usingMock && (
+      {usingMock && !demoMode && <p className="text-xs text-amber-400">Using mock data</p>}
+      {excelPath && !usingMock && !demoMode && (
         <p className="text-xs text-slate-500 truncate" title={excelPath}>
           {excelPath.split(/[\\/]/).pop()}
         </p>
       )}
-      {hasElectron && (
+      {hasElectron && !demoMode && (
         <button onClick={onNewFile} className={btnCls}>New Excel File</button>
       )}
-      {hasElectron && (
+      {hasElectron && !demoMode && (
         <button onClick={onPickFile} className={btnCls}>
           {usingMock ? "Connect Excel File" : "Change File"}
         </button>
       )}
       {!hasElectron && (
         <>
-          <button onClick={onDownload} className={btnCls}>
+          <button
+            onClick={onDownload}
+            disabled={demoMode}
+            className={`${btnCls} disabled:opacity-30 disabled:cursor-not-allowed`}
+          >
             ↓ Download Data
           </button>
           <input
@@ -279,10 +283,33 @@ function FileControls({ usingMock, excelPath, error, onPickFile, onNewFile, hasE
             className="hidden"
             onChange={handleFileChange}
           />
-          <button onClick={() => fileInputRef.current?.click()} className={btnCls}>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={demoMode}
+            className={`${btnCls} disabled:opacity-30 disabled:cursor-not-allowed`}
+          >
             ↑ Upload Data
           </button>
         </>
+      )}
+      {!usingMock && (
+        <button
+          onClick={onToggleDemoMode}
+          className={`w-full text-xs px-3 py-2 rounded-md transition-colors text-left flex items-center justify-between ${
+            demoMode
+              ? "bg-amber-500/15 text-amber-400 border border-amber-500/30 hover:bg-amber-500/25"
+              : "bg-slate-800 hover:bg-slate-700 text-slate-400"
+          }`}
+        >
+          <span>{demoMode ? "Demo Mode: On" : "Demo Mode"}</span>
+          <span
+            className={`relative flex-shrink-0 w-8 h-4 rounded-full transition-colors ${demoMode ? "bg-amber-500" : "bg-slate-600"}`}
+          >
+            <span
+              className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform ${demoMode ? "translate-x-4" : "translate-x-0.5"}`}
+            />
+          </span>
+        </button>
       )}
     </div>
   );
@@ -299,6 +326,8 @@ export default function Sidebar({
   hasElectron,
   onDownload,
   onUpload,
+  demoMode,
+  onToggleDemoMode,
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const currentItem = ALL_ITEMS.find((item) => item.id === currentPage);
@@ -361,6 +390,8 @@ export default function Sidebar({
               hasElectron={hasElectron}
               onDownload={onDownload}
               onUpload={onUpload}
+              demoMode={demoMode}
+              onToggleDemoMode={onToggleDemoMode}
             />
           </nav>
         )}
@@ -398,6 +429,8 @@ export default function Sidebar({
           hasElectron={hasElectron}
           onDownload={onDownload}
           onUpload={onUpload}
+          demoMode={demoMode}
+          onToggleDemoMode={onToggleDemoMode}
         />
       </div>
     </>
