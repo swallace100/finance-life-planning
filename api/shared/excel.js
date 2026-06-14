@@ -30,6 +30,7 @@ const SHEET_COLUMNS = {
   ProjectionSettings:    ['ID', 'Label', 'StartValue', 'GrowthRate', 'AnnualAdd', 'Notes'],
   Liabilities:           ['ID', 'Name', 'Type', 'Lender', 'Balance', 'InterestRate', 'MinPayment', 'AssetValue', 'Active', 'Notes'],
   CreditCardRewards:     ['ID', 'CardName', 'RewardProgram', 'Points', 'CentsPerPoint', 'ExpirationDate', 'Notes'],
+  Wishlist:              ['ID', 'Name', 'Category', 'Creator', 'Priority', 'TargetPrice', 'Notes', 'Status', 'AddedDate'],
 }
 
 function getBlobClient() {

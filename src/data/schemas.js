@@ -457,4 +457,18 @@ export const SCHEMAS = {
     { key: 'ExpirationDate', label: 'Points Expiration Date',                                       type: 'date' },
     { key: 'Notes',         label: 'Notes',                                                         type: 'textarea' },
   ],
+
+  Wishlist: [
+    { key: 'Name',        label: 'Name',                              type: 'text',   required: true },
+    { key: 'Category',    label: 'Category',                          type: 'select', required: true,
+      options: ['Books', 'Films', 'Games', 'Vinyl', 'Comics', 'Art', 'Other'] },
+    { key: 'Creator',     label: 'Author / Director / Developer',     type: 'text' },
+    { key: 'Priority',    label: 'Priority',                          type: 'select', defaultValue: 'Medium',
+      options: ['High', 'Medium', 'Low'] },
+    { key: 'TargetPrice', label: 'Target Price ($)',                   type: 'number' },
+    { key: 'Notes',       label: 'Notes',                             type: 'textarea' },
+    { key: 'Status',      label: 'Status',                            type: 'select', defaultValue: 'Wanted',
+      options: ['Wanted', 'Found', 'Purchased'] },
+    { key: 'AddedDate',   label: 'Date Added',                        type: 'date' },
+  ],
 };

@@ -269,4 +269,13 @@ export const mockData = {
     { ID: 2, CardName: 'Amex Gold',                RewardProgram: 'Amex Membership Rewards', Points: 22000, CentsPerPoint: 1.8, ExpirationDate: null, Notes: 'Transfer to airlines for max value' },
     { ID: 3, CardName: 'Delta SkyMiles Platinum',  RewardProgram: 'Delta SkyMiles',          Points: 15000, CentsPerPoint: 1.2, ExpirationDate: null, Notes: '' },
   ],
+
+  Wishlist: [
+    { ID: 1, Name: 'The Name of the Wind',    Category: 'Books', Creator: 'Patrick Rothfuss', Priority: 'High',   TargetPrice: null, Notes: 'Kingkiller Chronicle Book 1', Status: 'Wanted',    AddedDate: null },
+    { ID: 2, Name: 'Blood Meridian',          Category: 'Books', Creator: 'Cormac McCarthy',  Priority: 'Medium', TargetPrice: null, Notes: '',                           Status: 'Wanted',    AddedDate: null },
+    { ID: 3, Name: 'Kind of Blue',            Category: 'Vinyl', Creator: 'Miles Davis',       Priority: 'High',   TargetPrice: 30,   Notes: 'Original pressing preferred', Status: 'Wanted',    AddedDate: null },
+    { ID: 4, Name: 'In the Aeroplane Over the Sea', Category: 'Vinyl', Creator: 'Neutral Milk Hotel', Priority: 'High', TargetPrice: 40, Notes: '',                       Status: 'Found',     AddedDate: null },
+    { ID: 5, Name: 'Hollow Knight: Silksong', Category: 'Games', Creator: 'Team Cherry',       Priority: 'High',   TargetPrice: 40,   Notes: 'Whenever it releases…',     Status: 'Wanted',    AddedDate: null },
+    { ID: 6, Name: 'Shogun (Clavell)',        Category: 'Books', Creator: 'James Clavell',      Priority: 'Low',    TargetPrice: 15,   Notes: 'Already read — want a nice hardcover copy', Status: 'Purchased', AddedDate: null },
+  ],
 }
