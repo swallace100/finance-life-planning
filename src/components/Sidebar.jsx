@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const NAV_SECTIONS = [
   {
@@ -219,7 +219,19 @@ function SectionLabel({ label }) {
   );
 }
 
-function FileControls({ usingMock, excelPath, error, onPickFile, onNewFile, hasElectron }) {
+function FileControls({ usingMock, excelPath, error, onPickFile, onNewFile, hasElectron, onDownload, onUpload }) {
+  const fileInputRef = useRef(null);
+
+  function handleFileChange(e) {
+    const file = e.target.files?.[0];
+    if (file) {
+      onUpload(file);
+      e.target.value = "";
+    }
+  }
+
+  const btnCls = "w-full text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-md transition-colors text-left";
+
   return (
     <div className="px-4 py-4 border-t border-slate-800 space-y-2">
       {error && <p className="text-xs text-red-400">{error}</p>}
@@ -230,20 +242,29 @@ function FileControls({ usingMock, excelPath, error, onPickFile, onNewFile, hasE
         </p>
       )}
       {hasElectron && (
-        <button
-          onClick={onNewFile}
-          className="w-full text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-md transition-colors text-left"
-        >
-          New Excel File
-        </button>
+        <button onClick={onNewFile} className={btnCls}>New Excel File</button>
       )}
       {hasElectron && (
-        <button
-          onClick={onPickFile}
-          className="w-full text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-md transition-colors text-left"
-        >
+        <button onClick={onPickFile} className={btnCls}>
           {usingMock ? "Connect Excel File" : "Change File"}
         </button>
+      )}
+      {!hasElectron && (
+        <>
+          <button onClick={onDownload} className={btnCls}>
+            ↓ Download Data
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".xlsx,.xls"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          <button onClick={() => fileInputRef.current?.click()} className={btnCls}>
+            ↑ Upload Data
+          </button>
+        </>
       )}
     </div>
   );
@@ -258,6 +279,8 @@ export default function Sidebar({
   onPickFile,
   onNewFile,
   hasElectron,
+  onDownload,
+  onUpload,
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const currentItem = ALL_ITEMS.find((item) => item.id === currentPage);
@@ -318,6 +341,8 @@ export default function Sidebar({
               onPickFile={onPickFile}
               onNewFile={onNewFile}
               hasElectron={hasElectron}
+              onDownload={onDownload}
+              onUpload={onUpload}
             />
           </nav>
         )}

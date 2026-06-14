@@ -35,6 +35,38 @@ export async function deleteRow(params) {
   });
 }
 
+// Downloads the Excel blob to the user's machine.
+// In the browser, triggers a file download; in Electron, no-op (use native file controls).
+export async function downloadExcel() {
+  if (isElectron) return;
+  const res = await fetch('/api/download-excel');
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const blob = await res.blob();
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'finance-data.xlsx';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Uploads a File to replace the Azure blob. Returns parsed workbook data.
+export async function uploadExcel(file) {
+  if (isElectron) return null;
+  const res = await fetch('/api/upload-excel', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/octet-stream' },
+    body: file,
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => `HTTP ${res.status}`);
+    throw new Error(text || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
 // Opens a local file path with the system default app.
 // In the browser there is no equivalent — silently no-ops.
 export async function openPath(p) {

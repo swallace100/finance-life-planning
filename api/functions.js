@@ -1,5 +1,57 @@
 const { app } = require('@azure/functions')
-const { loadWorkbook, saveWorkbook, parseWorkbook, prepareValue, ensureSheet } = require('./shared/excel')
+const ExcelJS = require('exceljs')
+const { loadWorkbook, saveWorkbook, uploadBuffer, parseWorkbook, prepareValue, ensureSheet } = require('./shared/excel')
+
+app.http('download-excel', {
+  methods: ['GET'],
+  authLevel: 'anonymous',
+  route: 'download-excel',
+  handler: async (req, context) => {
+    try {
+      const workbook = await loadWorkbook()
+      const buffer   = await workbook.xlsx.writeBuffer()
+      return {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'Content-Disposition': 'attachment; filename="finance-data.xlsx"',
+          'Content-Length': String(buffer.length),
+        },
+        body: buffer,
+      }
+    } catch (err) {
+      context.error('download-excel:', err.message)
+      return { status: 500, body: JSON.stringify({ error: err.message }) }
+    }
+  },
+})
+
+app.http('upload-excel', {
+  methods: ['POST'],
+  authLevel: 'anonymous',
+  route: 'upload-excel',
+  handler: async (req, context) => {
+    try {
+      const buffer = Buffer.from(await req.arrayBuffer())
+      if (!buffer.length) {
+        return { status: 400, body: JSON.stringify({ error: 'Empty file' }) }
+      }
+      // Validate it parses as a workbook before overwriting the blob
+      const workbook = new ExcelJS.Workbook()
+      await workbook.xlsx.load(buffer)
+      await uploadBuffer(buffer)
+      const data = parseWorkbook(workbook)
+      return {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      }
+    } catch (err) {
+      context.error('upload-excel:', err.message)
+      return { status: 400, body: JSON.stringify({ error: err.message }) }
+    }
+  },
+})
 
 app.http('ping', {
   methods: ['GET'],

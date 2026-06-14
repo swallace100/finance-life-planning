@@ -139,4 +139,9 @@ function ensureSheet(workbook, sheetName) {
   return { sheet, columnMap, colIndexToHeader, maxCol }
 }
 
-module.exports = { loadWorkbook, saveWorkbook, parseWorkbook, prepareValue, ensureSheet, SHEET_COLUMNS }
+async function uploadBuffer(buffer) {
+  const client = getBlobClient()
+  await client.upload(buffer, buffer.length, { overwrite: true })
+}
+
+module.exports = { loadWorkbook, saveWorkbook, uploadBuffer, parseWorkbook, prepareValue, ensureSheet, SHEET_COLUMNS }

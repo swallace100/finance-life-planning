@@ -19,7 +19,7 @@ import AchievementsPage from "./pages/AchievementsPage";
 import PersonalInfoPage from "./pages/PersonalInfoPage";
 import ProjectionPage from "./pages/ProjectionPage";
 import { mockData } from "./data/mock";
-import { isElectron, loadExcel, saveRow, deleteRow } from "./api";
+import { isElectron, loadExcel, saveRow, deleteRow, downloadExcel, uploadExcel } from "./api";
 
 function addRowIndices(data) {
   const out = {}
@@ -129,6 +129,30 @@ export default function App() {
     }
   }
 
+  async function handleDownload() {
+    try {
+      await downloadExcel();
+    } catch (err) {
+      setError(`Download failed: ${err.message}`);
+    }
+  }
+
+  async function handleUpload(file) {
+    setLoading(true);
+    try {
+      const freshData = await uploadExcel(file);
+      if (freshData) {
+        setData(freshData);
+        setUsingMock(false);
+        setError(null);
+      }
+    } catch (err) {
+      setError(`Upload failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleSave(sheetName, row, isNew) {
     if (usingMock) {
       setData(prev => {
@@ -186,6 +210,8 @@ export default function App() {
         onPickFile={handlePickFile}
         onNewFile={handleNewFile}
         hasElectron={isElectron}
+        onDownload={handleDownload}
+        onUpload={handleUpload}
       />
 
       <main className="flex-1 overflow-auto p-4 md:p-6">
