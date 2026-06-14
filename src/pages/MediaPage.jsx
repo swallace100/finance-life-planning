@@ -75,15 +75,15 @@ export default function MediaPage({ data, onSave, onDelete }) {
     setSearch(prev => ({ ...prev, [tab]: val }));
   }
 
-  const q = (s) => s.toLowerCase();
+  const q = (s) => (s == null ? "" : String(s)).toLowerCase();
   const filteredBooks = search.books
-    ? books.filter(b => q(b.Name ?? "").includes(q(search.books)) || q(b.Author ?? "").includes(q(search.books)) || q(b.Genre ?? "").includes(q(search.books)))
+    ? books.filter(b => q(b.Name).includes(q(search.books)) || q(b.Author).includes(q(search.books)) || q(b.Genre).includes(q(search.books)))
     : books;
   const filteredFilms = search.films
-    ? films.filter(f => q(f.Name ?? "").includes(q(search.films)) || String(f.ReleaseYear ?? "").includes(search.films))
+    ? films.filter(f => q(f.Name).includes(q(search.films)) || q(f.ReleaseYear).includes(q(search.films)))
     : films;
   const filteredGames = search.games
-    ? games.filter(g => q(g.Name ?? "").includes(q(search.games)) || q(g.Platform ?? "").includes(q(search.games)) || q(g.Genre ?? "").includes(q(search.games)))
+    ? games.filter(g => q(g.Name).includes(q(search.games)) || q(g.Platform).includes(q(search.games)) || q(g.Genre).includes(q(search.games)))
     : games;
 
   const booksSorted = bookSort.applySort(filteredBooks);
