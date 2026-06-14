@@ -136,7 +136,7 @@ export default function MediaPage({ data, onSave, onDelete }) {
             <div className="flex-1">
               <SearchBar value={search.books} onChange={v => setTabSearch("books", v)} placeholder="Search title, author, genre…" />
             </div>
-            <button onClick={() => bookModal.openAdd()} className="flex-shrink-0 text-xs font-medium text-blue-400 hover:text-blue-300 bg-blue-400/10 hover:bg-blue-400/20 px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
+            <button onClick={() => bookModal.openAdd()} className="btn-inline">
               + Add Book
             </button>
           </div>
@@ -192,7 +192,7 @@ export default function MediaPage({ data, onSave, onDelete }) {
             <div className="flex-1">
               <SearchBar value={search.films} onChange={v => setTabSearch("films", v)} placeholder="Search title or year…" />
             </div>
-            <button onClick={() => filmModal.openAdd()} className="flex-shrink-0 text-xs font-medium text-blue-400 hover:text-blue-300 bg-blue-400/10 hover:bg-blue-400/20 px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
+            <button onClick={() => filmModal.openAdd()} className="btn-inline">
               + Add Film
             </button>
           </div>
@@ -242,7 +242,7 @@ export default function MediaPage({ data, onSave, onDelete }) {
             <div className="flex-1">
               <SearchBar value={search.games} onChange={v => setTabSearch("games", v)} placeholder="Search title, platform, genre…" />
             </div>
-            <button onClick={() => gameModal.openAdd({ Status: "Completed" })} className="flex-shrink-0 text-xs font-medium text-blue-400 hover:text-blue-300 bg-blue-400/10 hover:bg-blue-400/20 px-3 py-2 rounded-lg transition-colors whitespace-nowrap">
+            <button onClick={() => gameModal.openAdd({ Status: "Completed" })} className="btn-inline">
               + Add Game
             </button>
           </div>

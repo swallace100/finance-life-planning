@@ -147,7 +147,7 @@ export default function ContactsPage({ data, onSave, onDelete }) {
           </div>
           <button
             onClick={() => modal.openAdd()}
-            className="flex-shrink-0 text-xs font-medium text-blue-400 hover:text-blue-300 bg-blue-400/10 hover:bg-blue-400/20 px-3 py-2 rounded-lg transition-colors whitespace-nowrap"
+            className="btn-inline"
           >
             + Add Contact
           </button>

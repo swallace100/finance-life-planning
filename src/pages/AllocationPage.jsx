@@ -16,22 +16,23 @@ const CLASS_ORDER = ["Cash", "Bonds/CDs/Treasuries", "Stock", "Other"];
 // Static routing for FundAllocation.AssetClass values that should NOT land in Stock.
 // subToClass (from AssetGoals) takes priority; this is the fallback.
 const FUND_CLASS_MAP = {
-  Cash:                  "Cash",
-  Bonds:                 "Bonds/CDs/Treasuries",
-  Bond:                  "Bonds/CDs/Treasuries",
-  Treasuries:            "Bonds/CDs/Treasuries",
-  Treasury:              "Bonds/CDs/Treasuries",
+  Cash: "Cash",
+  Bonds: "Bonds/CDs/Treasuries",
+  Bond: "Bonds/CDs/Treasuries",
+  Treasuries: "Bonds/CDs/Treasuries",
+  Treasury: "Bonds/CDs/Treasuries",
   "Certificate Deposit": "Bonds/CDs/Treasuries",
-  CD:                    "Bonds/CDs/Treasuries",
-  CDs:                   "Bonds/CDs/Treasuries",
-  Stock:                 "Stock",
-  Stocks:                "Stock",
-  Crypto:                "Other",
-  "Real Estate":         "Other",
-  Alternative:           "Other",
-  Other:                 "Other",
+  CD: "Bonds/CDs/Treasuries",
+  CDs: "Bonds/CDs/Treasuries",
+  Stock: "Stock",
+  Stocks: "Stock",
+  Crypto: "Other",
+  "Real Estate": "Other",
+  Alternative: "Other",
+  Other: "Other",
 };
 
+// Collapses AssetHistory rows down to the single most-recent entry per asset ID.
 function getLatestByAsset(history) {
   const latest = {};
   history.forEach((h) => {
@@ -41,6 +42,8 @@ function getLatestByAsset(history) {
   return latest;
 }
 
+// Builds a two-level { class → { subclass → value } } tree from all data sources,
+// plus classGoals and subGoals maps derived from AssetGoals rows.
 function computeTree(data) {
   const assets = data?.NonTangibleAssets || [];
   const history = data?.AssetHistory || [];
@@ -55,16 +58,17 @@ function computeTree(data) {
   const classGoals = {}; // 'Cash' → 10
   const subGoals = {}; // 'Cash::USD' → 100
   const subToClass = {}; // 'USD' → 'Cash'  (used to route FundAllocation.AssetClass to parent class)
-  goals.forEach((g) => {
-    if (g.Subclass) {
-      subGoals[`${g.AssetClass}::${g.Subclass}`] = Number(g.GoalPct);
-      subToClass[g.Subclass] = g.AssetClass;
+  goals.forEach((goal) => {
+    if (goal.Subclass) {
+      subGoals[`${goal.AssetClass}::${goal.Subclass}`] = Number(goal.GoalPct);
+      subToClass[goal.Subclass] = goal.AssetClass;
     } else {
-      classGoals[g.AssetClass] = Number(g.GoalPct);
+      classGoals[goal.AssetClass] = Number(goal.GoalPct);
     }
   });
 
   const tree = {};
+  // Accumulates a dollar value into tree[cls][sub], skipping zero/negative values.
   function add(cls, sub, val) {
     if (!val || val <= 0) return;
     if (!tree[cls]) tree[cls] = {};
@@ -74,28 +78,34 @@ function computeTree(data) {
   // Bank and Credit Union accounts → Cash, grouped by currency
   const CASH_TYPES = new Set(["Bank", "Credit Union"]);
   assets
-    .filter((a) => CASH_TYPES.has(a.Type))
-    .forEach((a) => {
-      const curr = a.Currency || "USD";
+    .filter((asset) => CASH_TYPES.has(asset.Type))
+    .forEach((asset) => {
+      const curr = asset.Currency || "USD";
       if (!tree["Cash"]) tree["Cash"] = {};
-      tree["Cash"][curr] = (tree["Cash"][curr] || 0) + acctVal(a.ID);
+      tree["Cash"][curr] = (tree["Cash"][curr] || 0) + acctVal(asset.ID);
     });
 
   // Investment/Retirement/HSA/Stock/Bond accounts with FundAllocation data
-  const accountsWithHoldings = new Set(holdings.map((h) => h.AssetID));
+  const accountsWithHoldings = new Set(
+    holdings.map((holding) => holding.AssetID),
+  );
   const holdingValues = {};
-  holdings.forEach((h) => {
-    const hId = h.ID ?? h._rowIndex;
-    holdingValues[hId] = acctVal(h.AssetID) * (Number(h.Percentage) / 100);
+  holdings.forEach((holding) => {
+    const hId = holding.ID ?? holding._rowIndex;
+    holdingValues[hId] =
+      acctVal(holding.AssetID) * (Number(holding.Percentage) / 100);
   });
   fundAllocs.forEach((alloc) => {
     const val =
       (holdingValues[alloc.HoldingID] || 0) * (Number(alloc.Percentage) / 100);
-    const cls = subToClass[alloc.AssetClass] || FUND_CLASS_MAP[alloc.AssetClass] || "Stock";
+    const cls =
+      subToClass[alloc.AssetClass] ||
+      FUND_CLASS_MAP[alloc.AssetClass] ||
+      "Stock";
     add(cls, alloc.AssetClass, val);
   });
 
-  // Accounts with no holdings data — default class depends on type
+  // Accounts with no holdings data (default class depends on type)
   const INVESTMENT_LIKE = new Set(["Investment", "Retirement", "HSA", "Stock"]);
   const BOND_LIKE = new Set([
     "Bond",
@@ -105,49 +115,63 @@ function computeTree(data) {
   ]);
   assets
     .filter(
-      (a) => INVESTMENT_LIKE.has(a.Type) && !accountsWithHoldings.has(a.ID),
+      (asset) =>
+        INVESTMENT_LIKE.has(asset.Type) && !accountsWithHoldings.has(asset.ID),
     )
-    .forEach((a) => {
-      add("Stock", a.Subtype || a.Name, acctVal(a.ID));
+    .forEach((asset) => {
+      add("Stock", asset.Subtype || asset.Name, acctVal(asset.ID));
     });
   assets
-    .filter((a) => BOND_LIKE.has(a.Type) && !accountsWithHoldings.has(a.ID))
-    .forEach((a) => {
-      add("Bonds/CDs/Treasuries", a.Subtype || a.Name, acctVal(a.ID));
+    .filter(
+      (asset) =>
+        BOND_LIKE.has(asset.Type) && !accountsWithHoldings.has(asset.ID),
+    )
+    .forEach((asset) => {
+      add(
+        "Bonds/CDs/Treasuries",
+        asset.Subtype || asset.Name,
+        acctVal(asset.ID),
+      );
     });
 
   // Crypto accounts → Other > Subtype/Name
   assets
-    .filter((a) => a.Type === "Crypto")
-    .forEach((a) => {
-      add("Other", a.Subtype || a.Name, acctVal(a.ID));
+    .filter((asset) => asset.Type === "Crypto")
+    .forEach((asset) => {
+      add("Other", asset.Subtype || asset.Name, acctVal(a.ID));
     });
 
   // Tangible assets → Other > Category
   tangibles
-    .filter((a) => a.StillHave !== false && a.StillHave !== 0)
-    .forEach((a) => {
-      add("Other", a.Category || "Other", Number(a.CurrentValue) || 0);
+    .filter((asset) => asset.StillHave !== false && asset.StillHave !== 0)
+    .forEach((asset) => {
+      add("Other", asset.Category || "Other", Number(asset.CurrentValue) || 0);
     });
 
   // Digital assets → Other > Category
   const digitals = data?.DigitalAssets || [];
   digitals
-    .filter((a) => a.StillHave !== false && a.StillHave !== 0)
-    .forEach((a) => {
-      add("Other", a.Category || "Digital", Number(a.CurrentValue) || 0);
+    .filter((asset) => a.StillHave !== false && asset.StillHave !== 0)
+    .forEach((asset) => {
+      add(
+        "Other",
+        asset.Category || "Digital",
+        Number(asset.CurrentValue) || 0,
+      );
     });
 
   let total = 0;
   Object.values(tree).forEach((subs) =>
-    Object.values(subs).forEach((v) => {
-      total += v;
+    Object.values(subs).forEach((value) => {
+      total += value;
     }),
   );
 
   return { tree, total, classGoals, subGoals };
 }
 
+// Returns a color class based on how close actual % is to the goal:
+// within 2 pp → green (on target), within 7 pp → amber (watch), beyond → red (off track).
 function gapCls(actual, goal) {
   if (goal == null) return "text-slate-500";
   const d = Math.abs(actual - goal);
@@ -243,13 +267,16 @@ export default function AllocationPage({ data, onSave, onDelete }) {
             <tbody>
               {classes.map((cls) => {
                 const subs = tree[cls];
-                const classTotal = Object.values(subs).reduce((s, v) => s + v, 0);
+                const classTotal = Object.values(subs).reduce(
+                  (s, v) => s + v,
+                  0,
+                );
                 const classPct = total > 0 ? (classTotal / total) * 100 : 0;
                 const classGoal = classGoals[cls];
                 const sortedSubs = Object.entries(subs).sort(
                   ([, a], [, b]) => b - a,
                 );
-  
+
                 return (
                   <Fragment key={cls}>
                     <tr className="border-b border-slate-600 bg-slate-700/20">
@@ -270,7 +297,7 @@ export default function AllocationPage({ data, onSave, onDelete }) {
                         <Gap actual={classPct} goal={classGoal} />
                       </td>
                     </tr>
-  
+
                     {sortedSubs.map(([sub, val]) => {
                       const subPct =
                         classTotal > 0 ? (val / classTotal) * 100 : 0;
@@ -304,15 +331,15 @@ export default function AllocationPage({ data, onSave, onDelete }) {
                   </Fragment>
                 );
               })}
-  
+
               {classes.length === 0 && (
                 <tr>
                   <td
                     colSpan={6}
                     className="px-6 py-10 text-center text-slate-500"
                   >
-                    No allocation data found. Connect your Excel file to see your
-                    portfolio breakdown.
+                    No allocation data found. Connect your Excel file to see
+                    your portfolio breakdown.
                   </td>
                 </tr>
               )}
