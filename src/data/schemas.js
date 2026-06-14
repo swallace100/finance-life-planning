@@ -435,4 +435,26 @@ export const SCHEMAS = {
     { key: 'AnnualAdd',  label: 'Annual Contribution ($) — e.g. 401k match, budget surplus',  type: 'number',   defaultValue: 0 },
     { key: 'Notes',      label: 'Notes / Assumptions',                                        type: 'textarea' },
   ],
+
+  Liabilities: [
+    { key: 'Name',         label: 'Name',                              type: 'text',   required: true },
+    { key: 'Type',         label: 'Type',                              type: 'select', required: true,
+      options: ['Mortgage', 'Auto', 'Student Loan', 'Credit Card', 'Personal', 'Other'] },
+    { key: 'Lender',       label: 'Lender / Servicer',                 type: 'text' },
+    { key: 'Balance',      label: 'Current Balance ($)',                type: 'number', required: true },
+    { key: 'InterestRate', label: 'Interest Rate (%)',                  type: 'number', step: 0.01 },
+    { key: 'MinPayment',   label: 'Minimum Payment ($/mo)',             type: 'number' },
+    { key: 'AssetValue',   label: 'Collateral Value ($) — e.g. home or car value for secured debts', type: 'number' },
+    { key: 'Active',       label: 'Active',                             type: 'boolean', defaultValue: true },
+    { key: 'Notes',        label: 'Notes',                              type: 'textarea' },
+  ],
+
+  CreditCardRewards: [
+    { key: 'CardName',      label: 'Card Name',                                                     type: 'text',   required: true },
+    { key: 'RewardProgram', label: 'Reward Program (e.g. Chase Ultimate Rewards, Delta SkyMiles)',  type: 'text' },
+    { key: 'Points',        label: 'Points / Miles Balance',                                        type: 'number', required: true },
+    { key: 'CentsPerPoint', label: 'Estimated Value (¢ per point) — e.g. 1.0 for cash, 1.5–2.0 for travel', type: 'number', step: 0.1, defaultValue: 1 },
+    { key: 'ExpirationDate', label: 'Points Expiration Date',                                       type: 'date' },
+    { key: 'Notes',         label: 'Notes',                                                         type: 'textarea' },
+  ],
 };

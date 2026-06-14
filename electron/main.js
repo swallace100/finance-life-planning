@@ -49,6 +49,8 @@ const SHEET_COLUMNS = {
   Milestones:         ['ID', 'Title', 'Category', 'Date', 'Notes'],
   Contacts:              ['ID', 'Name', 'Relationship', 'Phone', 'Email', 'Social', 'Birthday', 'Favorite', 'Notes'],
   ProjectionSettings:    ['ID', 'Label', 'StartValue', 'GrowthRate', 'AnnualAdd', 'Notes'],
+  Liabilities:           ['ID', 'Name', 'Type', 'Lender', 'Balance', 'InterestRate', 'MinPayment', 'AssetValue', 'Active', 'Notes'],
+  CreditCardRewards:     ['ID', 'CardName', 'RewardProgram', 'Points', 'CentsPerPoint', 'ExpirationDate', 'Notes'],
 }
 
 // Convert "YYYY-MM-DD" strings to Date objects so Excel stores them as dates

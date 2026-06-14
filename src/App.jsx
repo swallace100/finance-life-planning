@@ -18,6 +18,7 @@ import ContactsPage from "./pages/ContactsPage";
 import AchievementsPage from "./pages/AchievementsPage";
 import PersonalInfoPage from "./pages/PersonalInfoPage";
 import ProjectionPage from "./pages/ProjectionPage";
+import DebtsPage from "./pages/DebtsPage";
 import { mockData } from "./data/mock";
 import { isElectron, loadExcel, saveRow, deleteRow, downloadExcel, uploadExcel } from "./api";
 
@@ -197,6 +198,7 @@ export default function App() {
     contacts:    <ContactsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
     profile:     <PersonalInfoPage data={data} onSave={handleSave} />,
     projection:  <ProjectionPage data={data} onSave={handleSave} onDelete={handleDelete} />,
+    debts:       <DebtsPage data={data} onSave={handleSave} onDelete={handleDelete} />,
   };
 
   return (

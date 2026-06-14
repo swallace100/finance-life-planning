@@ -256,4 +256,17 @@ export const mockData = {
   ],
 
   ProjectionSettings: [],
+
+  Liabilities: [
+    { ID: 1, Name: 'Home Mortgage',    Type: 'Mortgage',     Lender: 'Wells Fargo',   Balance: 210000, InterestRate: 3.25, MinPayment: 1100, AssetValue: 500000, Active: true, Notes: '' },
+    { ID: 2, Name: 'Car Loan',         Type: 'Auto',         Lender: 'Toyota Finance', Balance: 12500,  InterestRate: 4.9,  MinPayment:  280, AssetValue:  18000, Active: true, Notes: '' },
+    { ID: 3, Name: 'Student Loans',    Type: 'Student Loan', Lender: 'Navient',        Balance: 8200,   InterestRate: 5.0,  MinPayment:   95, AssetValue:       0, Active: true, Notes: '' },
+    { ID: 4, Name: 'Chase Sapphire',   Type: 'Credit Card',  Lender: 'Chase',          Balance:  2400,  InterestRate: 24.99, MinPayment:  48, AssetValue:       0, Active: true, Notes: '' },
+  ],
+
+  CreditCardRewards: [
+    { ID: 1, CardName: 'Chase Sapphire Preferred', RewardProgram: 'Chase Ultimate Rewards', Points: 45000, CentsPerPoint: 1.5, ExpirationDate: null, Notes: 'Best redeemed for travel via Chase portal' },
+    { ID: 2, CardName: 'Amex Gold',                RewardProgram: 'Amex Membership Rewards', Points: 22000, CentsPerPoint: 1.8, ExpirationDate: null, Notes: 'Transfer to airlines for max value' },
+    { ID: 3, CardName: 'Delta SkyMiles Platinum',  RewardProgram: 'Delta SkyMiles',          Points: 15000, CentsPerPoint: 1.2, ExpirationDate: null, Notes: '' },
+  ],
 }
