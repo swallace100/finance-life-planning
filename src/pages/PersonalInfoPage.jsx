@@ -64,7 +64,10 @@ const TYPE_ORDER = ['Email', 'Phone', 'Address', 'Website', 'Social', 'Other']
 function ContactEntry({ entry, onEdit }) {
   const href = contactHref(entry.Type, entry.Value)
   return (
-    <div className="flex items-start justify-between py-2.5 border-b border-slate-700/40 last:border-0 gap-3">
+    <div
+      className="flex items-start justify-between py-2.5 border-b border-slate-700/40 last:border-0 gap-3 cursor-pointer hover:bg-slate-700/20 -mx-2 px-2 rounded transition-colors"
+      onClick={() => onEdit(entry)}
+    >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-slate-500 text-xs font-semibold uppercase tracking-wide">{entry.Label}</span>
@@ -77,6 +80,7 @@ function ContactEntry({ entry, onEdit }) {
             href={href}
             target={entry.Type === 'Email' || entry.Type === 'Phone' ? undefined : '_blank'}
             rel="noopener noreferrer"
+            onClick={e => e.stopPropagation()}
             className="text-blue-400 hover:text-blue-300 text-sm transition-colors break-all mt-0.5 block"
           >
             {entry.Value}
@@ -86,12 +90,6 @@ function ContactEntry({ entry, onEdit }) {
         )}
         {entry.Notes && <p className="text-slate-600 text-xs mt-0.5">{entry.Notes}</p>}
       </div>
-      <button
-        onClick={() => onEdit(entry)}
-        className="text-xs text-slate-600 hover:text-slate-400 transition-colors flex-shrink-0 pt-0.5"
-      >
-        Edit
-      </button>
     </div>
   )
 }
@@ -253,14 +251,14 @@ export default function PersonalInfoPage({ data, onSave, onDelete }) {
       <Modal
         open={contactModal.open}
         onClose={contactModal.close}
-        title={contactModal.editing ? 'Edit Contact Info' : 'Add Contact Info'}
+        title={contactModal.isEditing ? 'Edit Contact Info' : 'Add Contact Info'}
       >
         <EntityForm
           schema={SCHEMAS.PersonalContacts}
-          initialValues={contactModal.row}
-          isEditing={contactModal.editing}
+          initialValues={contactModal.editRow}
+          isEditing={contactModal.isEditing}
           onSubmit={handleContactSubmit}
-          onDelete={contactModal.editing ? handleContactDelete : undefined}
+          onDelete={contactModal.isEditing ? () => handleContactDelete(contactModal.editRow) : undefined}
           onCancel={contactModal.close}
         />
       </Modal>

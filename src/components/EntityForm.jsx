@@ -97,7 +97,7 @@ export default function EntityForm({ schema, initialValues, data, isEditing, onS
               onChange={e => set(field.key, e.target.checked)}
               className="w-4 h-4 rounded accent-blue-500"
             />
-            <span className="text-slate-300 text-sm">{value ? 'Yes' : 'No'}</span>
+            <span className="text-slate-300 text-sm">Yes</span>
           </label>
         </div>
       )

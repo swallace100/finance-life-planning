@@ -50,7 +50,7 @@ export default function DonationsPage({ data, onSave, onDelete }) {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard label="Total Donated" value={fmtCurrency.format(grandTotal)} sub="all time" />
-        <StatCard label="This Year" value={fmtCurrency.format((byYear[years[0]] || []).reduce((s, d) => s + (Number(d.Amount) || 0), 0))} sub={years[0] != null ? String(years[0]) : undefined} />
+        <StatCard label="This Year" value={fmtCurrency.format((byYear[currentYear] || []).reduce((s, d) => s + (Number(d.Amount) || 0), 0))} sub={String(currentYear)} />
         <StatCard label="Organizations" value={new Set(donations.map(d => d.Organization)).size} sub="all time" />
       </div>
 

@@ -78,11 +78,11 @@ function matchAutoValue(label, cv) {
 }
 
 const DEFAULT_ROWS = [
-  { Label: 'Cash',             GrowthRate: 2.5,  AnnualAdd: 0, Notes: 'HYSA / checking / savings' },
-  { Label: 'CDs',              GrowthRate: 4.5,  AnnualAdd: 0, Notes: '' },
+  { Label: 'Cash',             GrowthRate: 1.0,  AnnualAdd: 0, Notes: 'HYSA / checking / savings' },
+  { Label: 'CDs',              GrowthRate: 3.0,  AnnualAdd: 0, Notes: '' },
   { Label: 'Bonds/Treasuries', GrowthRate: 4.0,  AnnualAdd: 0, Notes: '' },
-  { Label: 'Stocks',           GrowthRate: 8.0,  AnnualAdd: 0, Notes: 'Historical avg ~7-10%' },
-  { Label: 'Retirement',       GrowthRate: 8.0,  AnnualAdd: 0, Notes: 'Add 401k match to Annual Contribution' },
+  { Label: 'Stocks',           GrowthRate: 7.0,  AnnualAdd: 0, Notes: 'Historical avg ~7-10%' },
+  { Label: 'Retirement',       GrowthRate: 6.0,  AnnualAdd: 0, Notes: 'Add 401k match to Annual Contribution' },
   { Label: 'Crypto',           GrowthRate: 10.0, AnnualAdd: 0, Notes: 'High risk / speculative' },
 ]
 
@@ -143,7 +143,7 @@ export default function ProjectionPage({ data, onSave, onDelete }) {
           onClick={() => modal.openAdd({})}
           className="btn-primary"
         >
-          + Add Row
+          + Add Asset
         </button>
       </div>
 
@@ -371,14 +371,14 @@ export default function ProjectionPage({ data, onSave, onDelete }) {
       <Modal
         open={modal.open}
         onClose={modal.close}
-        title={modal.editing ? 'Edit Projection Row' : 'Add Projection Row'}
+        title={modal.isEditing ? 'Edit Projection Asset' : 'Add Projection Asset'}
       >
         <EntityForm
           schema={SCHEMAS.ProjectionSettings}
-          initialValues={modal.row}
-          isEditing={modal.editing}
+          initialValues={modal.editRow}
+          isEditing={modal.isEditing}
           onSubmit={handleSubmit}
-          onDelete={modal.editing ? handleDelete : undefined}
+          onDelete={modal.isEditing ? () => handleDelete(modal.editRow) : undefined}
           onCancel={modal.close}
         />
       </Modal>

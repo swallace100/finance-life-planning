@@ -97,9 +97,9 @@ export const mockData = {
   ],
 
   CryptoAssets: [
-    { ID: 1, Name: 'Bitcoin',  Ticker: 'BTC', Wallet: 'Coinbase', Staked: false, AutoRestake: false, StakingAPY: null, UnlockDate: null,         Notes: '' },
-    { ID: 2, Name: 'Ethereum', Ticker: 'ETH', Wallet: 'MetaMask', Staked: true,  AutoRestake: true,  StakingAPY: 4.2,  UnlockDate: '2026-08-01', Notes: 'Liquid staking' },
-    { ID: 3, Name: 'Solana',   Ticker: 'SOL', Wallet: 'Phantom',  Staked: true,  AutoRestake: false, StakingAPY: 6.5,  UnlockDate: '2026-07-15', Notes: '' },
+    { ID: 1, Name: 'Bitcoin',  Ticker: 'BTC', Wallet: 'Coinbase', Quantity: 0.15,  Value: 9800,  Staked: false, AutoRestake: false, StakingAPY: null, UnlockDate: null,         Notes: '' },
+    { ID: 2, Name: 'Ethereum', Ticker: 'ETH', Wallet: 'MetaMask', Quantity: 2.0,   Value: 6200,  Staked: true,  AutoRestake: true,  StakingAPY: 4.2,  UnlockDate: '2026-08-01', Notes: 'Liquid staking' },
+    { ID: 3, Name: 'Solana',   Ticker: 'SOL', Wallet: 'Phantom',  Quantity: 35,    Value: 5100,  Staked: true,  AutoRestake: false, StakingAPY: 6.5,  UnlockDate: '2026-07-15', Notes: '' },
   ],
 
   RetirementSchedule: [
@@ -201,11 +201,11 @@ export const mockData = {
   ],
 
   Tasks: [
-    { ID: 1, Name: 'Set up Azure account',            Priority: 'High',   DueDate: '2026-06-15', Notes: 'After semester ends' },
-    { ID: 2, Name: 'Pass JLPT N1',                    Priority: 'High',   DueDate: '2026-07-01', Notes: 'Exam in July' },
-    { ID: 3, Name: 'Import real Excel data',          Priority: 'Medium', DueDate: '2026-06-07', Notes: '' },
-    { ID: 4, Name: 'Review retirement contributions', Priority: 'Medium', DueDate: '2026-06-30', Notes: 'Annual review' },
-    { ID: 5, Name: 'Renew AZ-900 certification',      Priority: 'Low',    DueDate: '2027-10-01', Notes: '' },
+    { ID: 1, Name: 'Set up Azure account',            Category: 'Work',     Priority: 'High',   DueDate: '2026-06-15', Notes: 'After semester ends' },
+    { ID: 2, Name: 'Pass JLPT N1',                    Category: 'School',   Priority: 'High',   DueDate: '2026-07-01', Notes: 'Exam in July' },
+    { ID: 3, Name: 'Import real Excel data',          Category: 'Personal', Priority: 'Medium', DueDate: '2026-06-07', Notes: '' },
+    { ID: 4, Name: 'Review retirement contributions', Category: 'Personal', Priority: 'Medium', DueDate: '2026-06-30', Notes: 'Annual review' },
+    { ID: 5, Name: 'Renew AZ-900 certification',      Category: 'Work',     Priority: 'Low',    DueDate: '2027-10-01', Notes: '' },
   ],
 
   ResearchLinks: [

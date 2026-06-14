@@ -107,6 +107,8 @@ export const SCHEMAS = {
     { key: 'Name',       label: 'Name',               type: 'text',   required: true },
     { key: 'Ticker',     label: 'Ticker',              type: 'text',   required: true },
     { key: 'Wallet',     label: 'Wallet / Exchange',   type: 'text' },
+    { key: 'Quantity',   label: 'Coins Held',          type: 'number', step: 0.00000001 },
+    { key: 'Value',      label: 'Current Value ($)',   type: 'number' },
     { key: 'Staked',     label: 'Staked',              type: 'boolean' },
     { key: 'AutoRestake', label: 'Auto Restake',       type: 'boolean' },
     { key: 'StakingAPY', label: 'Staking APY (%)',     type: 'number', step: 0.01 },
@@ -225,6 +227,8 @@ export const SCHEMAS = {
 
   Tasks: [
     { key: 'Name', label: 'Task', type: 'text', required: true },
+    { key: 'Category', label: 'Category', type: 'select',
+      options: ['Work', 'School', 'Personal', 'Family', 'Health', 'Other'] },
     { key: 'Priority', label: 'Priority', type: 'select', defaultValue: 'Medium',
       options: ['High', 'Medium', 'Low'] },
     { key: 'DueDate', label: 'Due Date', type: 'date' },
@@ -307,6 +311,7 @@ export const SCHEMAS = {
     { key: 'Phone',    label: 'Phone',        type: 'text' },
     { key: 'Email',    label: 'Email',        type: 'text' },
     { key: 'Social',   label: 'Social Media', type: 'text' },
+    { key: 'Address',  label: 'Address',      type: 'text' },
     { key: 'Birthday', label: 'Birthday',     type: 'date' },
     { key: 'Favorite', label: 'Favorite',     type: 'boolean', defaultValue: false },
     { key: 'Notes',    label: 'Notes',        type: 'textarea' },

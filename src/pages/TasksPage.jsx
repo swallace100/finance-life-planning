@@ -1,9 +1,19 @@
+import { useState } from "react";
 import Modal from "../components/Modal";
 import EntityForm from "../components/EntityForm";
 import { SCHEMAS } from "../data/schemas";
 import { useEntityModal } from "../hooks/useEntityModal";
 import { useSortableTable } from "../hooks/useSortableTable";
 import { SortableHeader } from "../components/SortableHeader";
+
+const CATEGORY_STYLE = {
+  Work:     "text-blue-400 bg-blue-400/10",
+  School:   "text-amber-400 bg-amber-400/10",
+  Personal: "text-purple-400 bg-purple-400/10",
+  Family:   "text-pink-400 bg-pink-400/10",
+  Health:   "text-emerald-400 bg-emerald-400/10",
+  Other:    "text-slate-400 bg-slate-700",
+};
 
 const PRIORITY_STYLE = {
   High:   { badge: "text-red-400 bg-red-400/10",   dot: "bg-red-400",   order: 0 },
@@ -22,8 +32,10 @@ function daysUntil(d) {
 export default function TasksPage({ data, onSave, onDelete }) {
   const modal = useEntityModal();
   const { sortKey, sortDir, handleSort, applySort } = useSortableTable("DueDate", "asc");
+  const [categoryFilter, setCategoryFilter] = useState("All");
 
   const tasks = data?.Tasks || [];
+  const categories = ["All", ...Array.from(new Set(tasks.map(t => t.Category).filter(Boolean))).sort()];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -35,7 +47,8 @@ export default function TasksPage({ data, onSave, onDelete }) {
     return diff >= 0 && diff <= 7;
   });
 
-  const sorted = applySort(tasks);
+  const filtered = categoryFilter === "All" ? tasks : tasks.filter(t => t.Category === categoryFilter);
+  const sorted = applySort(filtered);
 
   async function handleSubmit(row) {
     await onSave("Tasks", row, row._rowIndex == null);
@@ -80,6 +93,24 @@ export default function TasksPage({ data, onSave, onDelete }) {
         </div>
       )}
 
+      {categories.length > 2 && (
+        <div className="flex gap-1 flex-wrap">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setCategoryFilter(cat)}
+              className={`px-3 py-1.5 text-xs rounded-lg transition-colors font-medium ${
+                categoryFilter === cat
+                  ? "bg-blue-600 text-white"
+                  : "bg-slate-800 text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="card p-6">
         {tasks.length === 0 ? (
           <p className="text-slate-500 text-sm">No tasks yet.</p>
@@ -89,6 +120,7 @@ export default function TasksPage({ data, onSave, onDelete }) {
               <thead>
                 <tr className="th-row">
                   <SortableHeader col="Name"     label="Task"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
+                  <SortableHeader col="Category" label="Category" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                   <SortableHeader col="Priority" label="Priority" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                   <SortableHeader col="DueDate"  label="Due Date" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
                   <th className="text-right text-slate-400 pb-2 pr-4">Status</th>
@@ -122,6 +154,11 @@ export default function TasksPage({ data, onSave, onDelete }) {
                   return (
                     <tr key={t.ID ?? t._rowIndex} className={rowClass} onClick={() => modal.openEdit(t)}>
                       <td className="py-3 pr-4 text-slate-200">{t.Name}</td>
+                      <td className="py-3 pr-4">
+                        {t.Category
+                          ? <span className={`text-xs px-2 py-0.5 rounded-full ${CATEGORY_STYLE[t.Category] ?? CATEGORY_STYLE.Other}`}>{t.Category}</span>
+                          : <span className="text-slate-600">—</span>}
+                      </td>
                       <td className="py-3 pr-4">
                         <span className={`text-xs px-2 py-0.5 rounded-full ${pri.badge}`}>{t.Priority}</span>
                       </td>
