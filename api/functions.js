@@ -20,7 +20,7 @@ app.http('download-excel', {
       }
     } catch (err) {
       context.error('download-excel:', err.message)
-      return { status: 500, body: JSON.stringify({ error: err.message }) }
+      return { status: 500, body: JSON.stringify({ error: 'Failed to download file' }) }
     }
   },
 })
@@ -47,7 +47,7 @@ app.http('upload-excel', {
       }
     } catch (err) {
       context.error('upload-excel:', err.message)
-      return { status: 400, body: JSON.stringify({ error: err.message }) }
+      return { status: 400, body: JSON.stringify({ error: 'Invalid file — upload a valid .xlsx workbook' }) }
     }
   },
 })
@@ -60,12 +60,7 @@ app.http('ping', {
     return {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ok: true,
-        hasConnectionString: !!process.env.AZURE_STORAGE_CONNECTION_STRING,
-        hasContainerName:    !!process.env.AZURE_STORAGE_CONTAINER_NAME,
-        hasBlobName:         !!process.env.AZURE_STORAGE_BLOB_NAME,
-      }),
+      body: JSON.stringify({ ok: true }),
     }
   },
 })
@@ -85,7 +80,7 @@ app.http('load-excel', {
       }
     } catch (err) {
       context.error('load-excel:', err.message)
-      return { status: 500, body: JSON.stringify({ error: err.message }) }
+      return { status: 500, body: JSON.stringify({ error: 'Failed to load data' }) }
     }
   },
 })
@@ -140,7 +135,7 @@ app.http('save-row', {
       return { status: 200, body: JSON.stringify({ success: true }) }
     } catch (err) {
       context.error('save-row:', err.message)
-      return { status: 500, body: JSON.stringify({ error: err.message }) }
+      return { status: 500, body: JSON.stringify({ error: 'Failed to save row' }) }
     }
   },
 })
@@ -167,7 +162,7 @@ app.http('delete-row', {
       return { status: 200, body: JSON.stringify({ success: true }) }
     } catch (err) {
       context.error('delete-row:', err.message)
-      return { status: 500, body: JSON.stringify({ error: err.message }) }
+      return { status: 500, body: JSON.stringify({ error: 'Failed to delete row' }) }
     }
   },
 })
