@@ -5,6 +5,8 @@ import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
 import { useSortableTable } from '../hooks/useSortableTable'
 import { SortableHeader } from '../components/SortableHeader'
+import Chevron from '../components/Chevron'
+import StatCard from '../components/StatCard'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
@@ -57,26 +59,20 @@ export default function DigitalAssetsPage({ data, onSave, onDelete }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-100">Digital Assets</h2>
+        <h2 className="page-title">Digital Assets</h2>
         <button
           onClick={() => modal.openAdd({ StillHave: true })}
-          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+          className="btn-primary"
         >
           + Add Asset
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatCard label="Current Value" value={fmtCurrency.format(totalValue)} />
+        <StatCard label="Total Cost" value={fmtCurrency.format(totalCost)} />
         <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Current Value</p>
-          <p className="text-3xl font-bold text-white mt-2 tabular-nums">{fmtCurrency.format(totalValue)}</p>
-        </div>
-        <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Total Cost</p>
-          <p className="text-3xl font-bold text-white mt-2 tabular-nums">{fmtCurrency.format(totalCost)}</p>
-        </div>
-        <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Unrealized Gain</p>
+          <p className="stat-label">Unrealized Gain</p>
           <p className={`text-3xl font-bold mt-2 tabular-nums ${totalGain >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
             {totalGain >= 0 ? '+' : ''}{fmtCurrency.format(totalGain)}
           </p>
@@ -92,23 +88,21 @@ export default function DigitalAssetsPage({ data, onSave, onDelete }) {
         return (
           <div key={category} className="card overflow-hidden">
             <button
-              className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-700/20 transition-colors"
+              className="collapsible-btn"
               onClick={() => toggleCollapse(category)}
             >
               <div className="flex items-center gap-2">
                 <h3 className="text-slate-300 font-medium">{category}</h3>
                 <span className="text-slate-500 text-sm">{rows.length} item{rows.length !== 1 ? 's' : ''}</span>
               </div>
-              <svg className={`w-4 h-4 text-slate-500 transition-transform ${isCollapsed ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
+              <Chevron open={!isCollapsed} />
             </button>
 
             {!isCollapsed && (
-              <div className="border-t border-slate-700/50 px-6 pb-5 pt-1 overflow-x-auto">
+              <div className="section-body">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                    <tr className="th-row">
                       <SortableHeader col="Name"         label="Name"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                       <SortableHeader col="Series"       label="Series"    sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                       <SortableHeader col="Format"       label="Format"    sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
@@ -123,7 +117,7 @@ export default function DigitalAssetsPage({ data, onSave, onDelete }) {
                     {applySort(rows).map(a => (
                       <tr
                         key={a.ID ?? a._rowIndex}
-                        className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                        className="table-row"
                         onClick={() => modal.openEdit(a)}
                       >
                         <td className="py-3 pr-4 text-slate-200">

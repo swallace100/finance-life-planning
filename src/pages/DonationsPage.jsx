@@ -4,6 +4,7 @@ import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
 import { useSortableTable } from '../hooks/useSortableTable'
 import { SortableHeader } from '../components/SortableHeader'
+import StatCard from '../components/StatCard'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'
@@ -38,35 +39,19 @@ export default function DonationsPage({ data, onSave, onDelete }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-100">Donations</h2>
+        <h2 className="page-title">Donations</h2>
         <button
           onClick={() => modal.openAdd({ Year: currentYear })}
-          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+          className="btn-primary"
         >
           + Add Donation
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Total Donated</p>
-          <p className="text-3xl font-bold text-white mt-2 tabular-nums">{fmtCurrency.format(grandTotal)}</p>
-          <p className="text-slate-500 text-xs mt-1">all time</p>
-        </div>
-        <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">This Year</p>
-          <p className="text-3xl font-bold text-white mt-2 tabular-nums">
-            {fmtCurrency.format((byYear[years[0]] || []).reduce((s, d) => s + (Number(d.Amount) || 0), 0))}
-          </p>
-          <p className="text-slate-500 text-xs mt-1">{years[0]}</p>
-        </div>
-        <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Organizations</p>
-          <p className="text-3xl font-bold text-white mt-2">
-            {new Set(donations.map(d => d.Organization)).size}
-          </p>
-          <p className="text-slate-500 text-xs mt-1">all time</p>
-        </div>
+        <StatCard label="Total Donated" value={fmtCurrency.format(grandTotal)} sub="all time" />
+        <StatCard label="This Year" value={fmtCurrency.format((byYear[years[0]] || []).reduce((s, d) => s + (Number(d.Amount) || 0), 0))} sub={years[0] != null ? String(years[0]) : undefined} />
+        <StatCard label="Organizations" value={new Set(donations.map(d => d.Organization)).size} sub="all time" />
       </div>
 
       {donations.length === 0 ? (
@@ -85,7 +70,7 @@ export default function DonationsPage({ data, onSave, onDelete }) {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <tr className="th-row">
                     <SortableHeader col="Organization" label="Organization" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                     <SortableHeader col="Amount"       label="Amount"       sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
                     <SortableHeader col="Date"         label="Date"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
@@ -96,7 +81,7 @@ export default function DonationsPage({ data, onSave, onDelete }) {
                   {applySort(rows).map(d => (
                     <tr
                       key={d.ID ?? d._rowIndex}
-                      className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                      className="table-row"
                       onClick={() => modal.openEdit(d)}
                     >
                       <td className="py-3 pr-4 text-slate-200">{d.Organization}</td>

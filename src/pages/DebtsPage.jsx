@@ -5,6 +5,8 @@ import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
 import { useSortableTable } from '../hooks/useSortableTable'
 import { SortableHeader } from '../components/SortableHeader'
+import Chevron from '../components/Chevron'
+import StatCard from '../components/StatCard'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
@@ -67,13 +69,11 @@ export default function DebtsPage({ data, onSave, onDelete }) {
   async function handleRewardsSubmit(row) { await onSave('CreditCardRewards', row, row._rowIndex == null); rewardsModal.close() }
   async function handleRewardsDelete(row) { await onDelete('CreditCardRewards', row._rowIndex); rewardsModal.close() }
 
-  const btnCls = "flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-100">Debts &amp; Liabilities</h2>
-        <button onClick={() => debtModal.openAdd({ Active: true })} className={btnCls}>
+        <h2 className="page-title">Debts &amp; Liabilities</h2>
+        <button onClick={() => debtModal.openAdd({ Active: true })} className="btn-primary">
           + Add Debt
         </button>
       </div>
@@ -81,17 +81,13 @@ export default function DebtsPage({ data, onSave, onDelete }) {
       {/* Summary stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Total Debt</p>
+          <p className="stat-label">Total Debt</p>
           <p className="text-3xl font-bold text-red-400 mt-2 tabular-nums">{fmtCurrency.format(totalDebt)}</p>
           <p className="text-slate-600 text-xs mt-1">{liabilities.length} active {liabilities.length === 1 ? 'debt' : 'debts'}</p>
         </div>
+        <StatCard label="Secured Asset Value" value={fmtCurrency.format(totalAssetValue)} sub="Value of collateral on secured debts" />
         <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Secured Asset Value</p>
-          <p className="text-3xl font-bold text-white mt-2 tabular-nums">{fmtCurrency.format(totalAssetValue)}</p>
-          <p className="text-slate-600 text-xs mt-1">Value of collateral on secured debts</p>
-        </div>
-        <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Net Equity</p>
+          <p className="stat-label">Net Equity</p>
           <p className={`text-3xl font-bold mt-2 tabular-nums ${netEquity >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
             {netEquity >= 0 ? '+' : ''}{fmtCurrency.format(netEquity)}
           </p>
@@ -113,26 +109,24 @@ export default function DebtsPage({ data, onSave, onDelete }) {
         return (
           <div key={type} className="card overflow-hidden">
             <button
-              className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-700/20 transition-colors"
+              className="collapsible-btn"
               onClick={() => toggleCollapse(type)}
             >
               <div className="flex items-center gap-2">
-                <span className={`text-xs px-2 py-0.5 rounded font-semibold ${colorCls}`}>{type}</span>
+                <span className={`badge ${colorCls}`}>{type}</span>
                 <span className="text-slate-500 text-sm">{group.length} {group.length === 1 ? 'debt' : 'debts'}</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-red-400 font-medium tabular-nums text-sm">{fmtCurrency.format(groupTotal)}</span>
-                <svg className={`w-4 h-4 text-slate-500 transition-transform ${isCollapsed ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
+                <Chevron open={!isCollapsed} />
               </div>
             </button>
 
             {!isCollapsed && (
-              <div className="border-t border-slate-700/50 px-6 pb-5 pt-1 overflow-x-auto">
+              <div className="section-body">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                    <tr className="th-row">
                       <SortableHeader col="Name"         label="Name"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                       <SortableHeader col="Lender"       label="Lender"       sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                       <SortableHeader col="Balance"      label="Balance"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
@@ -150,7 +144,7 @@ export default function DebtsPage({ data, onSave, onDelete }) {
                       return (
                         <tr
                           key={l.ID ?? l._rowIndex}
-                          className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                          className="table-row"
                           onClick={() => debtModal.openEdit(l)}
                         >
                           <td className="py-3 pr-4 text-slate-200 font-medium">{l.Name}</td>
@@ -198,9 +192,7 @@ export default function DebtsPage({ data, onSave, onDelete }) {
             >
               + Add
             </span>
-            <svg className={`w-4 h-4 text-slate-500 transition-transform ${showRewards ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
+            <Chevron open={showRewards} />
           </div>
         </button>
 
@@ -214,7 +206,7 @@ export default function DebtsPage({ data, onSave, onDelete }) {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm mt-4">
                   <thead>
-                    <tr className="border-b border-slate-700 text-slate-400 text-xs font-semibold uppercase tracking-wide">
+                    <tr className="th-row text-slate-400">
                       <th className="text-left pb-2 pr-4">Card</th>
                       <th className="text-left pb-2 pr-4">Reward Program</th>
                       <th className="text-right pb-2 pr-4">Points / Miles</th>
@@ -231,7 +223,7 @@ export default function DebtsPage({ data, onSave, onDelete }) {
                       return (
                         <tr
                           key={r.ID ?? r._rowIndex}
-                          className="border-b border-slate-700/30 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                          className="table-row"
                           onClick={() => rewardsModal.openEdit(r)}
                         >
                           <td className="py-2.5 pr-4 text-slate-200 font-medium">{r.CardName}</td>

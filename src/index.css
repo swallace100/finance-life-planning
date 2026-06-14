@@ -3,7 +3,71 @@
 @tailwind utilities;
 
 @layer components {
+  /* ── Cards ─────────────────────────────────────────────── */
   .card {
     @apply bg-slate-800 rounded-xl border border-slate-700 min-w-0;
+  }
+
+  /* ── Buttons ────────────────────────────────────────────── */
+  .btn-primary {
+    @apply flex items-center gap-1.5 px-4 py-2 text-sm font-medium
+           bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors;
+  }
+  .btn-ghost {
+    @apply px-4 py-2 text-sm text-slate-400 hover:text-slate-200 transition-colors;
+  }
+  .btn-danger {
+    @apply px-3 py-1.5 text-xs font-medium bg-red-600 hover:bg-red-500
+           text-white rounded-lg transition-colors
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* ── Badges / pills ─────────────────────────────────────── */
+  .badge {
+    @apply text-xs px-2 py-0.5 rounded font-semibold;
+  }
+
+  /* ── Data tables ────────────────────────────────────────── */
+  .table-row {
+    @apply border-b border-slate-700/50 last:border-0
+           cursor-pointer hover:bg-slate-700/40 transition-colors;
+  }
+  .th-row {
+    @apply border-b border-slate-700 text-xs font-semibold uppercase tracking-wide;
+  }
+
+  /* ── Stat cards ─────────────────────────────────────────── */
+  .stat-label {
+    @apply text-slate-400 text-xs font-semibold uppercase tracking-wide;
+  }
+  .stat-value {
+    @apply text-3xl font-bold text-white mt-2 tabular-nums;
+  }
+
+  /* ── Forms ──────────────────────────────────────────────── */
+  .form-label {
+    @apply block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5;
+  }
+  .form-input {
+    @apply w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2
+           text-slate-100 text-sm
+           focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30;
+  }
+  .search-input {
+    @apply bg-slate-800 border border-slate-700 rounded-lg px-3 py-2
+           text-sm text-slate-100 placeholder-slate-500
+           focus:outline-none focus:ring-1 focus:ring-blue-500 w-48;
+  }
+
+  /* ── Page layout ────────────────────────────────────────── */
+  .page-title {
+    @apply text-xl font-semibold text-slate-100;
+  }
+  .collapsible-btn {
+    @apply w-full flex items-center justify-between px-6 py-4
+           hover:bg-slate-700/20 transition-colors;
+  }
+  .section-body {
+    @apply border-t border-slate-700/50 px-6 pb-5 pt-1 overflow-x-auto;
   }
 }

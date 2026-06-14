@@ -61,10 +61,10 @@ export default function ResearchPage({ data, onSave, onDelete }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-100">Research</h2>
+        <h2 className="page-title">Research</h2>
         <button
           onClick={() => modal.openAdd()}
-          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+          className="btn-primary"
         >
           + Add Link
         </button>

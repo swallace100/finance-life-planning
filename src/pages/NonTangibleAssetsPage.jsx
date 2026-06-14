@@ -5,6 +5,8 @@ import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
 import { useSortableTable } from '../hooks/useSortableTable'
 import { SortableHeader } from '../components/SortableHeader'
+import Chevron from '../components/Chevron'
+import StatCard from '../components/StatCard'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
@@ -87,29 +89,19 @@ export default function NonTangibleAssetsPage({ data, onSave, onDelete }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-100">Accounts &amp; Holdings</h2>
+        <h2 className="page-title">Accounts &amp; Holdings</h2>
         <button
           onClick={() => accountModal.openAdd({ Currency: 'USD' })}
-          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+          className="btn-primary"
         >
           + Add Account
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Account Balances</p>
-          <p className="text-3xl font-bold text-white mt-2 tabular-nums">{fmtCurrency.format(total)}</p>
-          <p className="text-slate-600 text-xs mt-1">Excludes CDs, tangibles &amp; digital assets</p>
-        </div>
-        <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Accounts</p>
-          <p className="text-3xl font-bold text-white mt-2">{rows.length}</p>
-        </div>
-        <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Retirement Accounts</p>
-          <p className="text-3xl font-bold text-white mt-2">{retirementCount}</p>
-        </div>
+        <StatCard label="Account Balances" value={fmtCurrency.format(total)} sub="Excludes CDs, tangibles &amp; digital assets" />
+        <StatCard label="Accounts" value={rows.length} />
+        <StatCard label="Retirement Accounts" value={retirementCount} />
       </div>
 
       {sortedTypes.map(type => {
@@ -121,26 +113,24 @@ export default function NonTangibleAssetsPage({ data, onSave, onDelete }) {
         return (
           <div key={type} className="card overflow-hidden">
             <button
-              className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-700/20 transition-colors"
+              className="collapsible-btn"
               onClick={() => toggleCollapse(type)}
             >
               <div className="flex items-center gap-2">
-                <span className={`text-xs px-2 py-0.5 rounded font-semibold ${colorClass}`}>{type}</span>
+                <span className={`badge ${colorClass}`}>{type}</span>
                 <span className="text-slate-500 text-sm">{group.length} account{group.length !== 1 ? 's' : ''}</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-slate-300 font-medium tabular-nums text-sm">{fmtCurrency.format(groupTotal)}</span>
-                <svg className={`w-4 h-4 text-slate-500 transition-transform ${isCollapsed ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
+                <Chevron open={!isCollapsed} />
               </div>
             </button>
 
             {!isCollapsed && (
-              <div className="border-t border-slate-700/50 px-6 pb-5 pt-1 overflow-x-auto">
+              <div className="section-body">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                    <tr className="th-row">
                       <SortableHeader col="Name"         label="Name"         sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                       <SortableHeader col="Subtype"      label="Subtype"      sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                       <SortableHeader col="Institution"  label="Institution"  sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
@@ -154,7 +144,7 @@ export default function NonTangibleAssetsPage({ data, onSave, onDelete }) {
                     {group.map(r => (
                       <tr
                         key={r.ID}
-                        className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                        className="table-row"
                         onClick={() => accountModal.openEdit(r)}
                       >
                         <td className="py-3 pr-4 text-slate-200">

@@ -5,22 +5,11 @@ import { SCHEMAS } from '../data/schemas'
 import { useEntityModal } from '../hooks/useEntityModal'
 import { useSortableTable } from '../hooks/useSortableTable'
 import { SortableHeader } from '../components/SortableHeader'
+import StatCard from '../components/StatCard'
 
 const fmtCurrency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
 const daysUntil = (d) => Math.ceil((new Date(d) - new Date()) / 86400000)
-
-function StatCard({ label, value, sub }) {
-  return (
-    <div className="card p-5">
-      <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">{label}</p>
-      <p className="text-3xl font-bold text-white mt-2 tabular-nums">{value}</p>
-      {sub && <p className="text-slate-500 text-xs mt-1">{sub}</p>}
-    </div>
-  )
-}
-
-const rowHover = 'border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors'
 
 export default function CDsPage({ data, onSave, onDelete }) {
   const modal = useEntityModal()
@@ -54,10 +43,10 @@ export default function CDsPage({ data, onSave, onDelete }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-100">Certificates of Deposit</h2>
+        <h2 className="page-title">Certificates of Deposit</h2>
         <button
           onClick={() => modal.openAdd({ Active: true, Currency: 'USD' })}
-          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+          className="btn-primary"
         >
           + Add CD
         </button>
@@ -76,7 +65,7 @@ export default function CDsPage({ data, onSave, onDelete }) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+              <tr className="th-row">
                 <SortableHeader col="Name"         label="Name"        sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                 <SortableHeader col="Institution"  label="Institution" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                 <SortableHeader col="FaceValue"    label="Value"       sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
@@ -91,7 +80,7 @@ export default function CDsPage({ data, onSave, onDelete }) {
                 const days = daysUntil(cd.MaturityDate)
                 const color = days < 30 ? 'text-red-400' : days < 90 ? 'text-amber-400' : 'text-emerald-400'
                 return (
-                  <tr key={cd.ID} className={rowHover} onClick={() => modal.openEdit(cd)}>
+                  <tr key={cd.ID} className="table-row" onClick={() => modal.openEdit(cd)}>
                     <td className="py-3 pr-4 text-slate-200">
                       {cd.Name}
                       {cd.AutoRenew && (

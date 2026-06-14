@@ -43,10 +43,10 @@ export default function BudgetPage({ data, onSave, onDelete }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-100">Budget</h2>
+        <h2 className="page-title">Budget</h2>
         <button
           onClick={() => modal.openAdd({ Active: 'Yes', Frequency: 'Monthly' })}
-          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+          className="btn-primary"
         >
           + Add Item
         </button>
@@ -54,15 +54,15 @@ export default function BudgetPage({ data, onSave, onDelete }) {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Monthly Income</p>
+          <p className="stat-label">Monthly Income</p>
           <p className="text-3xl font-bold text-emerald-400 mt-2 tabular-nums">{fmtCurrency.format(monthlyIncome)}</p>
         </div>
         <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Monthly Expenses</p>
+          <p className="stat-label">Monthly Expenses</p>
           <p className="text-3xl font-bold text-red-400 mt-2 tabular-nums">{fmtCurrency.format(Math.abs(monthlyExpenses))}</p>
         </div>
         <div className="card p-5">
-          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Net Monthly</p>
+          <p className="stat-label">Net Monthly</p>
           <p className={`text-3xl font-bold mt-2 tabular-nums ${netMonthly >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
             {netMonthly >= 0 ? '+' : ''}{fmtCurrency.format(netMonthly)}
           </p>
@@ -79,7 +79,7 @@ export default function BudgetPage({ data, onSave, onDelete }) {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                <tr className="th-row">
                   <SortableHeader col="Name"      label="Name"      sortKey={incomeSort.sortKey} sortDir={incomeSort.sortDir} onSort={incomeSort.handleSort} className="pb-2 pr-4" />
                   <SortableHeader col="Type"      label="Type"      sortKey={incomeSort.sortKey} sortDir={incomeSort.sortDir} onSort={incomeSort.handleSort} className="pb-2 pr-4" />
                   <SortableHeader col="Frequency" label="Frequency" sortKey={incomeSort.sortKey} sortDir={incomeSort.sortDir} onSort={incomeSort.handleSort} className="pb-2 pr-4" />
@@ -90,7 +90,7 @@ export default function BudgetPage({ data, onSave, onDelete }) {
                 {incomeSort.applySort(income).map((i, idx) => (
                   <tr
                     key={i.ID ?? idx}
-                    className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                    className="table-row"
                     onClick={() => modal.openEdit(i)}
                   >
                     <td className="py-3 pr-4 text-slate-200">{i.Name}</td>
@@ -117,7 +117,7 @@ export default function BudgetPage({ data, onSave, onDelete }) {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                  <tr className="th-row">
                     <SortableHeader col="Name"      label="Name"      sortKey={expenseSort.sortKey} sortDir={expenseSort.sortDir} onSort={expenseSort.handleSort} className="pb-2 pr-4" />
                     <SortableHeader col="Frequency" label="Frequency" sortKey={expenseSort.sortKey} sortDir={expenseSort.sortDir} onSort={expenseSort.handleSort} className="pb-2 pr-4" />
                     <SortableHeader col="Amount"    label="Amount"    sortKey={expenseSort.sortKey} sortDir={expenseSort.sortDir} onSort={expenseSort.handleSort} align="right" className="pb-2" />
@@ -127,7 +127,7 @@ export default function BudgetPage({ data, onSave, onDelete }) {
                   {expenseSort.applySort(rows).map((i, idx) => (
                     <tr
                       key={i.ID ?? idx}
-                      className="border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                      className="table-row"
                       onClick={() => modal.openEdit(i)}
                     >
                       <td className="py-3 pr-4 text-slate-200">{i.Name}</td>

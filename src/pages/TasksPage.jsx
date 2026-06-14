@@ -19,8 +19,6 @@ function daysUntil(d) {
   return Math.ceil((new Date(d) - new Date()) / 86400000);
 }
 
-const rowHover = "border-b border-slate-700/50 last:border-0 cursor-pointer hover:bg-slate-700/40 transition-colors";
-
 export default function TasksPage({ data, onSave, onDelete }) {
   const modal = useEntityModal();
   const { sortKey, sortDir, handleSort, applySort } = useSortableTable("DueDate", "asc");
@@ -52,10 +50,10 @@ export default function TasksPage({ data, onSave, onDelete }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-slate-100">Tasks</h2>
+        <h2 className="page-title">Tasks</h2>
         <button
           onClick={() => modal.openAdd({ Priority: "Medium" })}
-          className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+          className="btn-primary"
         >
           + Add Task
         </button>
@@ -64,8 +62,8 @@ export default function TasksPage({ data, onSave, onDelete }) {
       {tasks.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="card p-5">
-            <p className="text-slate-400 text-xs font-semibold uppercase tracking-wide">Total</p>
-            <p className="text-3xl font-bold text-white mt-2">{tasks.length}</p>
+            <p className="stat-label">Total</p>
+            <p className="stat-value">{tasks.length}</p>
           </div>
           <div className="card p-5">
             <p className="text-red-400 text-xs font-semibold uppercase tracking-wide">Overdue</p>
@@ -89,7 +87,7 @@ export default function TasksPage({ data, onSave, onDelete }) {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700 text-xs font-semibold uppercase tracking-wide">
+                <tr className="th-row">
                   <SortableHeader col="Name"     label="Task"     sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                   <SortableHeader col="Priority" label="Priority" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} className="pb-2 pr-4" />
                   <SortableHeader col="DueDate"  label="Due Date" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} align="right" className="pb-2 pr-4" />
@@ -104,7 +102,7 @@ export default function TasksPage({ data, onSave, onDelete }) {
                   const isSoon    = days !== null && days >= 0 && days <= 7;
                   const pri = PRIORITY_STYLE[t.Priority] ?? PRIORITY_STYLE.Medium;
   
-                  let rowClass = rowHover;
+                  let rowClass = "table-row";
                   if (isOverdue) rowClass += " bg-red-900/10";
                   else if (isSoon) rowClass += " bg-amber-900/10";
   
