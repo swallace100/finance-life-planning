@@ -21,14 +21,15 @@ const STATUS_COLORS = {
   Purchased: 'text-slate-500 bg-slate-800',
 }
 
-// When an item is marked Purchased, auto-create an entry in the matching collection sheet.
+// When an item is first marked Purchased, prompt the user to optionally add it to a collection.
+// Categories not listed here (e.g. Family Photos, Digital Art) are saved with no prompt.
 const CATEGORY_MAP = {
-  Books:  { sheet: 'ReadingLog',     map: w => ({ Name: w.Name, Author: w.Creator, Notes: w.Notes }) },
-  Films:  { sheet: 'FilmLog',        map: w => ({ Name: w.Name, Notes: w.Notes }) },
-  Games:  { sheet: 'GamingLog',      map: w => ({ Name: w.Name, Status: 'Backlog', Notes: w.Notes }) },
-  Vinyl:  { sheet: 'TangibleAssets', map: w => ({ Name: w.Name, Category: 'Vinyl',  Cost: w.TargetPrice, Notes: w.Notes, StillHave: true }) },
-  Comics: { sheet: 'TangibleAssets', map: w => ({ Name: w.Name, Category: 'Comics', Cost: w.TargetPrice, Notes: w.Notes, StillHave: true }) },
-  Art:    { sheet: 'TangibleAssets', map: w => ({ Name: w.Name, Category: 'Art',    Cost: w.TargetPrice, Notes: w.Notes, StillHave: true }) },
+  Books:  { sheet: 'TangibleAssets', label: 'Tangible Assets', map: w => ({ Name: w.Name, Category: 'Books',  Cost: w.TargetPrice, Notes: w.Notes, StillHave: true }) },
+  Films:  { sheet: 'TangibleAssets', label: 'Tangible Assets', map: w => ({ Name: w.Name, Category: 'Films',  Cost: w.TargetPrice, Notes: w.Notes, StillHave: true }) },
+  Games:  { sheet: 'TangibleAssets', label: 'Tangible Assets', map: w => ({ Name: w.Name, Category: 'Games',  Cost: w.TargetPrice, Notes: w.Notes, StillHave: true }) },
+  Vinyl:  { sheet: 'TangibleAssets', label: 'Tangible Assets', map: w => ({ Name: w.Name, Category: 'Vinyl',  Cost: w.TargetPrice, Notes: w.Notes, StillHave: true }) },
+  Comics: { sheet: 'TangibleAssets', label: 'Tangible Assets', map: w => ({ Name: w.Name, Category: 'Comics', Cost: w.TargetPrice, Notes: w.Notes, StillHave: true }) },
+  Art:    { sheet: 'TangibleAssets', label: 'Tangible Assets', map: w => ({ Name: w.Name, Category: 'Art',    Cost: w.TargetPrice, Notes: w.Notes, StillHave: true }) },
 }
 
 function WishlistRow({ item, dimmed, onEdit }) {
@@ -65,6 +66,8 @@ export default function WishlistPage({ data, onSave, onDelete }) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All')
   const [showPurchased, setShowPurchased] = useState(false)
+  const [pendingMove, setPendingMove] = useState(null)
+  const [moveSaving, setMoveSaving] = useState(false)
 
   const allItems = data?.Wishlist || []
 
@@ -94,21 +97,29 @@ export default function WishlistPage({ data, onSave, onDelete }) {
     const nowPurchased = row.Status === 'Purchased'
 
     await onSave('Wishlist', row, !modal.isEditing)
+    modal.close()
 
-    // First time marked Purchased → auto-create in the matching collection
+    // First time marked Purchased → prompt to add to a collection if one applies
     if (nowPurchased && !wasAlreadyPurchased) {
       const mapping = CATEGORY_MAP[row.Category]
       if (mapping) {
-        await onSave(mapping.sheet, mapping.map(row), true)
+        setPendingMove({ row, mapping })
       }
     }
-
-    modal.close()
   }
 
   async function handleDelete(row) {
     await onDelete('Wishlist', row._rowIndex)
     modal.close()
+  }
+
+  async function handleConfirmMove() {
+    if (!pendingMove) return
+    setMoveSaving(true)
+    const { row, mapping } = pendingMove
+    await onSave(mapping.sheet, mapping.map(row), true)
+    setMoveSaving(false)
+    setPendingMove(null)
   }
 
   const tableHead = (
@@ -199,7 +210,7 @@ export default function WishlistPage({ data, onSave, onDelete }) {
       </div>
 
       {/* Purchased archive — collapsed by default */}
-      {(purchased.length > 0 || totalPurchased > 0) && (
+      {totalPurchased > 0 && (
         <div className="card overflow-hidden">
           <button
             className="collapsible-btn"
@@ -207,7 +218,6 @@ export default function WishlistPage({ data, onSave, onDelete }) {
           >
             <span className="text-slate-500 text-sm font-medium">
               Purchased ({totalPurchased})
-              {totalPurchased > 0 && <span className="ml-2 text-slate-600 text-xs">· added to collection automatically</span>}
             </span>
             <Chevron open={showPurchased} />
           </button>
@@ -229,6 +239,7 @@ export default function WishlistPage({ data, onSave, onDelete }) {
         </div>
       )}
 
+      {/* Edit / Add modal */}
       <Modal open={modal.open} onClose={modal.close} title={modal.isEditing ? 'Edit Wishlist Item' : 'Add to Wishlist'}>
         <EntityForm
           schema={SCHEMAS.Wishlist}
@@ -239,6 +250,40 @@ export default function WishlistPage({ data, onSave, onDelete }) {
           onCancel={modal.close}
           onDelete={modal.isEditing ? () => handleDelete(modal.editRow) : undefined}
         />
+      </Modal>
+
+      {/* Collection move prompt — appears after marking Purchased */}
+      <Modal
+        open={!!pendingMove}
+        onClose={() => setPendingMove(null)}
+        title="Add to Collection?"
+      >
+        <div className="space-y-4">
+          <p className="text-slate-300 text-sm">
+            Would you like to add{' '}
+            <span className="text-white font-medium">"{pendingMove?.row.Name}"</span>{' '}
+            to your <span className="text-white font-medium">{pendingMove?.mapping.label}</span>?
+          </p>
+          <p className="text-slate-500 text-xs">
+            This will create a new entry with the name, category, and target price pre-filled.
+            You can edit it from the Assets page afterward.
+          </p>
+          <div className="flex gap-3 pt-1">
+            <button
+              onClick={handleConfirmMove}
+              disabled={moveSaving}
+              className="btn-primary"
+            >
+              {moveSaving ? 'Adding…' : 'Yes, add it'}
+            </button>
+            <button
+              onClick={() => setPendingMove(null)}
+              className="btn-ghost"
+            >
+              No thanks
+            </button>
+          </div>
+        </div>
       </Modal>
     </div>
   )

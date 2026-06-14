@@ -120,7 +120,7 @@ const SHEET_COLUMNS = {
   ],
   FundAllocation: ["ID", "HoldingID", "AssetClass", "Percentage"],
   AssetGoals: ["ID", "AssetClass", "Subclass", "GoalPct"],
-  Tasks: ["ID", "Name", "Category", "Priority", "DueDate", "Notes"],
+  Tasks: ["ID", "Name", "Category", "Priority", "DueDate", "Status", "Notes"],
   ResearchLinks: ["ID", "Title", "Category", "Link", "Notes"],
   LifetimeGoals: ["ID", "Goal", "Category", "Status", "Progress", "Notes"],
   EducationGoals: [

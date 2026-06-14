@@ -232,6 +232,7 @@ export const SCHEMAS = {
     { key: 'Priority', label: 'Priority', type: 'select', defaultValue: 'Medium',
       options: ['High', 'Medium', 'Low'] },
     { key: 'DueDate', label: 'Due Date', type: 'date' },
+    { key: 'Status',  label: 'Status',   type: 'select', defaultValue: 'Open', options: ['Open', 'Done'] },
     { key: 'Notes',   label: 'Notes',    type: 'textarea' },
   ],
 

@@ -231,12 +231,15 @@ export default function ProjectionPage({ data, onSave, onDelete }) {
                 <th className="pb-2 pr-4 text-xs font-semibold uppercase tracking-wide text-slate-500 text-right">Growth %</th>
                 <th className="pb-2 pr-4 text-xs font-semibold uppercase tracking-wide text-slate-500 text-right">Annual Add</th>
                 <th className="pb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Notes</th>
-                {isSaved && <th className="pb-2"></th>}
               </tr>
             </thead>
             <tbody>
               {resolved.map((row, i) => (
-                <tr key={row._rowIndex ?? i} className="border-b border-slate-700/40 last:border-0">
+                <tr
+                  key={row._rowIndex ?? i}
+                  className={`border-b border-slate-700/40 last:border-0 transition-colors ${isSaved ? 'cursor-pointer hover:bg-slate-700/30' : ''}`}
+                  onClick={() => isSaved && modal.openEdit(row)}
+                >
                   <td className="py-2.5 pr-4 font-medium text-slate-200">{row.Label}</td>
                   <td className="py-2.5 pr-4 text-right tabular-nums">
                     <span className={row._auto ? 'text-slate-400' : 'text-slate-200'}>
@@ -253,16 +256,6 @@ export default function ProjectionPage({ data, onSave, onDelete }) {
                     {Number(row.AnnualAdd) > 0 ? `+${fmt$.format(Number(row.AnnualAdd))}` : '—'}
                   </td>
                   <td className="py-2.5 text-slate-500 text-xs max-w-xs">{row.Notes || ''}</td>
-                  {isSaved && (
-                    <td className="py-2.5 pl-4">
-                      <button
-                        onClick={() => modal.openEdit(row)}
-                        className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
-                      >
-                        Edit
-                      </button>
-                    </td>
-                  )}
                 </tr>
               ))}
             </tbody>

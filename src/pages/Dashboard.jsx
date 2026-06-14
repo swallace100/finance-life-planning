@@ -24,10 +24,13 @@ function stillOwned(asset) {
 
 function computeNetWorth(data) {
   const latestByAsset = getLatestValueByAsset(data.AssetHistory || [])
-  const nonTangible = Object.values(latestByAsset).reduce((s, h) => s + (Number(h.Value) || 0), 0)
-  const tangible  = (data.TangibleAssets || []).filter(stillOwned).reduce((s, t)  => s + (Number(t.CurrentValue)  || 0), 0)
-  const digital   = (data.DigitalAssets  || []).filter(stillOwned).reduce((s, t)  => s + (Number(t.CurrentValue)  || 0), 0)
-  return nonTangible + tangible + digital
+  const nonTangible   = Object.values(latestByAsset).reduce((s, h) => s + (Number(h.Value) || 0), 0)
+  const tangible      = (data.TangibleAssets  || []).filter(stillOwned).reduce((s, t) => s + (Number(t.CurrentValue) || 0), 0)
+  const digital       = (data.DigitalAssets   || []).filter(stillOwned).reduce((s, t) => s + (Number(t.CurrentValue) || 0), 0)
+  const liabilities   = (data.Liabilities     || [])
+    .filter(l => l.Active === true || l.Active === 1 || l.Active === 'Yes')
+    .reduce((s, l) => s + (Number(l.Balance) || 0), 0)
+  return nonTangible + tangible + digital - liabilities
 }
 
 function computeMonthlyNetWorth(data) {

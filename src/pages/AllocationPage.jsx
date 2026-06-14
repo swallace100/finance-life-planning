@@ -138,7 +138,7 @@ function computeTree(data) {
   assets
     .filter((asset) => asset.Type === "Crypto")
     .forEach((asset) => {
-      add("Other", asset.Subtype || asset.Name, acctVal(a.ID));
+      add("Other", asset.Subtype || asset.Name, acctVal(asset.ID));
     });
 
   // Tangible assets → Other > Category
@@ -151,7 +151,7 @@ function computeTree(data) {
   // Digital assets → Other > Category
   const digitals = data?.DigitalAssets || [];
   digitals
-    .filter((asset) => a.StillHave !== false && asset.StillHave !== 0)
+    .filter((asset) => asset.StillHave !== false && asset.StillHave !== 0)
     .forEach((asset) => {
       add(
         "Other",

@@ -201,11 +201,11 @@ export const mockData = {
   ],
 
   Tasks: [
-    { ID: 1, Name: 'Set up Azure account',            Category: 'Work',     Priority: 'High',   DueDate: '2026-06-15', Notes: 'After semester ends' },
-    { ID: 2, Name: 'Pass JLPT N1',                    Category: 'School',   Priority: 'High',   DueDate: '2026-07-01', Notes: 'Exam in July' },
-    { ID: 3, Name: 'Import real Excel data',          Category: 'Personal', Priority: 'Medium', DueDate: '2026-06-07', Notes: '' },
-    { ID: 4, Name: 'Review retirement contributions', Category: 'Personal', Priority: 'Medium', DueDate: '2026-06-30', Notes: 'Annual review' },
-    { ID: 5, Name: 'Renew AZ-900 certification',      Category: 'Work',     Priority: 'Low',    DueDate: '2027-10-01', Notes: '' },
+    { ID: 1, Name: 'Set up Azure account',            Category: 'Work',     Priority: 'High',   DueDate: '2026-06-15', Status: 'Open', Notes: 'After semester ends' },
+    { ID: 2, Name: 'Pass JLPT N1',                    Category: 'School',   Priority: 'High',   DueDate: '2026-07-01', Status: 'Open', Notes: 'Exam in July' },
+    { ID: 3, Name: 'Import real Excel data',          Category: 'Personal', Priority: 'Medium', DueDate: '2026-06-07', Status: 'Done', Notes: '' },
+    { ID: 4, Name: 'Review retirement contributions', Category: 'Personal', Priority: 'Medium', DueDate: '2026-06-30', Status: 'Open', Notes: 'Annual review' },
+    { ID: 5, Name: 'Renew AZ-900 certification',      Category: 'Work',     Priority: 'Low',    DueDate: '2027-10-01', Status: 'Open', Notes: '' },
   ],
 
   ResearchLinks: [
