@@ -36,20 +36,11 @@ export async function deleteRow(params) {
 }
 
 // Downloads the Excel blob to the user's machine.
-// In the browser, triggers a file download; in Electron, no-op (use native file controls).
-export async function downloadExcel() {
+// Navigates to the endpoint directly — Content-Disposition: attachment on the response
+// causes the browser to save the file without leaving the current page.
+export function downloadExcel() {
   if (isElectron) return;
-  const res = await fetch('/api/download-excel');
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const blob = await res.blob();
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = 'finance-data.xlsx';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  window.location.href = '/api/download-excel';
 }
 
 // Uploads a File to replace the Azure blob. Returns parsed workbook data.

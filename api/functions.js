@@ -15,7 +15,6 @@ app.http('download-excel', {
         headers: {
           'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           'Content-Disposition': 'attachment; filename="finance-data.xlsx"',
-          'Content-Length': String(buffer.length),
         },
         body: buffer,
       }
