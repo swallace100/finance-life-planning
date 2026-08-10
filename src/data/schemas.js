@@ -257,7 +257,7 @@ export const SCHEMAS = {
     { key: 'Name',     label: 'Game',            type: 'text', required: true },
     { key: 'Platform', label: 'Platform',         type: 'text', required: true },
     { key: 'Status',   label: 'Status',           type: 'select', defaultValue: 'Completed',
-      options: ['Completed', 'Playing', 'Abandoned', 'Backlog'] },
+      options: ['Completed', '100% Completed', 'Playing', 'Abandoned', 'Backlog'] },
     { key: 'CompletionDate', label: 'Completion Date', type: 'date' },
     { key: 'Genre',          label: 'Genre',            type: 'text' },
     { key: 'Rating',         label: 'Rating (1–5)',     type: 'number', step: 0.5 },
