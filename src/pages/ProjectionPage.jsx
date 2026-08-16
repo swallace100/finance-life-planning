@@ -102,9 +102,19 @@ export default function ProjectionPage({ data, onSave, onDelete }) {
   const saved        = data?.ProjectionSettings || []
   const currentValues = computeCurrentValues(data)
   const surplus       = computeBudgetSurplus(data)
-  const isSaved       = saved.length > 0
 
-  const rows = isSaved ? saved : DEFAULT_ROWS
+  // Merge saved overrides into the default categories (by Label) instead of
+  // replacing the defaults outright, so adding one custom asset doesn't wipe
+  // out the other auto-computed rows.
+  const savedByLabel = {}
+  saved.forEach(r => { savedByLabel[(r.Label || '').trim().toLowerCase()] = r })
+
+  const defaultLabels = new Set(DEFAULT_ROWS.map(d => d.Label.trim().toLowerCase()))
+  const mergedDefaults = DEFAULT_ROWS.map(def => savedByLabel[def.Label.trim().toLowerCase()] || def)
+  const customRows = saved.filter(r => !defaultLabels.has((r.Label || '').trim().toLowerCase()))
+
+  const rows = [...mergedDefaults, ...customRows]
+  const hasUnsavedDefaults = mergedDefaults.some(r => r._rowIndex == null)
 
   const resolved = rows.map(r => {
     const hasOverride = r.StartValue != null && r.StartValue !== ''
@@ -216,9 +226,9 @@ export default function ProjectionPage({ data, onSave, onDelete }) {
       <div className="card p-6">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Projection Assumptions</p>
-          {!isSaved && (
+          {hasUnsavedDefaults && (
             <span className="text-xs text-amber-400 bg-amber-400/10 px-2 py-1 rounded">
-              Showing defaults — add rows to save custom settings
+              Click a row to customize and save your own settings
             </span>
           )}
         </div>
@@ -237,8 +247,8 @@ export default function ProjectionPage({ data, onSave, onDelete }) {
               {resolved.map((row, i) => (
                 <tr
                   key={row._rowIndex ?? i}
-                  className={`border-b border-slate-700/40 last:border-0 transition-colors ${isSaved ? 'cursor-pointer hover:bg-slate-700/30' : ''}`}
-                  onClick={() => isSaved && modal.openEdit(row)}
+                  className="border-b border-slate-700/40 last:border-0 transition-colors cursor-pointer hover:bg-slate-700/30"
+                  onClick={() => row._rowIndex != null ? modal.openEdit(row) : modal.openAdd(row)}
                 >
                   <td className="py-2.5 pr-4 font-medium text-slate-200">{row.Label}</td>
                   <td className="py-2.5 pr-4 text-right tabular-nums">
