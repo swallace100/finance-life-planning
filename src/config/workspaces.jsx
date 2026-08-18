@@ -112,9 +112,8 @@ export const WORKSPACES = [
         ],
       },
       {
-        label: "Library",
+        label: "Wishlist",
         items: [
-          { id: "media",    label: "Media",    icon: icon(D.media) },
           { id: "wishlist", label: "Wishlist", icon: icon(D.star) },
         ],
       },
@@ -149,8 +148,9 @@ export const WORKSPACES = [
       {
         label: "Life",
         items: [
-          { id: "tasks",    label: "Tasks",    icon: icon(D.check) },
-          { id: "research", label: "Research", icon: icon(D.book) },
+          { id: "tasks",    label: "Tasks",     icon: icon(D.check) },
+          { id: "research", label: "Research",  icon: icon(D.book) },
+          { id: "media",    label: "Media Log", icon: icon(D.media) },
         ],
       },
       {

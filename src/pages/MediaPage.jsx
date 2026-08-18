@@ -164,7 +164,7 @@ export default function MediaPage({ data, onSave, onDelete }) {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-slate-100">Media</h2>
+      <h2 className="text-xl font-semibold text-slate-100">Media Log</h2>
 
       {/* Tab bar */}
       <div className="flex gap-1 bg-slate-800/50 p-1 rounded-xl border border-slate-700 w-fit">
