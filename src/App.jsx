@@ -8,9 +8,11 @@ import AchievementsPage from "./pages/AchievementsPage";
 import AllocationPage from "./pages/AllocationPage";
 import BudgetPage from "./pages/BudgetPage";
 import CDsPage from "./pages/CDsPage";
+import CollectionsOverview from "./pages/CollectionsOverview";
 import ContactsPage from "./pages/ContactsPage";
 import CryptoPage from "./pages/CryptoPage";
 import Dashboard from "./pages/Dashboard";
+import LauncherPage from "./pages/LauncherPage";
 import DebtsPage from "./pages/DebtsPage";
 import DigitalAssetsPage from "./pages/DigitalAssetsPage";
 import DonationsPage from "./pages/DonationsPage";
@@ -18,6 +20,7 @@ import GoalsPage from "./pages/GoalsPage";
 import MediaPage from "./pages/MediaPage";
 import NonTangibleAssetsPage from "./pages/NonTangibleAssetsPage";
 import PersonalInfoPage from "./pages/PersonalInfoPage";
+import PlanningOverview from "./pages/PlanningOverview";
 import ProjectionPage from "./pages/ProjectionPage";
 import ResearchPage from "./pages/ResearchPage";
 import RetirementPage from "./pages/RetirementPage";
@@ -27,6 +30,7 @@ import WishlistPage from "./pages/WishlistPage";
 
 // Data / utilities
 import { mockData } from "./data/mock";
+import { WORKSPACE_MAP } from "./config/workspaces";
 import { isElectron, loadExcel, saveRow, deleteRow, downloadExcel, uploadExcel } from "./api";
 
 function addRowIndices(data) {
@@ -43,7 +47,10 @@ export default function App() {
   const [error, setError]         = useState(null);
   const [usingMock, setUsingMock] = useState(false);
   const [excelPath, setExcelPath] = useState(null);
-  const [page, setPage]           = useState("dashboard");
+  const [workspace, setWorkspace] = useState(null); // null = launcher
+  const [pagesByWorkspace, setPagesByWorkspace] = useState(() =>
+    Object.fromEntries(Object.values(WORKSPACE_MAP).map((w) => [w.id, w.defaultPage]))
+  );
   const [demoMode, setDemoMode]   = useState(false);
   const realDataRef               = useRef(null);
 
@@ -201,6 +208,14 @@ export default function App() {
     }
   }
 
+  // ── Workspace navigation ────────────────────────────────────────────────────
+
+  const page = workspace ? pagesByWorkspace[workspace] : null;
+
+  function handleNavigate(pageId) {
+    setPagesByWorkspace((prev) => ({ ...prev, [workspace]: pageId }));
+  }
+
   // ── Page routing (alphabetical by key) ──────────────────────────────────────
 
   const props = { data, onSave: handleSave, onDelete: handleDelete };
@@ -210,6 +225,7 @@ export default function App() {
     allocation:   <AllocationPage    {...props} />,
     budget:       <BudgetPage        {...props} />,
     cds:          <CDsPage           {...props} />,
+    "collections-overview": <CollectionsOverview {...props} />,
     contacts:     <ContactsPage      {...props} />,
     crypto:       <CryptoPage        {...props} />,
     dashboard:    <Dashboard         {...props} />,
@@ -219,7 +235,8 @@ export default function App() {
     goals:        <GoalsPage         {...props} />,
     media:        <MediaPage         {...props} />,
     nontangible:  <NonTangibleAssetsPage {...props} />,
-    profile:      <PersonalInfoPage  data={data} onSave={handleSave} />,
+    "planning-overview": <PlanningOverview {...props} />,
+    profile:      <PersonalInfoPage  {...props} />,
     projection:   <ProjectionPage    {...props} />,
     research:     <ResearchPage      {...props} />,
     retirement:   <RetirementPage    {...props} />,
@@ -230,31 +247,55 @@ export default function App() {
 
   // ── Render ───────────────────────────────────────────────────────────────────
 
+  const fileProps = {
+    usingMock,
+    excelPath,
+    error,
+    onPickFile: handlePickFile,
+    onNewFile: handleNewFile,
+    hasElectron: isElectron,
+    onDownload: handleDownload,
+    onUpload: handleUpload,
+    demoMode,
+    onToggleDemoMode: toggleDemoMode,
+  };
+
+  const demoBanner = demoMode && (
+    <div className="flex-shrink-0 bg-amber-500/10 border-b border-amber-500/20 px-4 py-2 flex items-center justify-center gap-2">
+      <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+      <span className="text-amber-400 text-xs font-semibold">Demo Mode</span>
+      <span className="text-amber-600 text-xs">· showing sample data — your real data is untouched</span>
+    </div>
+  );
+
+  // Launcher
+  if (!workspace) {
+    return (
+      <div className="flex flex-col h-screen bg-slate-900 text-slate-100 overflow-hidden">
+        {demoBanner}
+        <LauncherPage
+          data={data}
+          loading={loading}
+          onOpenWorkspace={setWorkspace}
+          {...fileProps}
+        />
+      </div>
+    );
+  }
+
+  // Workspace
   return (
     <div className="flex flex-col md:flex-row h-screen bg-slate-900 text-slate-100 overflow-hidden">
       <Sidebar
+        workspace={WORKSPACE_MAP[workspace]}
         currentPage={page}
-        onNavigate={setPage}
-        usingMock={usingMock}
-        excelPath={excelPath}
-        error={error}
-        onPickFile={handlePickFile}
-        onNewFile={handleNewFile}
-        hasElectron={isElectron}
-        onDownload={handleDownload}
-        onUpload={handleUpload}
-        demoMode={demoMode}
-        onToggleDemoMode={toggleDemoMode}
+        onNavigate={handleNavigate}
+        onBackToLauncher={() => setWorkspace(null)}
+        {...fileProps}
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        {demoMode && (
-          <div className="flex-shrink-0 bg-amber-500/10 border-b border-amber-500/20 px-4 py-2 flex items-center justify-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-            <span className="text-amber-400 text-xs font-semibold">Demo Mode</span>
-            <span className="text-amber-600 text-xs">· showing sample data — your real data is untouched</span>
-          </div>
-        )}
+        {demoBanner}
         <main className="flex-1 overflow-auto p-4 md:p-6">
           {loading ? (
             <div className="flex items-center justify-center h-full">

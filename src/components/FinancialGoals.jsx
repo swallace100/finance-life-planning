@@ -13,7 +13,7 @@ const STATUS_STYLES = {
   'At Risk':  'text-red-400 bg-red-400/10',
 }
 
-export default function FinancialGoals({ goals, netWorth, onSave, onDelete }) {
+export default function FinancialGoals({ goals, netWorth, onSave, onDelete, readOnly = false }) {
   const modal = useEntityModal()
 
   async function handleSubmit(row) {
@@ -29,12 +29,16 @@ export default function FinancialGoals({ goals, netWorth, onSave, onDelete }) {
     <div className="card p-6">
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-slate-300 font-medium">Financial Goals</h2>
-        <button
-          onClick={() => modal.openAdd()}
-          className="text-xs font-medium text-blue-400 hover:text-blue-300 bg-blue-400/10 hover:bg-blue-400/20 px-3 py-1.5 rounded-lg transition-colors"
-        >
-          + Add Goal
-        </button>
+        {readOnly ? (
+          <span className="text-xs text-slate-500">edit in Goals &amp; Planning</span>
+        ) : (
+          <button
+            onClick={() => modal.openAdd()}
+            className="text-xs font-medium text-blue-400 hover:text-blue-300 bg-blue-400/10 hover:bg-blue-400/20 px-3 py-1.5 rounded-lg transition-colors"
+          >
+            + Add Goal
+          </button>
+        )}
       </div>
 
       {!goals?.length ? (
@@ -49,8 +53,8 @@ export default function FinancialGoals({ goals, netWorth, onSave, onDelete }) {
             return (
               <div
                 key={goal.ID ?? i}
-                className="cursor-pointer group"
-                onClick={() => modal.openEdit(goal)}
+                className={readOnly ? "" : "cursor-pointer group"}
+                onClick={readOnly ? undefined : () => modal.openEdit(goal)}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-slate-200 text-sm font-medium group-hover:text-white transition-colors">
@@ -79,6 +83,7 @@ export default function FinancialGoals({ goals, netWorth, onSave, onDelete }) {
         </div>
       )}
 
+      {!readOnly && (
       <Modal
         open={modal.open}
         onClose={modal.close}
@@ -93,6 +98,7 @@ export default function FinancialGoals({ goals, netWorth, onSave, onDelete }) {
           onDelete={modal.isEditing ? () => handleDelete(modal.editRow) : undefined}
         />
       </Modal>
+      )}
     </div>
   )
 }
