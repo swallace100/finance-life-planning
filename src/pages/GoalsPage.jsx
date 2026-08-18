@@ -1,5 +1,7 @@
 import Modal from "../components/Modal";
 import EntityForm from "../components/EntityForm";
+import FinancialGoals from "../components/FinancialGoals";
+import { computeNetWorth } from "../utils/netWorth";
 import { SCHEMAS } from "../data/schemas";
 import { useEntityModal } from "../hooks/useEntityModal";
 import { useSortableTable } from "../hooks/useSortableTable";
@@ -91,6 +93,14 @@ export default function GoalsPage({ data, onSave, onDelete }) {
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold text-slate-100">Goals</h2>
+
+      {/* Financial Goals (progress measured against net worth from Finance) */}
+      <FinancialGoals
+        goals={data?.FinancialGoals}
+        netWorth={computeNetWorth(data)}
+        onSave={onSave}
+        onDelete={onDelete}
+      />
 
       {/* Lifetime Goals */}
       <div className="card p-6">
